@@ -1,4 +1,4 @@
-.PHONY: test validate install-hermes install-claude install-generic package
+.PHONY: test validate install-hermes install-claude install-generic package site-deploy preview-site
 
 test:
 	python3 -m unittest discover -s scripts -p 'test_*.py' -v
@@ -22,3 +22,14 @@ install-generic:
 package:
 	mkdir -p dist
 	git archive --format=tar.gz --prefix=sintr/ -o dist/sintr-agent-pack.tar.gz HEAD
+
+SITE_DEST ?= /home/hermes/artifacts/sintr
+SITE_PORT ?= 8089
+
+# Publish the static site. DESIGN-NOTES.md is repo documentation, not a page.
+site-deploy:
+	mkdir -p $(SITE_DEST)
+	rsync -a --exclude 'DESIGN-NOTES.md' site/ $(SITE_DEST)/
+
+preview-site:
+	python3 -m http.server $(SITE_PORT) --directory site

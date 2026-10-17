@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en" data-time="morning">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sintr — the week between sessions, kept in your own words</title>
+  <meta name="description" content="sintr is a skill for the AI agent you already use. It keeps a private, plain-Markdown record of hard moments and check-ins, structured like a CBT thought record, and drafts a weekly report you review before it goes to your therapist.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://sintr.tiagomoraes.cloud/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sintr.tiagomoraes.cloud/">
+  <meta property="og:title" content="sintr — the week between sessions, kept in your own words">
+  <meta property="og:description" content="A private psychological ledger your AI agent keeps in plain Markdown, with a weekly report you approve before it reaches your therapist.">
+  <meta property="og:image" content="https://sintr.tiagomoraes.cloud/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="fonts/source-serif-4-roman.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    /* Motion is opt-in: content renders fully without JS, and only browsers that
+       welcome motion and can observe scroll get the light and reveal behavior. */
+    (function (d) {
+      d.classList.add('js');
+      try {
+        if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('motion');
+        }
+      } catch (e) {}
+    })(document.documentElement);
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Window light: the page's only color. Purely decorative. -->
+  <div class="sun" aria-hidden="true">
+    <svg class="sun__svg" viewBox="0 0 1000 1000" focusable="false">
+      <defs>
+        <linearGradient id="sun-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset=".18" class="sun__s1"/>
+          <stop offset=".5" class="sun__s2"/>
+          <stop offset=".82" class="sun__s3"/>
+        </linearGradient>
+        <filter id="sun-edge" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="11"/>
+        </filter>
+        <filter id="sun-leaf" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.4"/>
+        </filter>
+        <filter id="sun-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+          <feColorMatrix values="0 0 0 0 .42  0 0 0 0 .42  0 0 0 0 .44  0 0 0 .11 0"/>
+        </filter>
+        <!-- a tall two-by-three window, projected obliquely onto the wall -->
+        <mask id="sun-window" maskUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
+          <g filter="url(#sun-edge)" fill="#fff" transform="translate(430 110) skewX(-15) skewY(8)">
+            <rect x="0" y="0" width="150" height="188" rx="3"/>
+            <rect x="166" y="0" width="150" height="188" rx="3"/>
+            <rect x="0" y="204" width="150" height="188" rx="3"/>
+            <rect x="166" y="204" width="150" height="188" rx="3"/>
+            <rect x="0" y="408" width="150" height="188" rx="3"/>
+            <rect x="166" y="408" width="150" height="188" rx="3"/>
+          </g>
+        </mask>
+      </defs>
+      <g mask="url(#sun-window)">
+        <rect x="200" y="60" width="600" height="840" fill="url(#sun-grad)"/>
+        <rect x="200" y="60" width="600" height="840" filter="url(#sun-grain)"/>
+        <g class="sun__leaves" filter="url(#sun-leaf)">
+          <g class="sun__branch sun__branch--a">
+            <path class="sun__stem" d="M960 60 C 870 120, 800 170, 700 250 S 560 380, 500 470"/>
+            <path d="M900 104c-26-30-68-34-92-16 25 27 62 34 92 16z"/>
+            <path d="M866 128c9-39-10-76-39-87-7 36 9 71 39 87z"/>
+            <path d="M816 164c-32-23-74-20-94 4 28 19 67 21 94-4z"/>
+            <path d="M786 186c14-37 2-78-25-92-12 34-2 73 25 92z"/>
+            <path d="M733 225c-35-16-76-5-90 21 32 12 71 5 90-21z"/>
+            <path d="M701 250c19-34 16-76-7-94-18 30-16 69 7 94z"/>
+            <path d="M651 291c-35-11-74 5-85 34 34 7 69-5 85-34z"/>
+            <path d="M618 321c25-30 28-73 7-94-21 27-25 66-7 94z"/>
+            <path d="M575 362c-37-5-73 16-80 46 34 2 67-16 80-46z"/>
+            <path d="M545 398c27-27 35-67 18-92-23 23-32 62-18 92z"/>
+            <path d="M515 442c-35 2-65 28-67 58 34-5 62-28 67-58z"/>
+          </g>
+          <g class="sun__branch sun__branch--b">
+            <path class="sun__stem" d="M960 560 C 890 600, 830 650, 780 720 S 700 840, 690 920"/>
+            <path d="M902 590c-21-32-62-43-89-30 20 30 57 43 89 30z"/>
+            <path d="M865 615c16-35 7-76-18-92-12 34-5 71 18 92z"/>
+            <path d="M821 657c-30-25-73-27-94-5 27 23 66 27 94 5z"/>
+            <path d="M796 686c19-34 18-74-4-94-18 30-18 69 4 94z"/>
+            <path d="M757 739c-34-18-74-9-90 16 32 14 71 9 90-16z"/>
+            <path d="M732 776c25-28 30-69 11-92-21 25-27 64-11 92z"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="mark" href="#main" aria-label="sintr, back to top">
+        <svg class="mark__glyph" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="mark-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#cfe3f3"/>
+              <stop offset=".55" stop-color="#f6e1d3"/>
+              <stop offset="1" stop-color="#f7cfb5"/>
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="8" fill="#16171a"/>
+          <g fill="url(#mark-grad)" transform="translate(10.4 6.2) skewX(-14)">
+            <rect x="0" y="0" width="6" height="8.8" rx="1"/>
+            <rect x="7.2" y="0" width="6" height="8.8" rx="1"/>
+            <rect x="0" y="10.2" width="6" height="8.8" rx="1"/>
+            <rect x="7.2" y="10.2" width="6" height="8.8" rx="1"/>
+          </g>
+        </svg>
+        <span class="mark__word">sintr</span>
+      </a>
+      <nav class="top__nav" aria-label="Primary">
+        <a class="top__link" href="#week">How it works</a>
+        <a class="top__link" href="#privacy">Privacy</a>
+        <a class="top__link top__link--gh" href="https://github.com/tiagomoraes/sintr">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-1.9c-3.12.68-3.78-1.5-3.78-1.5-.51-1.3-1.25-1.64-1.25-1.64-1.02-.7.08-.68.08-.68 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.49-.28-5.11-1.25-5.11-5.55 0-1.22.44-2.23 1.16-3.01-.12-.29-.5-1.43.11-2.97 0 0 .94-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.61 1.54.23 2.68.11 2.97.72.78 1.16 1.79 1.16 3.01 0 4.31-2.63 5.26-5.13 5.54.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a class="btn btn--ink btn--sm" href="#install">Install</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ───────────────────────── Hero ───────────────────────── -->
+    <section class="hero" data-time="morning" aria-labelledby="hero-title">
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <h1 id="hero-title" class="display">The week between sessions, kept in <span class="hl">your own words.</span></h1>
+          <p class="lede">sintr is a skill for the AI agent you already use. It helps you capture hard moments the way a CBT thought record does, log one-line check-ins, and draft a weekly report you review first and send to your therapist only when you say&nbsp;so.</p>
+          <div class="hero__actions">
+            <a class="btn btn--ink" href="#prompt" data-copy="#prompt-text" data-copied="Copied. Paste it into your agent.">
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+              <span data-label>Copy install prompt</span>
+            </a>
+            <a class="link" href="#prompt">Read the prompt first</a>
+          </div>
+          <p class="hero__meta">Works with Claude Code, Hermes, OpenCode, OpenClaw, Cowork and any other agent that can read and write files. Plain Markdown, MIT&nbsp;licensed.</p>
+        </div>
+
+        <div class="hero__art" data-depth="-0.06">
+          <figure class="file file--hero">
+            <figcaption class="file__path">~/sintr/entries/2026-10.md <span class="file__note">fictional example</span></figcaption>
+            <pre class="file__body"><span class="h">## entry-2026-10-13-001</span>
+<span class="k">- title:</span> Planning, three demands in one sprint
+<span class="k">- thoughts:</span> <mark>"there's no way I can handle this"</mark>
+<span class="k">- emotions:</span> anxiety: 85
+<span class="k">- body:</span> tight chest, clenched jaw
+<span class="k">- behavior:</span> said yes to all of it</pre>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── The idea ───────────────────────── -->
+    <section class="idea" data-time="noon" aria-labelledby="idea-title">
+      <div class="wrap">
+        <h2 id="idea-title" class="statement" data-reveal>
+          <span class="statement__a">Your therapist sees fifty minutes of your&nbsp;week.</span>
+          <span class="statement__b">The other 10,030 happen without&nbsp;them.</span>
+        </h2>
+        <div class="idea__body">
+          <p class="prose" data-reveal>By the time you sit down, Tuesday is a blur. You remember how you feel now, not how it felt then: a screenshot here, a note to self there, a knot you can no longer place. sintr keeps the week the way it happened, in plain Markdown files on your own machine, written by the agent you already talk&nbsp;to.</p>
+          <p class="prose prose--quiet" data-reveal>There is no app to open, no account and no database. Your agent is the interface, and the files are the&nbsp;product.</p>
+        </div>
+
+        <ol class="flow" aria-label="How a week moves through sintr" data-reveal>
+          <li class="flow__node"><span class="flow__name">You</span><span class="flow__edge">talk or type</span></li>
+          <li class="flow__node"><span class="flow__name">Your agent</span><span class="flow__edge">writes</span></li>
+          <li class="flow__node"><span class="flow__name"><code>~/sintr/*.md</code></span><span class="flow__edge">every Sunday</span></li>
+          <li class="flow__node"><span class="flow__name">Weekly report</span><span class="flow__edge flow__edge--gate">you approve</span></li>
+          <li class="flow__node"><span class="flow__name">Your therapist</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── The week ───────────────────────── -->
+    <div id="week" class="week">
+      <div class="wrap week__intro">
+        <h2 class="h-section" data-reveal>One week, kept.</h2>
+        <p class="prose" data-reveal>A fictional week, Tuesday to Monday. Every file on this page is exactly what sintr writes: field keys in English so they stay parseable, everything you say in your own language, word for&nbsp;word.</p>
+      </div>
+
+      <!-- Capture -->
+      <section class="day day--capture" data-time="dusk" aria-labelledby="capture-title">
+        <div class="wrap day__grid">
+          <div class="day__copy">
+            <h3 id="capture-title" class="h-day" data-reveal><span class="when">Tuesday, 7:40&nbsp;pm.</span> Something happened at&nbsp;work.</h3>
+            <p class="prose" data-reveal>You tell your agent what happened, the way you'd tell a friend. It listens first, then asks one or two narrow questions until the entry has the shape a therapist recognizes: the cognitive-behavioral thought&nbsp;record.</p>
+            <dl class="fields" data-reveal>
+              <div class="fields__row"><dt>Situation</dt><dd>What happened: when, where, who.</dd></div>
+              <div class="fields__row"><dt>Thoughts</dt><dd>Your exact words, in quotes. Never paraphrased.</dd></div>
+              <div class="fields__row"><dt>Emotions</dt><dd>Named by you, 0–100 at the moment it happened.</dd></div>
+              <div class="fields__row"><dt>Body</dt><dd>What you felt physically, if anything.</dd></div>
+              <div class="fields__row"><dt>Behavior</dt><dd>What you did next. “Nothing” counts.</dd></div>
+            </dl>
+            <p class="prose prose--quiet" data-reveal>Deeper work, like weighing evidence and finding a more balanced thought, is offered only when you're steady. It's never forced, and it can always wait for the&nbsp;session.</p>
+          </div>
+
+          <div class="day__art" data-depth="-0.05">
+            <div class="chat" aria-label="Example conversation with an agent">
+              <p class="chat__msg chat__msg--you" data-reveal>Can we write down what happened at planning today? I'm still wound&nbsp;up.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal>That sounds like a lot landing at once. What happened, and what went through your mind right&nbsp;then?</p>
+              <p class="chat__msg chat__msg--you" data-reveal>Three new demands in the same sprint. I just thought: there's no way I can handle this. And I said yes to all of&nbsp;it.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal>From 0 to 100, how strong was the anxiety in that moment? Anything in your&nbsp;body?</p>
+              <p class="chat__msg chat__msg--you" data-reveal>85. Tight chest, jaw clenched. Still working&nbsp;now.</p>
+            </div>
+            <figure class="file file--entry" data-write>
+              <figcaption class="file__path">~/sintr/entries/2026-10.md <span class="file__note">appended after you confirm</span></figcaption>
+              <pre class="file__body"><span class="ln h">## entry-2026-10-13-001</span>
+<span class="ln"><span class="k">- ts:</span> 2026-10-13T22:40:00Z</span>
+<span class="ln"><span class="k">- title:</span> Planning, three demands in one sprint</span>
+<span class="ln"><span class="k">- situation:</span> sprint planning; three new demands landed
+  in the same sprint. Said yes to all of them on the spot.</span>
+<span class="ln"><span class="k">- thoughts:</span> <mark>"there's no way I can handle this"</mark></span>
+<span class="ln"><span class="k">- emotions:</span> anxiety: 85</span>
+<span class="ln"><span class="k">- body:</span> tight chest, clenched jaw</span>
+<span class="ln"><span class="k">- behavior:</span> accepted everything; kept working into the night</span>
+<span class="ln"><span class="k">- context:</span> back-to-back meetings since 9am</span>
+<span class="ln"><span class="k">- tags:</span> work</span></pre>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Check-in -->
+      <section class="day day--checkin" data-time="early" aria-labelledby="checkin-title">
+        <div class="wrap day__grid day__grid--flip">
+          <div class="day__copy">
+            <h3 id="checkin-title" class="h-day" data-reveal><span class="when">Thursday, 8:50&nbsp;am.</span> One line is&nbsp;enough.</h3>
+            <p class="prose" data-reveal>A check-in is a single message: mood, energy, anxiety, sleep, whatever you feel like giving. sintr writes down exactly what you said and nothing&nbsp;more.</p>
+            <p class="prose prose--quiet" data-reveal>You didn't mention energy, so there's no energy line. sintr leaves a gap empty rather than guess a&nbsp;number.</p>
+          </div>
+          <div class="day__art" data-depth="-0.04">
+            <p class="chat__msg chat__msg--you chat__msg--solo" data-reveal>Mood 2/5, anxiety 4/5, slept 5½h. Worked late again. 1:1 with my manager&nbsp;today.</p>
+            <figure class="file file--checkin" data-reveal>
+              <figcaption class="file__path">~/sintr/checkins/2026-10.md</figcaption>
+              <pre class="file__body"><span class="h">## checkin-2026-10-15</span>
+<span class="k">- ts:</span> 2026-10-15T11:50:00Z
+<span class="k">- mood:</span> <span class="num">2/5</span>
+<span class="k">- anxiety:</span> <span class="num">4/5</span>
+<span class="k">- sleep_h:</span> <span class="num">5.5</span>
+<span class="k">- note:</span> worked late again; 1:1 with my manager today</pre>
+            </figure>
+            <p class="chat__msg chat__msg--agent chat__msg--solo" data-reveal>Logged for Thursday.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Weekly report -->
+      <section class="day day--report" data-time="evening" aria-labelledby="report-title">
+        <div class="wrap">
+          <div class="report__head">
+            <h3 id="report-title" class="h-day h-day--wide" data-reveal><span class="when">Sunday, 8&nbsp;pm.</span> The week, on one&nbsp;page.</h3>
+            <p class="prose" data-reveal>Before your session, a small script reads the week's entries and check-ins and counts what can be counted. Your agent writes the report on top of those facts, in plain language and your own vocabulary. Patterns are labeled as observations, with dates. Never a&nbsp;diagnosis.</p>
+          </div>
+
+          <div class="report__grid">
+            <div class="report__doc" data-depth="-0.03">
+              <input class="sr-only" type="radio" name="report-lang" id="rl-pt" checked>
+              <input class="sr-only" type="radio" name="report-lang" id="rl-en">
+              <div class="seg" role="presentation">
+                <span class="seg__label" id="rl-label">Report language</span>
+                <label class="seg__opt seg__opt--pt" for="rl-pt">Português <span class="seg__hint">original</span></label>
+                <label class="seg__opt seg__opt--en" for="rl-en">English</label>
+              </div>
+
+              <article class="paper paper--pt" lang="pt-BR" aria-label="Example weekly report, original Portuguese">
+                <p class="paper__path">~/sintr/reports/2026-W42.md</p>
+                <pre class="paper__front"><span class="k">---</span>
+<span class="k">week:</span> 2026-W42
+<span class="k">range:</span> 2026-10-12 → 2026-10-18
+<span class="k">status:</span> draft
+<span class="k">sent_to:</span>
+<span class="k">sent_at:</span>
+<span class="k">---</span></pre>
+                <h4 class="paper__title">Relatório semanal — Demo Person — 2026-W42</h4>
+                <h5>Resumo</h5>
+                <p>Semana de carga alta no trabalho, com dois picos de ansiedade no início (pressão de prazos em 13/10 e um feedback recebido como crítica em 15/10) e uma recuperação clara no fim de semana, incluindo uma pausa no meio do dia pela primeira vez em semanas e um jantar em família tranquilo.</p>
+                <h5>Humor, energia e sono</h5>
+                <ul>
+                  <li>Humor médio 3,0/5 (mínimos de 2 em 13 e 15/10; máximos de 4 em 16 e 17/10).</li>
+                  <li>Ansiedade média 2,8/5, com picos de 4/5 em 13 e 15/10 e queda para 1/5 em 17/10.</li>
+                  <li>Sono médio 6,7h, com duas noites ruins (6h em 13/10; 5,5h em 15/10), ambas por trabalho à noite.</li>
+                </ul>
+                <h5>Situações marcantes</h5>
+                <ul>
+                  <li><b>13/10</b> — Reunião de planning com três demandas na mesma sprint: <mark>“eu não vou dar conta disso”</mark>; ansiedade 85. Aceitou tudo na hora e continuou trabalhando à noite.</li>
+                  <li><b>15/10</b> — Feedback individual do gestor sobre ritmo de entrega: <mark>“ele acha que eu sou lento”</mark>; ansiedade 70, vergonha 55. Pediu desculpas repetidamente durante a conversa.</li>
+                  <li><b>16/10</b> — Caminhada de vinte minutos sem telefone: culpa 40 e alívio 30; “primeira vez em semanas que parei no meio do dia”.</li>
+                  <li><b>16/10</b> — Jantar em família tranquilo: contentamento 60; ficou conversando até tarde.</li>
+                </ul>
+                <h5>Temas e padrões recorrentes</h5>
+                <ul>
+                  <li>Observação: as duas situações de maior sofrimento (13 e 15/10) foram no trabalho e envolvendo avaliação/expectativa externa.</li>
+                  <li>Observação: nas duas, a resposta registrada foi aceitar ou se desculpar na hora, sem negociar.</li>
+                  <li>Observação: a pausa de 16/10 e o fim de semana melhoraram humor e ansiedade (4/5 de humor e 1/5 de ansiedade em 17/10).</li>
+                </ul>
+                <h5>Temas para a sessão</h5>
+                <ul>
+                  <li>Padrão de aceitar demanda em excesso na hora e trabalhar à noite — o que acontece antes de dizer “sim”?</li>
+                  <li>Feedback recebido como avaliação de valor pessoal (vergonha, pedir desculpas repetidamente).</li>
+                  <li>O papel do sono na ansiedade (dormir mal → pico no dia seguinte).</li>
+                </ul>
+                <p class="paper__foot">Resumo preparado a partir de auto-registros (check-ins e entradas estruturadas) com auxílio do assistente pessoal. Não é avaliação clínica.</p>
+              </article>
+
+              <article class="paper paper--en" lang="en" aria-label="Example weekly report, English translation">
+                <p class="paper__path">~/sintr/reports/2026-W42.md <span class="file__note">translated for this page</span></p>
+                <pre class="paper__front"><span class="k">---</span>
+<span class="k">week:</span> 2026-W42
+<span class="k">range:</span> 2026-10-12 → 2026-10-18
+<span class="k">status:</span> draft
+<span class="k">sent_to:</span>
+<span class="k">sent_at:</span>
+<span class="k">---</span></pre>
+                <h4 class="paper__title">Weekly report — Demo Person — 2026-W42</h4>
+                <h5>Summary</h5>
+                <p>A week of heavy workload, with two anxiety peaks early on (deadline pressure on Oct 13 and feedback taken as criticism on Oct 15) and a clear recovery over the weekend, including a midday break for the first time in weeks and a calm family dinner.</p>
+                <h5>Mood, energy and sleep</h5>
+                <ul>
+                  <li>Average mood 3.0/5 (lows of 2 on Oct 13 and 15; highs of 4 on Oct 16 and 17).</li>
+                  <li>Average anxiety 2.8/5, peaking at 4/5 on Oct 13 and 15 and dropping to 1/5 on Oct 17.</li>
+                  <li>Average sleep 6.7h, with two bad nights (6h on Oct 13; 5.5h on Oct 15), both from working late.</li>
+                </ul>
+                <h5>Notable situations</h5>
+                <ul>
+                  <li><b>Oct 13</b> — Planning meeting with three demands in the same sprint: <mark>“there's no way I can handle this”</mark>; anxiety 85. Accepted everything on the spot and kept working into the night.</li>
+                  <li><b>Oct 15</b> — One-on-one feedback from the manager about delivery pace: <mark>“he thinks I'm slow”</mark>; anxiety 70, shame 55. Apologized repeatedly during the conversation.</li>
+                  <li><b>Oct 16</b> — Twenty-minute walk without the phone: guilt 40 and relief 30; “first time in weeks I stopped in the middle of the day”.</li>
+                  <li><b>Oct 16</b> — Calm family dinner: contentment 60; stayed talking until late.</li>
+                </ul>
+                <h5>Recurring themes and patterns</h5>
+                <ul>
+                  <li>Observation: the two most distressing situations (Oct 13 and 15) were at work and involved external evaluation or expectations.</li>
+                  <li>Observation: in both, the recorded response was to accept or apologize on the spot, without negotiating.</li>
+                  <li>Observation: the break on Oct 16 and the weekend improved mood and anxiety (mood 4/5 and anxiety 1/5 on Oct 17).</li>
+                </ul>
+                <h5>Topics for the session</h5>
+                <ul>
+                  <li>The pattern of taking on too much on the spot and working at night — what happens just before saying “yes”?</li>
+                  <li>Feedback heard as a judgment of personal worth (shame, apologizing repeatedly).</li>
+                  <li>The role of sleep in anxiety (sleeping badly → a peak the next day).</li>
+                </ul>
+                <p class="paper__foot">Summary prepared from self-reports (check-ins and structured entries) with the help of a personal assistant. Not a clinical assessment.</p>
+              </article>
+              <p class="report__src">Abridged from <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/example-report.md">docs/example-report.md</a>, written from the repo's fictional demo ledger, which is kept in Portuguese. Reports come out in the owner's&nbsp;language.</p>
+            </div>
+
+            <aside class="report__flow" aria-labelledby="lifecycle-title">
+              <h4 id="lifecycle-title" class="h-small" data-reveal>Nothing leaves without&nbsp;you.</h4>
+              <ol class="stations">
+                <li class="stations__item" data-reveal>
+                  <span class="stations__state"><code>draft</code></span>
+                  <p>The agent writes the report and sends <em>you</em> a short summary.</p>
+                </li>
+                <li class="stations__item" data-reveal>
+                  <span class="stations__state"><code>reviewed</code></span>
+                  <p>You read it and change anything. It's your week; the wording is yours.</p>
+                </li>
+                <li class="stations__item stations__item--gate" data-reveal>
+                  <span class="stations__state">your approval</span>
+                  <p>Only an explicit “send it” moves it on. This is the one step that can't be undone, so it never happens on its own.</p>
+                </li>
+                <li class="stations__item" data-reveal>
+                  <span class="stations__state"><code>sent</code></span>
+                  <p>It goes out through your own gateway (WhatsApp, Telegram, email) and the file records <code>sent_to</code> and <code>sent_at</code>.</p>
+                </li>
+              </ol>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- Session -->
+      <section class="day day--session" data-time="golden" aria-labelledby="session-title">
+        <div class="wrap day__grid">
+          <div class="day__copy">
+            <h3 id="session-title" class="h-day" data-reveal><span class="when">Monday, 6&nbsp;pm.</span> You walk in with the&nbsp;week.</h3>
+            <p class="prose" data-reveal>The report doesn't replace the conversation. It gives it a better first five&nbsp;minutes.</p>
+            <p class="prose prose--quiet" data-reveal>Afterwards, tell your agent what you agreed on. Tasks land in <code>therapy/current.md</code> and come back in next week's report. A pattern becomes an insight only after three or more dated data points, and it's written as an observation for you and your therapist to look at, never as a&nbsp;label.</p>
+          </div>
+          <div class="day__art day__art--pair" data-depth="-0.04">
+            <figure class="file" data-reveal>
+              <figcaption class="file__path">~/sintr/therapy/current.md</figcaption>
+              <pre class="file__body"><span class="h">## Tasks from the therapist</span>
+<span class="k">- [x]</span> notice what happens right before saying "yes"
+<span class="k">- [ ]</span> keep one midday pause, even in heavy weeks
+
+<span class="h">## To bring up</span>
+<span class="k">-</span> feedback heard as a verdict on me</pre>
+            </figure>
+            <figure class="file" data-reveal>
+              <figcaption class="file__path">~/sintr/insights/current.md</figcaption>
+              <pre class="file__body"><span class="h">## Recurring triggers &amp; patterns</span>
+<span class="k">-</span> Observation (Sep 29, Oct 13, Oct 15): being
+  evaluated at work came before saying yes on
+  the spot. Worth bringing to the session.</pre>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ───────────────────────── Privacy ───────────────────────── -->
+    <section id="privacy" class="privacy" data-time="night" aria-labelledby="privacy-title">
+      <div class="wrap privacy__grid">
+        <div class="privacy__lead">
+          <h2 id="privacy-title" class="h-section h-section--xl" data-reveal>Your thoughts stay&nbsp;yours.</h2>
+          <p class="prose" data-reveal>sintr is a folder, not a service. There is no sintr server, no sync and no analytics, so there is nothing of yours sitting anywhere for anyone else to&nbsp;lose.</p>
+          <figure class="file file--ls" data-reveal>
+            <figcaption class="file__path">$ ls -l ~/sintr</figcaption>
+            <pre class="file__body"><span class="k">drwx------</span>  checkins/
+<span class="k">-rw-------</span>  config.md
+<span class="k">drwx------</span>  entries/
+<span class="k">drwx------</span>  insights/
+<span class="k">drwx------</span>  reports/
+<span class="k">drwx------</span>  therapy/</pre>
+          </figure>
+        </div>
+        <dl class="promises">
+          <div class="promises__row" data-reveal><dt>Local-first</dt><dd>One folder on your machine, in files you can open with any editor. Nothing to sign up for.</dd></div>
+          <div class="promises__row" data-reveal><dt>Locked down</dt><dd>The installer sets <code>700</code> on the ledger folder and <code>600</code> on every file in it.</dd></div>
+          <div class="promises__row" data-reveal><dt>Default deny</dt><dd>Nothing is shared with anyone, your therapist included, without your explicit approval for that specific share.</dd></div>
+          <div class="promises__row" data-reveal><dt>On the record</dt><dd>Every send is written into the report itself: who received it, and when.</dd></div>
+          <div class="promises__row" data-reveal><dt>Never copied</dt><dd>Entries don't go into group chats, shared agent memory, public notes or third-party services.</dd></div>
+          <div class="promises__row" data-reveal><dt>Deleted means deleted</dt><dd>Ask, confirm what exactly, and it's gone from the files. No secret copies.</dd></div>
+        </dl>
+        <p class="privacy__note" data-reveal>One honest caveat: sintr adds no servers of its own, but your words still pass through whatever model your agent uses. Choose an agent and a provider you trust with them.</p>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── Install ───────────────────────── -->
+    <section id="install" class="install" data-time="late" aria-labelledby="install-title">
+      <div class="wrap">
+        <div class="install__head">
+          <h2 id="install-title" class="h-section" data-reveal>Install it in your&nbsp;agent.</h2>
+          <p class="prose" data-reveal>Installing sintr means two things: teaching your agent the skill, and creating the ledger folder. Nothing runs in the background. Re-installing never overwrites your&nbsp;files.</p>
+        </div>
+
+        <div class="install__grid">
+          <figure id="prompt" class="ask" data-reveal>
+            <figcaption class="ask__head">
+              <span class="h-small">The easy way: ask your agent</span>
+              <button class="copy" type="button" data-copy="#prompt-text">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+                <span data-label>Copy prompt</span>
+              </button>
+            </figcaption>
+            <blockquote id="prompt-text" class="ask__text">Install sintr for me. It's a skill for keeping a private therapy journal as Markdown files. Clone https://github.com/tiagomoraes/sintr.git, read docs/INSTALL.md, and run the installer that fits you: ./installers/install.sh with hermes, claude-code or generic, using ~/sintr as the ledger. Then open ~/sintr/config.md and fill it in with me: ask for my language, timezone and therapy details, and leave empty anything I don't give you. Keep require_approval: true, and don't send anything to anyone.</blockquote>
+            <p class="ask__foot">Paste it into Claude Code, Hermes, OpenCode, OpenClaw or Cowork. It only uses the installer in the repository.</p>
+          </figure>
+
+          <div class="agents" data-reveal>
+            <p class="h-small agents__title" id="agents-title">Or install it yourself</p>
+            <input class="sr-only" type="radio" name="agent" id="ag-claude" checked>
+            <input class="sr-only" type="radio" name="agent" id="ag-hermes">
+            <input class="sr-only" type="radio" name="agent" id="ag-generic">
+            <div class="agents__tabs" role="presentation">
+              <label for="ag-claude">Claude Code</label>
+              <label for="ag-hermes">Hermes</label>
+              <label for="ag-generic">Any other agent</label>
+            </div>
+
+            <div class="agents__panels">
+              <div class="agents__panel agents__panel--claude">
+                <p class="agents__lead">This repository is a Claude Code plugin marketplace. From inside Claude&nbsp;Code:</p>
+                <div class="cmd">
+                  <pre id="cmd-claude"><span class="p">/</span>plugin marketplace add tiagomoraes/sintr
+<span class="p">/</span>plugin install sintr@sintr</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-claude" aria-label="Copy Claude Code commands">
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+                  </button>
+                </div>
+                <p class="agents__lead">Or copy the skill and create the ledger from a&nbsp;clone:</p>
+                <div class="cmd">
+                  <pre id="cmd-claude-manual"><span class="p">$ </span>git clone https://github.com/tiagomoraes/sintr.git
+<span class="p">$ </span>cd sintr
+<span class="p">$ </span>./installers/install.sh claude-code ~/sintr</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-claude-manual" aria-label="Copy manual Claude Code install commands">
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="agents__panel agents__panel--hermes">
+                <p class="agents__lead">Clone the repository and run the Hermes&nbsp;target:</p>
+                <div class="cmd">
+                  <pre id="cmd-hermes"><span class="p">$ </span>git clone https://github.com/tiagomoraes/sintr.git
+<span class="p">$ </span>cd sintr
+<span class="p">$ </span>make install-hermes</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-hermes" aria-label="Copy Hermes install commands">
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+                  </button>
+                </div>
+                <p class="agents__lead">It copies the skill into <code>~/.hermes/skills/sintr</code>, creates <code>~/sintr</code> from the templates (skipping anything that already exists) and sets the <code>700</code>/<code>600</code> permissions. Then ask Hermes to load the <code>sintr</code>&nbsp;skill.</p>
+              </div>
+
+              <div class="agents__panel agents__panel--generic">
+                <p class="agents__lead">For OpenCode, OpenClaw, Cowork or your own&nbsp;setup:</p>
+                <div class="cmd">
+                  <pre id="cmd-generic"><span class="p">$ </span>git clone https://github.com/tiagomoraes/sintr.git
+<span class="p">$ </span>cd sintr
+<span class="p">$ </span>./installers/install.sh generic ~/sintr</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-generic" aria-label="Copy generic install commands">
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+                  </button>
+                </div>
+                <p class="agents__lead">The skill lands in <code>~/.sintr/skill/</code>. Point a skill-aware agent at it, include its <code>SKILL.md</code> in your <code>AGENTS.md</code> or system prompt, or zip the folder and upload it as a skill in&nbsp;Cowork.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="firstrun">
+          <h3 class="h-small" data-reveal>Your first evening with&nbsp;it</h3>
+          <ol class="firstrun__list">
+            <li data-reveal><span class="firstrun__step">Fill in <code>~/sintr/config.md</code></span> Language, timezone, your therapist's contact and session day. Leave <code>require_approval: true</code>.</li>
+            <li data-reveal><span class="firstrun__step">Try a capture</span> “I need to talk about something that happened today…” and check that the entry appears in <code>entries/</code>.</li>
+            <li data-reveal><span class="firstrun__step">Ask for a test report</span> “Generate my weekly report.” Read the draft in <code>reports/</code> before you wire any&nbsp;schedule.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── Honesty ───────────────────────── -->
+    <section class="honest" data-time="dawn" aria-labelledby="honest-title">
+      <div class="wrap honest__grid">
+        <h2 id="honest-title" class="statement statement--close" data-reveal>
+          <span class="statement__a">sintr documents.</span>
+          <span class="statement__b">Professionals&nbsp;treat.</span>
+        </h2>
+        <div class="honest__body">
+          <p class="prose" data-reveal>It isn't therapy, a diagnosis or a crisis service, and it isn't an AI therapist. It won't label you, grade your moods as good or bad, or tell you what to do. It keeps an honest record so the work you do with a professional has better material to work&nbsp;with.</p>
+          <p class="prose prose--quiet" data-reveal>If you tell your agent you're at risk, sintr instructs it to stop journaling and point you to people who can help right&nbsp;away.</p>
+          <div class="help" data-reveal>
+            <p class="help__title">If you're in danger or thinking about harming yourself, please reach a person&nbsp;now.</p>
+            <ul class="help__lines">
+              <li><span>Brazil</span> CVV <a href="tel:188">188</a></li>
+              <li><span>US &amp; Canada</span> <a href="tel:988">988</a></li>
+              <li><span>UK &amp; Ireland</span> <a href="tel:116123">116 123</a></li>
+              <li><span>Portugal</span> SNS24 <a href="tel:808242424">808 24 24 24</a></li>
+              <li><span>Anywhere</span> your local emergency number</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot" data-time="dawn">
+    <div class="wrap foot__grid">
+      <div class="foot__brand">
+        <p class="mark mark--foot"><span class="mark__word">sintr</span></p>
+        <p class="foot__line">A private psychological ledger, kept by your agent, in plain&nbsp;Markdown.</p>
+      </div>
+      <nav class="foot__links" aria-label="Project">
+        <a href="https://github.com/tiagomoraes/sintr">GitHub</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/docs/INSTALL.md">Install guide</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/docs/example-report.md">Example report</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/docs/DESIGN.md">Design and data model</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/LICENSE">MIT License</a>
+      </nav>
+      <p class="foot__fine">Version 0.1.0 · Built by Tiago Moraes · This page sets no cookies and loads nothing from third&nbsp;parties.</p>
+    </div>
+  </footer>
+
+  <p class="toast" role="status" aria-live="polite"></p>
+  <script src="main.js" defer></script>
+</body>
+</html>
