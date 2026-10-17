@@ -1,0 +1,17 @@
+{
+  "name": "psytr",
+  "owner": {
+    "name": "Tiago Moraes"
+  },
+  "description": "Filesystem-native psychological self-tracking skill pack for AI agents.",
+  "plugins": [
+    {
+      "name": "psytr",
+      "source": "./",
+      "description": "Manage a private psychological self-tracking ledger through Markdown files instead of an API or database.",
+      "version": "0.1.0",
+      "category": "personal-assistant",
+      "keywords": ["psychology", "journaling", "cbt", "markdown", "personal-assistant"]
+    }
+  ]
+}

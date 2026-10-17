@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "psytr",
+  "displayName": "psytr",
+  "version": "0.1.0",
+  "description": "Manage a private psychological self-tracking ledger — check-ins, CBT-style situation entries, therapy context, and weekly reports for your therapist — through Markdown files instead of an API or database.",
+  "author": {
+    "name": "Tiago Moraes"
+  },
+  "homepage": "https://github.com/tiagomoraes/psytr",
+  "repository": "https://github.com/tiagomoraes/psytr",
+  "license": "MIT",
+  "keywords": ["psychology", "mental-health", "journaling", "cbt", "markdown", "filesystem", "personal-assistant", "therapy"]
+}
