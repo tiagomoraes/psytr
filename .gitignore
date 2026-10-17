@@ -3,3 +3,9 @@ __pycache__/
 .venv/
 dist/
 .DS_Store
+
+# design review captures (local only)
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/questions/
+.impeccable/config.local.json
