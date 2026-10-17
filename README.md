@@ -81,6 +81,8 @@ The report closes the loop between your week and your session:
 
 Approval-before-send is the default. Nothing leaves your ledger without you saying so.
 
+See [`docs/example-report.md`](docs/example-report.md) for a full (fictional) example of the output.
+
 ## Privacy
 
 Your ledger is sensitive. Keep it local, keep it private, and read `references/privacy-and-safety.md` before wiring any sharing workflow. psytr never shares content with anyone without your explicit approval.
