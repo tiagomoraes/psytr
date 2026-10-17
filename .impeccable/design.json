@@ -1,0 +1,633 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T22:52:11+00:00",
+  "title": "Design System: sintr website",
+  "scope": "Public website only (site/). The product data model is documented in docs/DESIGN.md.",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "primary",
+        "displayName": "Graphite Ink",
+        "canonical": "#16171a",
+        "oklch": "oklch(20.5% 0.006 271.1)",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#242528",
+          "#414245",
+          "#606165",
+          "#818286",
+          "#a3a5a9",
+          "#c7c9cd",
+          "#edeef3"
+        ],
+        "cssVar": "--ink"
+      },
+      "ink-pressed": {
+        "role": "primary",
+        "displayName": "Pressed Black",
+        "canonical": "#000000",
+        "oklch": "oklch(0.0% 0.000 0.0)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink-confirm": {
+        "role": "primary",
+        "displayName": "Confirmed Ink",
+        "canonical": "#23302a",
+        "oklch": "oklch(29.5% 0.021 165.1)",
+        "tonalRamp": [
+          "#040e09",
+          "#1c2823",
+          "#38463f",
+          "#57655e",
+          "#77867f",
+          "#9aa9a2",
+          "#bdcec6",
+          "#e2f3eb"
+        ]
+      },
+      "verbatim-peach": {
+        "role": "secondary",
+        "displayName": "Verbatim Peach",
+        "canonical": "#fbe0cd",
+        "oklch": "oklch(92.4% 0.039 57.4)",
+        "tonalRamp": [
+          "#170600",
+          "#332011",
+          "#523d2d",
+          "#735c4b",
+          "#957d6c",
+          "#b99f8e",
+          "#dec3b1",
+          "#ffe9d6"
+        ],
+        "cssVar": "--mark"
+      },
+      "light-morning-sky": {
+        "role": "tertiary",
+        "displayName": "Morning Sky Light",
+        "canonical": "#d4e6f4",
+        "oklch": "oklch(91.6% 0.027 241.2)",
+        "tonalRamp": [
+          "#020c15",
+          "#192731",
+          "#35444f",
+          "#546470",
+          "#748591",
+          "#97a8b5",
+          "#baccda",
+          "#dff1ff"
+        ],
+        "cssVar": "--l1"
+      },
+      "light-morning-linen": {
+        "role": "tertiary",
+        "displayName": "Morning Linen Light",
+        "canonical": "#f1e8df",
+        "oklch": "oklch(93.6% 0.016 67.6)",
+        "tonalRamp": [
+          "#100a05",
+          "#2a241d",
+          "#484139",
+          "#676058",
+          "#898179",
+          "#aca39b",
+          "#d0c7bf",
+          "#f6ede4"
+        ],
+        "cssVar": "--l2"
+      },
+      "light-morning-peach": {
+        "role": "tertiary",
+        "displayName": "Morning Peach Light",
+        "canonical": "#f8dcc8",
+        "oklch": "oklch(91.2% 0.041 57.7)",
+        "tonalRamp": [
+          "#170600",
+          "#342010",
+          "#533d2c",
+          "#745c4a",
+          "#967d6a",
+          "#ba9f8c",
+          "#dfc3b0",
+          "#ffe8d4"
+        ],
+        "cssVar": "--l3"
+      },
+      "leaf-shadow-sage": {
+        "role": "tertiary",
+        "displayName": "Leaf Shadow Sage",
+        "canonical": "#a9b9a3",
+        "oklch": "oklch(76.7% 0.035 137.1)",
+        "tonalRamp": [
+          "#050e02",
+          "#1d2918",
+          "#394734",
+          "#586652",
+          "#798873",
+          "#9bab95",
+          "#bfcfb8",
+          "#e4f5dd"
+        ],
+        "cssVar": "--leaf"
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Plaster White",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ],
+        "cssVar": "--paper"
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Two",
+        "canonical": "#474a51",
+        "oklch": "oklch(40.9% 0.012 267.2)",
+        "tonalRamp": [
+          "#090b10",
+          "#22252b",
+          "#3f4249",
+          "#5e6168",
+          "#7f828a",
+          "#a1a5ad",
+          "#c5c9d1",
+          "#ebeef7"
+        ],
+        "cssVar": "--ink-2"
+      },
+      "ink-3": {
+        "role": "neutral",
+        "displayName": "Ink Three",
+        "canonical": "#6b6e75",
+        "oklch": "oklch(53.8% 0.011 267.3)",
+        "tonalRamp": [
+          "#090b10",
+          "#22252b",
+          "#3f4248",
+          "#5e6168",
+          "#7f8289",
+          "#a2a5ac",
+          "#c6c9d1",
+          "#ebeef6"
+        ],
+        "cssVar": "--ink-3"
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "canonical": "#82858c",
+        "oklch": "oklch(61.6% 0.011 267.3)",
+        "tonalRamp": [
+          "#090b10",
+          "#23252b",
+          "#3f4248",
+          "#5e6168",
+          "#7f8289",
+          "#a2a5ac",
+          "#c6c9d1",
+          "#ebeef6"
+        ],
+        "cssVar": "--ink-soft"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e8e6e1",
+        "oklch": "oklch(92.5% 0.007 88.6)",
+        "tonalRamp": [
+          "#0c0b08",
+          "#262521",
+          "#43423e",
+          "#63615d",
+          "#84827e",
+          "#a7a5a0",
+          "#cbc9c4",
+          "#f0eee9"
+        ],
+        "cssVar": "--rule"
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#d4d2cc",
+        "oklch": "oklch(86.4% 0.008 91.5)",
+        "tonalRamp": [
+          "#0c0b07",
+          "#262520",
+          "#44423d",
+          "#63615c",
+          "#84827d",
+          "#a7a59f",
+          "#cbc9c3",
+          "#f0eee8"
+        ],
+        "cssVar": "--rule-strong"
+      },
+      "wash": {
+        "role": "neutral",
+        "displayName": "Wash",
+        "canonical": "#f5f4f1",
+        "oklch": "oklch(96.7% 0.004 91.4)",
+        "tonalRamp": [
+          "#0c0b09",
+          "#262523",
+          "#43423f",
+          "#62615f",
+          "#838280",
+          "#a6a5a2",
+          "#cac9c6",
+          "#efeeeb"
+        ],
+        "cssVar": "--wash"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline only."
+      },
+      "headline-statement": {
+        "displayName": "Headline Statement",
+        "purpose": "Two-tone statements; second clause in Soft Ink."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section heads; XL variant clamps up to 5rem."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Day headings, opened by an italic Ink Three time of day inside the sentence."
+      },
+      "title-small": {
+        "displayName": "Title Small",
+        "purpose": "Sub-heads and privacy promise terms."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Hero paragraph, max 34em, Ink Two."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose at max 36em in Ink Two; 1rem under 720px."
+      },
+      "document": {
+        "displayName": "Document",
+        "purpose": "Serif body of the report paper."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, nav, tabs, segmented options. Sentence case."
+      },
+      "file-body": {
+        "displayName": "File Body",
+        "purpose": "Contents of real files and shell commands only."
+      },
+      "file-path": {
+        "displayName": "File Path",
+        "purpose": "Path captions of real files only."
+      }
+    },
+    "lightPalettes": [
+      {
+        "time": "morning",
+        "l1": "#d4e6f4",
+        "l2": "#f1e8df",
+        "l3": "#f8dcc8",
+        "leaf": "#a9b9a3"
+      },
+      {
+        "time": "noon",
+        "l1": "#dcecf6",
+        "l2": "#e9f1e6",
+        "l3": "#f5ebdd",
+        "leaf": "#b2c2ac"
+      },
+      {
+        "time": "dusk",
+        "l1": "#f9dcc9",
+        "l2": "#f4e0d8",
+        "l3": "#e4def2",
+        "leaf": "#aeaab3"
+      },
+      {
+        "time": "evening",
+        "l1": "#e2dcf3",
+        "l2": "#ece2ee",
+        "l3": "#f7e2d5",
+        "leaf": "#aaa8b8"
+      },
+      {
+        "time": "golden",
+        "l1": "#fadbc4",
+        "l2": "#f6e7d2",
+        "l3": "#dde8d6",
+        "leaf": "#a7b39b"
+      },
+      {
+        "time": "early",
+        "l1": "#d2e6f3",
+        "l2": "#e4eedf",
+        "l3": "#f4ecdb",
+        "leaf": "#a9b9a3"
+      },
+      {
+        "time": "late",
+        "l1": "#d9eaf5",
+        "l2": "#eef0e6",
+        "l3": "#f8e4d4",
+        "leaf": "#b0bfaa"
+      },
+      {
+        "time": "night",
+        "l1": "#d9dfeb",
+        "l2": "#e2e6ef",
+        "l3": "#e9ecf2",
+        "leaf": "#b3b8c4"
+      },
+      {
+        "time": "dawn",
+        "l1": "#dfebf5",
+        "l2": "#f3ece5",
+        "l3": "#f9e2d2",
+        "leaf": "#b4c2af"
+      }
+    ],
+    "shadows": [
+      {
+        "name": "shadow-card",
+        "value": "0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22)",
+        "purpose": "Default file cards resting in the light."
+      },
+      {
+        "name": "shadow-lift",
+        "value": "0 2px 4px rgba(22, 23, 26, .05), 0 26px 50px -24px rgba(22, 23, 26, .28)",
+        "purpose": "The hero file and the report paper."
+      },
+      {
+        "name": "button-ink-rest",
+        "value": "0 1px 1px rgba(22, 23, 26, .2), 0 10px 26px -10px rgba(240, 190, 160, 0)",
+        "purpose": "Contact shadow under the ink pill at rest."
+      },
+      {
+        "name": "button-ink-hover",
+        "value": "0 1px 1px rgba(22, 23, 26, .2), 0 16px 30px -12px rgba(232, 168, 130, .55)",
+        "purpose": "Warm glow rising under the ink pill on hover, with a 1px lift."
+      },
+      {
+        "name": "paper-ring",
+        "value": "0 0 0 4px #ffffff",
+        "purpose": "Knocks gate dots out of the line they sit on (5px on the stations gate)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Expo-out for interface transitions, reveals and the highlighter."
+      },
+      {
+        "name": "ease-slow",
+        "value": "cubic-bezier(.45, .05, .2, 1)",
+        "purpose": "Slow in-out for the window light."
+      },
+      {
+        "name": "light-recolor",
+        "value": "2.8s var(--ease-slow)",
+        "purpose": "Cross-fade of --l1, --l2, --l3, --leaf (registered @property colors) on time-of-day change."
+      },
+      {
+        "name": "light-move",
+        "value": "transform 3.4s, opacity 2.6s var(--ease-slow)",
+        "purpose": "The window pane travels to where the section's light falls."
+      },
+      {
+        "name": "light-enter-breathe",
+        "value": "sun-enter 2.8s; sun-breathe 11s ease-in-out infinite alternate (opacity 1 to .84)",
+        "purpose": "The light arrives and breathes."
+      },
+      {
+        "name": "leaf-sway",
+        "value": "13s and 17s ease-in-out infinite alternate, about 2deg",
+        "purpose": "Leaf shadows move in the window light."
+      },
+      {
+        "name": "reveal",
+        "value": "opacity 1.3s, transform 1.4s (16px), filter 1.3s (blur 5px) var(--ease); stagger 0.09s, max 6",
+        "purpose": "Content settles in once on entering the viewport."
+      },
+      {
+        "name": "hero-rise",
+        "value": "rise 1.5s var(--ease), children delayed 0, .18s, .34s, .48s; hero file settle 1.9s at .7s",
+        "purpose": "First-viewport entrance."
+      },
+      {
+        "name": "write",
+        "value": "line opacity .9s, delay i*150ms + 200ms; highlighter 1.4s at 1.35s",
+        "purpose": "The capture entry writes itself, then the quoted thought is highlighted."
+      },
+      {
+        "name": "highlight",
+        "value": "1.6s var(--ease) at 1.1s",
+        "purpose": "Headline highlighter sweeps in."
+      },
+      {
+        "name": "panel-in",
+        "value": ".7s var(--ease), fade up 6px",
+        "purpose": "Agent tab panel change."
+      },
+      {
+        "name": "tab-underline",
+        "value": "scaleX .6s var(--ease), origin left",
+        "purpose": "Selected tab underline grows from the left."
+      },
+      {
+        "name": "parallax",
+        "value": "data-depth -0.04 to -0.06, above 900px only",
+        "purpose": "Artifacts drift slightly slower than the words."
+      },
+      {
+        "name": "opt-in",
+        "value": "html.motion (JS + IntersectionObserver + no reduced motion)",
+        "purpose": "Content is visible by default; reduced motion removes animation and transitions."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide",
+        "value": "1100px",
+        "purpose": "Hero copy to 8 columns; flow may wrap."
+      },
+      {
+        "name": "stack",
+        "value": "900px",
+        "purpose": "All splits single-column, sticky released, flow turns vertical; parallax off at or below."
+      },
+      {
+        "name": "mobile",
+        "value": "720px",
+        "purpose": "Body 1rem, 72px header with GitHub mark and Install pill only, fixed oversized light, lists stack."
+      },
+      {
+        "name": "narrow",
+        "value": "380px",
+        "purpose": "Button padding tightens."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "The primary action: a black pill with an optional line icon; lifts with a warm glow on hover.",
+      "html": "<a class=\"ds-btn-ink\" href=\"#\"><svg class=\"ds-ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"8.5\" y=\"8.5\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2\"/></svg><span>Copy install prompt</span></a>",
+      "css": ".ds-btn-ink { --glow: rgba(240, 190, 160, 0); display: inline-flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 26px 0 22px; border: 0; border-radius: 999px; background: var(--ink, #16171a); color: #fff; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-weight: 500; font-size: 1rem; line-height: 1; letter-spacing: .005em; text-decoration: none; white-space: nowrap; cursor: pointer; box-shadow: 0 1px 1px rgba(22, 23, 26, .2), 0 10px 26px -10px var(--glow); transition: transform .6s cubic-bezier(.16, 1, .3, 1), box-shadow .8s cubic-bezier(.16, 1, .3, 1), background-color .4s cubic-bezier(.16, 1, .3, 1); } .ds-btn-ink:hover { --glow: rgba(232, 168, 130, .55); background: #000; transform: translateY(-1px); box-shadow: 0 1px 1px rgba(22, 23, 26, .2), 0 16px 30px -12px var(--glow); } .ds-btn-ink:active { transform: translateY(0); } .ds-btn-ink:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; } .ds-ico { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Copy Icon Button",
+      "kind": "button",
+      "refersTo": "button-copy-icon",
+      "description": "Round white copy control pinned inside command blocks; confirms with a deep green glyph.",
+      "html": "<button class=\"ds-copy-icon\" type=\"button\" aria-label=\"Copy command\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"8.5\" y=\"8.5\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2\"/></svg></button>",
+      "css": ".ds-copy-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border-radius: 999px; background: var(--paper, #fff); color: var(--ink-2, #474a51); border: 1px solid var(--rule, #e8e6e1); cursor: pointer; transition: background-color .4s cubic-bezier(.16, 1, .3, 1), transform .5s cubic-bezier(.16, 1, .3, 1); } .ds-copy-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; } .ds-copy-icon:hover { color: var(--ink, #16171a); border-color: var(--rule-strong, #d4d2cc); transform: translateY(-1px); } .ds-copy-icon:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; } .ds-copy-icon.is-done { color: #2f5a3f; border-color: #b9cdb9; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "description": "Serif wordmark with window glyph, quiet text links, and a small ink Install pill.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav__mark\" href=\"#\"><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-mark\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#cfe3f3\"/><stop offset=\".55\" stop-color=\"#f6e1d3\"/><stop offset=\"1\" stop-color=\"#f7cfb5\"/></linearGradient></defs><rect width=\"32\" height=\"32\" rx=\"8\" fill=\"#16171a\"/><g fill=\"url(#ds-mark)\" transform=\"translate(10.4 6.2) skewX(-14)\"><rect width=\"6\" height=\"8.8\" rx=\"1\"/><rect x=\"7.2\" width=\"6\" height=\"8.8\" rx=\"1\"/><rect y=\"10.2\" width=\"6\" height=\"8.8\" rx=\"1\"/><rect x=\"7.2\" y=\"10.2\" width=\"6\" height=\"8.8\" rx=\"1\"/></g></svg><span>sintr</span></a><nav class=\"ds-nav__links\"><a href=\"#\">How it works</a><a href=\"#\">Privacy</a><a class=\"ds-nav__pill\" href=\"#\">Install</a></nav></header>",
+      "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 88px; padding: 0 24px; background: var(--paper, #fff); } .ds-nav__mark { display: inline-flex; align-items: center; gap: 10px; color: var(--ink, #16171a); text-decoration: none; } .ds-nav__mark svg { width: 28px; height: 28px; } .ds-nav__mark span { font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.625rem; font-weight: 400; letter-spacing: -.02em; line-height: 1; } .ds-nav__links { display: flex; align-items: center; gap: 28px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-nav__links a { color: var(--ink-2, #474a51); text-decoration: none; font-size: .9375rem; font-weight: 500; padding: 6px 0; transition: color .3s cubic-bezier(.16, 1, .3, 1); } .ds-nav__links a:hover { color: var(--ink, #16171a); } .ds-nav__links a:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; border-radius: 6px; } .ds-nav__links .ds-nav__pill { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--ink, #16171a); color: #fff; } .ds-nav__links .ds-nav__pill:hover { background: #000; color: #fff; }"
+    },
+    {
+      "name": "Segmented Toggle",
+      "kind": "chip",
+      "refersTo": "segmented-toggle",
+      "description": "Native radio group styled as a hairline pill; selected option is an ink pill. Works without JavaScript.",
+      "html": "<div class=\"ds-seg\"><input type=\"radio\" name=\"ds-lang\" id=\"ds-pt\" checked><input type=\"radio\" name=\"ds-lang\" id=\"ds-en\"><div class=\"ds-seg__bar\"><span class=\"ds-seg__label\">Report language</span><label class=\"ds-seg__opt ds-seg__opt--pt\" for=\"ds-pt\">Português <span class=\"ds-seg__hint\">original</span></label><label class=\"ds-seg__opt ds-seg__opt--en\" for=\"ds-en\">English <span class=\"ds-seg__hint\">translation</span></label></div></div>",
+      "css": ".ds-seg input { position: absolute; opacity: 0; width: 1px; height: 1px; } .ds-seg__bar { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px 4px; padding: 4px; border: 1px solid var(--rule, #e8e6e1); border-radius: 999px; background: var(--paper, #fff); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-seg__label { padding: 0 10px 0 12px; font-size: .8125rem; color: var(--ink-3, #6b6e75); } .ds-seg__opt { display: inline-flex; align-items: baseline; gap: 6px; padding: 8px 16px; border-radius: 999px; font-size: .9063rem; font-weight: 500; color: var(--ink-2, #474a51); cursor: pointer; transition: background-color .4s cubic-bezier(.16, 1, .3, 1), color .4s cubic-bezier(.16, 1, .3, 1); } .ds-seg__opt:hover { color: var(--ink, #16171a); background: var(--wash, #f5f4f1); } .ds-seg__hint { font-weight: 400; font-size: .8125rem; opacity: .75; } #ds-pt:checked ~ .ds-seg__bar .ds-seg__opt--pt, #ds-en:checked ~ .ds-seg__bar .ds-seg__opt--en { background: var(--ink, #16171a); color: #fff; } #ds-pt:focus-visible ~ .ds-seg__bar .ds-seg__opt--pt, #ds-en:focus-visible ~ .ds-seg__bar .ds-seg__opt--en { outline: 2px solid var(--ink, #16171a); outline-offset: 2px; }"
+    },
+    {
+      "name": "Agent Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "Text tabs on a hairline baseline; the selected tab grows a 2px ink underline from the left. Native radios.",
+      "html": "<div class=\"ds-tabs\"><input type=\"radio\" name=\"ds-ag\" id=\"ds-ag1\" checked><input type=\"radio\" name=\"ds-ag\" id=\"ds-ag2\"><input type=\"radio\" name=\"ds-ag\" id=\"ds-ag3\"><div class=\"ds-tabs__row\"><label for=\"ds-ag1\">Claude Code</label><label for=\"ds-ag2\">Hermes</label><label for=\"ds-ag3\">Any other agent</label></div></div>",
+      "css": ".ds-tabs input { position: absolute; opacity: 0; width: 1px; height: 1px; } .ds-tabs__row { display: flex; flex-wrap: wrap; gap: 4px 26px; border-bottom: 1px solid var(--rule, #e8e6e1); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-tabs__row label { position: relative; padding: 10px 0 14px; font-weight: 500; font-size: .9688rem; color: var(--ink-3, #6b6e75); cursor: pointer; transition: color .3s cubic-bezier(.16, 1, .3, 1); } .ds-tabs__row label::after { content: \"\"; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ink, #16171a); transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.16, 1, .3, 1); } .ds-tabs__row label:hover { color: var(--ink, #16171a); } #ds-ag1:checked ~ .ds-tabs__row label[for=\"ds-ag1\"], #ds-ag2:checked ~ .ds-tabs__row label[for=\"ds-ag2\"], #ds-ag3:checked ~ .ds-tabs__row label[for=\"ds-ag3\"] { color: var(--ink, #16171a); } #ds-ag1:checked ~ .ds-tabs__row label[for=\"ds-ag1\"]::after, #ds-ag2:checked ~ .ds-tabs__row label[for=\"ds-ag2\"]::after, #ds-ag3:checked ~ .ds-tabs__row label[for=\"ds-ag3\"]::after { transform: scaleX(1); } #ds-ag1:focus-visible ~ .ds-tabs__row label[for=\"ds-ag1\"], #ds-ag2:focus-visible ~ .ds-tabs__row label[for=\"ds-ag2\"], #ds-ag3:focus-visible ~ .ds-tabs__row label[for=\"ds-ag3\"] { outline: 2px solid var(--ink, #16171a); outline-offset: 4px; border-radius: 4px; }"
+    },
+    {
+      "name": "File Card",
+      "kind": "card",
+      "refersTo": "file-card",
+      "description": "Signature artifact: a real sintr file as selectable text, captioned by its path, with the person's own words highlighted.",
+      "html": "<figure class=\"ds-file\"><figcaption class=\"ds-file__path\">~/sintr/entries/2026-10.md <span class=\"ds-file__note\">fictional example</span></figcaption><pre class=\"ds-file__body\"><span class=\"ds-h\">## entry-2026-10-13-001</span>\n<span class=\"ds-k\">- title:</span> Planning, three demands in one sprint\n<span class=\"ds-k\">- thoughts:</span> <mark>\"there's no way I can handle this\"</mark>\n<span class=\"ds-k\">- emotions:</span> anxiety: 85</pre></figure>",
+      "css": ".ds-file { margin: 0; max-width: 470px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 14px; box-shadow: 0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22); overflow: hidden; } .ds-file__path { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 12px 18px 11px; border-bottom: 1px solid var(--rule, #e8e6e1); font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: .75rem; line-height: 1.4; color: var(--ink-3, #6b6e75); } .ds-file__note { font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .75rem; } .ds-file__body { margin: 0; padding: 16px 18px 18px; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: .8125rem; line-height: 1.8; color: var(--ink, #16171a); white-space: pre-wrap; overflow-wrap: anywhere; } .ds-k { color: var(--ink-3, #6b6e75); } .ds-file mark { color: inherit; background: linear-gradient(to top, var(--mark, #fbe0cd) 0 46%, transparent 46%) no-repeat; padding-inline: .1em; }"
+    },
+    {
+      "name": "Report Paper",
+      "kind": "card",
+      "refersTo": "paper-document",
+      "description": "Signature document: a near-square sheet with a serif body, mono path and frontmatter, grotesk section heads and dash bullets.",
+      "html": "<article class=\"ds-paper\"><div class=\"ds-paper__path\"><span>~/sintr/reports/2026-W42.md</span><span>status: reviewed</span></div><h4 class=\"ds-paper__title\">Weekly report, 13 to 19 October</h4><h5>What stood out</h5><ul><li>Three entries tied to work planning, anxiety peaking at 85.</li><li>Sleep under six hours on four nights.</li></ul><p class=\"ds-paper__foot\">Drafted by the agent, reviewed by you.</p></article>",
+      "css": ".ds-paper { max-width: 560px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 6px; box-shadow: 0 2px 4px rgba(22, 23, 26, .05), 0 26px 50px -24px rgba(22, 23, 26, .28); padding: 40px 44px 36px; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.62; color: var(--ink, #16171a); } .ds-paper__path { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: .75rem; color: var(--ink-3, #6b6e75); } .ds-paper__title { margin: 32px 0 6px; font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem); font-weight: 400; line-height: 1.15; letter-spacing: -.015em; } .ds-paper h5 { margin: 30px 0 8px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .9375rem; font-weight: 600; letter-spacing: .005em; } .ds-paper ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; } .ds-paper li { position: relative; padding-left: 20px; } .ds-paper li::before { content: \"\"; position: absolute; left: 2px; top: .78em; width: 7px; height: 1px; background: var(--ink-soft, #82858c); } .ds-paper__foot { margin: 34px 0 0; padding-top: 18px; border-top: 1px solid var(--rule, #e8e6e1); font-style: italic; font-size: .9375rem; color: var(--ink-3, #6b6e75); }"
+    },
+    {
+      "name": "Chat Bubbles",
+      "kind": "custom",
+      "refersTo": "chat-bubble-you",
+      "description": "Your messages on Wash at the right, the agent's on white with a hairline at the left; one tight tail corner on the speaker's side.",
+      "html": "<div class=\"ds-chat\"><p class=\"ds-msg ds-msg--you\">Can we write down what happened at planning today?</p><p class=\"ds-msg ds-msg--agent\">That sounds like a lot landing at once. What went through your mind right then?</p></div>",
+      "css": ".ds-chat { display: flex; flex-direction: column; gap: 12px; max-width: 500px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-msg { margin: 0; max-width: 82%; padding: 13px 18px; border-radius: 20px; font-size: .9688rem; line-height: 1.5; } .ds-msg--you { align-self: flex-end; background: var(--wash, #f5f4f1); border-bottom-right-radius: 6px; color: var(--ink, #16171a); } .ds-msg--agent { align-self: flex-start; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-bottom-left-radius: 6px; color: var(--ink-2, #474a51); }"
+    },
+    {
+      "name": "Command Block",
+      "kind": "input",
+      "refersTo": "command-block",
+      "description": "A copyable shell command on Wash with an unselectable prompt and a round copy control pinned top-right.",
+      "html": "<div class=\"ds-cmd\"><pre><span class=\"ds-cmd__p\">$ </span>git clone https://github.com/tiagomoraes/sintr.git</pre><button class=\"ds-cmd__copy\" type=\"button\" aria-label=\"Copy command\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"8.5\" y=\"8.5\" width=\"11\" height=\"11\" rx=\"2.5\"/><path d=\"M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2\"/></svg></button></div>",
+      "css": ".ds-cmd { position: relative; max-width: 560px; } .ds-cmd pre { margin: 0; padding: 18px 60px 18px 20px; border-radius: 12px; background: var(--wash, #f5f4f1); border: 1px solid var(--rule, #e8e6e1); font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: .8438rem; line-height: 1.85; color: var(--ink, #16171a); white-space: pre-wrap; overflow-wrap: anywhere; } .ds-cmd__p { color: var(--ink-3, #6b6e75); user-select: none; } .ds-cmd__copy { position: absolute; top: 10px; right: 10px; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border-radius: 999px; background: var(--paper, #fff); color: var(--ink-2, #474a51); border: 1px solid var(--rule, #e8e6e1); cursor: pointer; } .ds-cmd__copy svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; } .ds-cmd__copy:hover { color: var(--ink, #16171a); border-color: var(--rule-strong, #d4d2cc); } .ds-cmd__copy:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Consulting-Room Wall",
+    "overview": "**Creative North Star: \"The Consulting-Room Wall\"**\n\nThe page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. As the reader moves through the week, the light changes time of day (morning, noon, dusk, early morning, evening, golden hour, night, late morning, dawn) and cross-fades rather than jumps.\n\nHierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading; a mono appears only where a real file is being shown. The product is demonstrated, not illustrated: every artifact on the page is a real sintr file format, set as selectable text in a white paper card labelled by its path, resting in the light.\n\nDensity is low and the pace is slow. Sections are separated by large vertical rests and single hairlines, not by fills or boxes. Motion is opt-in and unhurried: the light moves over about three seconds, leaves sway on 13 and 17 second cycles, and content settles in with a short blur-to-sharp fade. With JavaScript off or reduced motion requested, the light rests at the top of the page and everything reads. The wellness-app default (pastel blob hero, phone mockup, feature-card trio) and the dev-tool default (dark terminal page) are both rejected.",
+    "keyCharacteristics": [
+      "White ground, graphite ink, black pill controls; light is the only color.",
+      "Light serif display (weight 300) carrying hierarchy by size and two tones, never by labels.",
+      "Real files as artifacts: white cards, hairline edge, path as caption, mono body.",
+      "Hairline-ruled structure on a 12-column grid with generous section rests.",
+      "A time-of-day light that moves with the reader, and that disappears into a static wash when motion is unwelcome."
+    ],
+    "rules": [
+      {
+        "name": "The Light Is the Only Color Rule",
+        "body": "Chroma lives in the window light and nowhere else. Gradients never fill text, buttons or cards; the light is a projection on the wall, multiplied onto whatever it falls across.",
+        "section": "colors"
+      },
+      {
+        "name": "The Morning Wash Exception",
+        "body": "Exactly one surface carries a faint light gradient as a fill: the install prompt card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). One per page, and only on the single call to act.",
+        "section": "colors"
+      },
+      {
+        "name": "The Verbatim Rule",
+        "body": "Peach highlights a person's own words. If the words are not a quotation of the person, they do not get the highlighter.",
+        "section": "colors"
+      },
+      {
+        "name": "The Size Is the Hierarchy Rule",
+        "body": "Rank is expressed by size, weight 300 serif, and line breaks. No eyebrows, kickers, uppercase labels or icon tiles introduce a heading; context belongs inside the heading sentence.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Means File Rule",
+        "body": "Fragment Mono appears only for real file contents, paths, and shell commands. It never decorates a heading or signals \"technical\".",
+        "section": "typography"
+      },
+      {
+        "name": "The Held Wall Rule",
+        "body": "The first viewport keeps one wall region empty so the light has somewhere to land. Do not fill the upper right of the hero.",
+        "section": "layout"
+      },
+      {
+        "name": "The Hairline First Rule",
+        "body": "A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the file listing in the privacy section deliberately drops its shadow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep every filled control Graphite Ink on white, as a full pill; selected states are ink too.",
+      "**Do** show real file formats as selectable text in a white, hairline-edged card captioned with the file's path.",
+      "**Do** carry hierarchy with light serif size steps and line breaks, putting context (like the time of day) inside the heading sentence.",
+      "**Do** keep small text at Ink Three (#6b6e75) or darker; reserve Soft Ink for large type and marks.",
+      "**Do** separate sections with large rests and a single hairline rather than fills.",
+      "**Do** make motion opt-in and keep every interaction (toggles, tabs) working with JavaScript off.",
+      "**Do** self-host every font and asset; the site loads nothing from third parties."
+    ],
+    "donts": [
+      "**Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), plus the single morning-wash install card.",
+      "**Don't** add eyebrows, kickers, uppercase labels, or icon tiles above headings.",
+      "**Don't** use the mono face outside real file contents, paths and commands.",
+      "**Don't** use the peach highlighter on anything but a person's own quoted words.",
+      "**Don't** build the page from pastel blobs, a phone mockup, or a row of three feature cards, and don't turn it into a dark terminal page.",
+      "**Don't** use glassmorphism or backdrop blur on surfaces; blur belongs only to the light's soft edges, the leaf shadows, and the reveal transition. No purple-to-blue pairs; lavender appears only as evening light mixed with peach."
+    ]
+  }
+}
