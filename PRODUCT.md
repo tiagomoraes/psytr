@@ -10,7 +10,7 @@ People in regular therapy who already use file-capable AI agents (Hermes, Claude
 
 ## Product Purpose
 
-psytr is an agent-native psychological ledger: a portable skill plus Markdown templates that teach a file-capable AI agent to conduct a supportive capture conversation, structure entries the way CBT thought records do, log check-ins, keep therapy context, and produce a weekly report the person reviews and sends to their therapist. There is no app, dashboard, database, or account. The agent is the interface; the files are the product. Success is measured in weeks captured and reports that reach sessions — not time-on-app.
+sintr is an agent-native psychological ledger: a portable skill plus Markdown templates that teach a file-capable AI agent to conduct a supportive capture conversation, structure entries the way CBT thought records do, log check-ins, keep therapy context, and produce a weekly report the person reviews and sends to their therapist. There is no app, dashboard, database, or account. The agent is the interface; the files are the product. Success is measured in weeks captured and reports that reach sessions — not time-on-app.
 
 ## Brand Personality
 
@@ -18,7 +18,7 @@ Calm, private, precise. Like a well-kept notebook a trusted professional would r
 
 ## Anti-references
 
-- "AI therapist" or "AI psychologist" claims — psytr documents; professionals treat.
+- "AI therapist" or "AI psychologist" claims — sintr documents; professionals treat.
 - Wellness-app gamification: streaks, badges, guilt mechanics, confetti.
 - Diagnosis-by-LLM: labeling ("you're anxious"), scoring moods as good/bad.
 - Generic AI-startup gloss: gradients, glassmorphism, purple-blue, emoji, hype copy.

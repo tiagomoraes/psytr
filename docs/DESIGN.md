@@ -1,13 +1,13 @@
 # Design
 
-## What psytr is
+## What sintr is
 
 An agent pack for AI-first management of a person's psychological history: a portable skill + a Markdown ledger + a report pipeline. No database, no service, no app. The agent is the interface; the files are the product.
 
 ## Principles
 
 1. **File-native.** One folder, plain Markdown, readable and editable by humans. Any agent with file tools can operate it.
-2. **CBT-grounded structure.** Entries follow the thought record (Beck): situation → automatic thoughts → emotions → body → behavior, with the optional working stage (evidence, alternative, re-rate). See `skills/psytr/references/entry-framework.md`.
+2. **CBT-grounded structure.** Entries follow the thought record (Beck): situation → automatic thoughts → emotions → body → behavior, with the optional working stage (evidence, alternative, re-rate). See `skills/sintr/references/entry-framework.md`.
 3. **Fidelity over completeness.** The person's exact words for thoughts and emotions; partial entries are valid and can grow; `unknown` beats invented.
 4. **Local-first privacy.** Sensitive data stays in the ledger with strict permissions. Nothing is shared with anyone — including the therapist — without explicit approval.
 5. **Deterministic where possible.** The collector is a stdlib Python script; the LLM writes prose on top of facts, not facts from thin air.
@@ -17,7 +17,7 @@ An agent pack for AI-first management of a person's psychological history: a por
 ## Data model
 
 ```text
-psytr/
+sintr/
   config.md                    # preferences; language, timezone, therapist, approval flag
   checkins/YYYY-MM.md          # append-only quick check-ins (mood/energy/anxiety/sleep)
   entries/YYYY-MM.md           # append-only structured entries (thought records)
@@ -46,7 +46,7 @@ Decisions and rationale:
 
 - Ledger perms `700/600`; local-first by default; no cloud sync in the standard setup; git only as private repo and only if the owner wants.
 - Default-deny sharing: approval gates on every external share; approval recorded in the report front matter.
-- Crisis protocol and clinical limits documented in `skills/psytr/references/privacy-and-safety.md`.
+- Crisis protocol and clinical limits documented in `skills/sintr/references/privacy-and-safety.md`.
 - The agent never copies ledger content into shared channels, group chats, or third-party services.
 
 ## Non-goals

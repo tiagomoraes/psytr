@@ -1,28 +1,28 @@
 ---
-name: psytr
+name: sintr
 description: "Manage a personal psychological self-tracking ledger — daily check-ins, structured situation entries (CBT-style), therapy context, and weekly reports — through Markdown files instead of an API, database, or app."
 version: 0.1.0
 author: Tiago Moraes
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
-  psytr:
-    ledger_default: "~/psytr"
+  sintr:
+    ledger_default: "~/sintr"
     format: markdown-ledger
     requires_tools: [read_file, write_file, patch, search_files, terminal]
   hermes:
     tags: [psychology, mental-health, journaling, cbt, markdown, filesystem, personal-assistant, therapy]
 ---
 
-# psytr
+# sintr
 
 Use this skill when a person wants an AI assistant to keep a private, file-native record of their psychological life: how they feel day to day, what happens in difficult moments and how they experience them, what they bring to therapy, and what patterns emerge over time.
 
-psytr is intentionally file-native. Do not look for a psytr API, MCP server, database, or web backend. The assistant reads and writes a small set of Markdown files that stay understandable to humans. The agent is the interface.
+sintr is intentionally file-native. Do not look for a sintr API, MCP server, database, or web backend. The assistant reads and writes a small set of Markdown files that stay understandable to humans. The agent is the interface.
 
 The flagship feature is the **weekly report**: a summary of the week's emotional life, generated from the ledger before a therapy session, reviewed by the person, and sent to the therapist only with their approval.
 
-**This is not therapy, a diagnosis, or a crisis service.** psytr helps a person *document* their experience in a psychologically sound structure (the CBT thought record, see `references/entry-framework.md`) so it can be worked on in professional care.
+**This is not therapy, a diagnosis, or a crisis service.** sintr helps a person *document* their experience in a psychologically sound structure (the CBT thought record, see `references/entry-framework.md`) so it can be worked on in professional care.
 
 ## Safety and scope (read first)
 
@@ -36,10 +36,10 @@ See `references/privacy-and-safety.md` for the full ruleset.
 
 ## Default ledger layout
 
-Assume the ledger lives at `~/psytr` unless the owner configured another path.
+Assume the ledger lives at `~/sintr` unless the owner configured another path.
 
 ```text
-psytr/
+sintr/
   README.md
   config.md
   checkins/YYYY-MM.md
@@ -154,7 +154,7 @@ From a message like "mood 4/5, slept 6h" (the owner writes in their own language
 
 1. Read `config.md` for language, therapist, schedule, and `require_approval`.
 2. Run the collector (it reads the ledger and produces a digest with the week's entries, check-ins, and mechanical aggregates):
-   `python3 scripts/week_collect.py --ledger ~/psytr --week this` (or `last`, or `2026-W42`).
+   `python3 scripts/week_collect.py --ledger ~/sintr --week this` (or `last`, or `2026-W42`).
 3. Write the report into `reports/YYYY-Www.md` following `references/weekly-report-guide.md`: plain language, the person's own vocabulary, facts with dates, observations labeled as observations. Never a diagnosis; never clinical advice.
 4. Send the person a short summary of the draft and ask them to review and edit.
 5. **Only after explicit approval**, send it to the therapist through the configured channel — e.g. `hermes send --to whatsapp:<number> --file <report>` — then set `status: sent`, `sent_to`, and `sent_at` in the report front matter. If `require_approval: false`, the person pre-authorized automatic sending on the configured schedule; still record what was sent and to whom.
@@ -191,7 +191,7 @@ Mirror the owner's register; never translate their words into clinical jargon or
 
 ## Verification checklist
 
-Before replying after any psytr edit:
+Before replying after any sintr edit:
 
 - the entry/check-in appears exactly once in the right month file, at the end;
 - thoughts and emotions are the person's words, not paraphrases;

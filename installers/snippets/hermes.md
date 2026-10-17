@@ -3,7 +3,7 @@
 Load the skill (or just ask naturally — Hermes picks it up):
 
 ```bash
-hermes --skills psytr
+hermes --skills sintr
 ```
 
 Example prompts (in the owner's language; English examples):

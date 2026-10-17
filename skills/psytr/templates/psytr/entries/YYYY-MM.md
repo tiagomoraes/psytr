@@ -3,7 +3,7 @@
 Append-only: new entries go at the END of this file.
 
 <!--
-Entry format (see skills/psytr/references/entry-framework.md):
+Entry format (see skills/sintr/references/entry-framework.md):
 
 ## entry-YYYY-MM-DD-NNN
 - ts: YYYY-MM-DDTHH:MM:SSZ          (UTC)

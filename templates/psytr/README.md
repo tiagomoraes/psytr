@@ -1,4 +1,4 @@
-# psytr ledger
+# sintr ledger
 
 This folder is a private psychological ledger. It belongs to one person and is maintained by their AI assistant.
 

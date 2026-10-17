@@ -3,14 +3,14 @@
 Install as a plugin (no clone needed):
 
 ```text
-/plugin marketplace add tiagomoraes/psytr
-/plugin install psytr@psytr
+/plugin marketplace add tiagomoraes/sintr
+/plugin install sintr@sintr
 ```
 
-Claude Code discovers `skills/psytr/SKILL.md` automatically. Or copy manually:
+Claude Code discovers `skills/sintr/SKILL.md` automatically. Or copy manually:
 
 ```bash
-./installers/install.sh claude-code ~/psytr
+./installers/install.sh claude-code ~/sintr
 ```
 
-The ledger is plain Markdown at `~/psytr`; Claude Code reads and writes it with its normal file tools.
+The ledger is plain Markdown at `~/sintr`; Claude Code reads and writes it with its normal file tools.

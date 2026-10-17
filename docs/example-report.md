@@ -1,6 +1,6 @@
-> **Example report — fictional data.** This is what the psytr pipeline produces,
+> **Example report — fictional data.** This is what the sintr pipeline produces,
 > in the owner's language (Portuguese, in this example). Generated from the demo
-> ledger in the style of `templates/psytr/reports/YYYY-Www.md`.
+> ledger in the style of `templates/sintr/reports/YYYY-Www.md`.
 
 ---
 week: 2026-W42

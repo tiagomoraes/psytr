@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""psytr — weekly digest collector.
+"""sintr — weekly digest collector.
 
-Reads a psytr ledger and emits a Markdown digest for one ISO week:
+Reads a sintr ledger and emits a Markdown digest for one ISO week:
 
 - every check-in in range (mood/energy/anxiety/sleep) plus averages;
 - every structured entry in range (title, situation, emotions, tags);
@@ -233,12 +233,12 @@ def resolve_week(spec: str, tz):
     else:
         m = WEEK_RE.match(str(spec).strip())
         if not m:
-            raise SystemExit(f"psytr: invalid --week value {spec!r} (use 'this', 'last' or YYYY-Www)")
+            raise SystemExit(f"sintr: invalid --week value {spec!r} (use 'this', 'last' or YYYY-Www)")
         year, week = int(m.group(1)), int(m.group(2))
         try:
             ref = date.fromisocalendar(year, week, 1)
         except ValueError:
-            raise SystemExit(f"psytr: invalid ISO week {spec!r}")
+            raise SystemExit(f"sintr: invalid ISO week {spec!r}")
     iso = ref.isocalendar()
     monday = date.fromisocalendar(iso[0], iso[1], 1)
     start = datetime.combine(monday, datetime.min.time(), tzinfo=tz)
@@ -276,7 +276,7 @@ def render_digest(ledger, week_label, start, end, tz, entries, checkins, warning
     generated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     tzname = str(tz)
     lines = []
-    lines.append(f"# psytr weekly digest — {week_label}")
+    lines.append(f"# sintr weekly digest — {week_label}")
     lines.append("")
     lines.append(f"- range: {start.date()} → {end.date() - timedelta(days=1)} ({tzname})")
     lines.append(f"- entries: {len(entries)} · check-ins: {len(checkins)}")
@@ -394,11 +394,11 @@ def build_digest(ledger: Path, week_spec: str, tz_override: str | None):
     cfg = read_config(ledger)
     tzname = tz_override or cfg.get("timezone") or "UTC"
     if ZoneInfo is None:
-        raise SystemExit("psytr: zoneinfo unavailable; pass --tz UTC")
+        raise SystemExit("sintr: zoneinfo unavailable; pass --tz UTC")
     try:
         tz = ZoneInfo(tzname)
     except Exception:
-        raise SystemExit(f"psytr: unknown timezone {tzname!r}")
+        raise SystemExit(f"sintr: unknown timezone {tzname!r}")
 
     start, end, label = resolve_week(week_spec, tz)
     entries, e_warn = parse_entries(ledger)
@@ -410,8 +410,8 @@ def build_digest(ledger: Path, week_spec: str, tz_override: str | None):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="psytr weekly digest collector")
-    ap.add_argument("--ledger", default="~/psytr", help="ledger path (default: ~/psytr)")
+    ap = argparse.ArgumentParser(description="sintr weekly digest collector")
+    ap.add_argument("--ledger", default="~/sintr", help="ledger path (default: ~/sintr)")
     ap.add_argument("--week", default="this", help="this | last | YYYY-Www (default: this)")
     ap.add_argument("--tz", default=None, help="IANA timezone (default: config.md timezone, else UTC)")
     ap.add_argument("--out", default="-", help="output path, or - for stdout (default)")
@@ -419,7 +419,7 @@ def main(argv=None):
 
     ledger = Path(args.ledger).expanduser()
     if not ledger.is_dir():
-        print(f"psytr: ledger not found: {ledger}", file=sys.stderr)
+        print(f"sintr: ledger not found: {ledger}", file=sys.stderr)
         return 2
 
     digest = build_digest(ledger, args.week, args.tz)
@@ -431,7 +431,7 @@ def main(argv=None):
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(digest + "\n", encoding="utf-8")
         n_e = digest.count("\n### ")
-        print(f"psytr: wrote {out} ({n_e} entries in section)")
+        print(f"sintr: wrote {out} ({n_e} entries in section)")
     return 0
 
 

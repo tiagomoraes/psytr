@@ -1,15 +1,15 @@
-# The psytr entry framework — CBT thought record, adapted
+# The sintr entry framework — CBT thought record, adapted
 
 > **Language note.** This pack is written in English as its base language; in operation everything adapts to the owner — conversation, entries, and reports happen in their language (see `config.md`). Examples here stay in English.
 
-psytr entries follow the **thought record**, the core self-monitoring tool of Cognitive Behavioral Therapy (Beck). The classic record has seven columns; the research and clinical guidance consistently describe two distinct moves:
+sintr entries follow the **thought record**, the core self-monitoring tool of Cognitive Behavioral Therapy (Beck). The classic record has seven columns; the research and clinical guidance consistently describe two distinct moves:
 
 1. **Identifying** what happened: situation → automatic thoughts → emotions (columns 1–3).
 2. **Working** the thought: evidence for/against → balanced alternative → re-rate the mood (columns 4–7).
 
-Two clinical rules shape everything psytr does:
+Two clinical rules shape everything sintr does:
 
-- Because the identifying stage (1–3) is where most of the value of self-monitoring lives, **it always applies**. The working stage is a skill practiced with support — psytr offers it, never forces it.
+- Because the identifying stage (1–3) is where most of the value of self-monitoring lives, **it always applies**. The working stage is a skill practiced with support — sintr offers it, never forces it.
 - **The person's exact words are preserved, verbatim, for thoughts and emotions.** Clinical guidance is explicit: working with thoughts verbatim preserves the emotional meaning; paraphrasing loses it. This is the single most important fidelity rule of the framework.
 
 ## Tier 1 — identify (always)

@@ -84,7 +84,7 @@ CHECKINS_MD = """# Check-ins — 2026-10
 - mood: 1/5
 """
 
-CONFIG_MD = """# psytr config
+CONFIG_MD = """# sintr config
 
 - name: Test Person
 - language: en
@@ -94,7 +94,7 @@ CONFIG_MD = """# psytr config
 
 
 def make_ledger(tmp: str) -> Path:
-    ledger = Path(tmp) / "psytr"
+    ledger = Path(tmp) / "sintr"
     (ledger / "entries").mkdir(parents=True)
     (ledger / "checkins").mkdir(parents=True)
     (ledger / "config.md").write_text(CONFIG_MD, encoding="utf-8")

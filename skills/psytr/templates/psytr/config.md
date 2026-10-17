@@ -1,4 +1,4 @@
-# psytr config
+# sintr config
 
 Owner preferences. Empty value = not configured. Never invent values.
 

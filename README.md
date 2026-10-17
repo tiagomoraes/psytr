@@ -1,12 +1,12 @@
-# psytr
+# sintr
 
-**psytr is an agent pack for keeping a private psychological self-tracking ledger on the filesystem.**
+**sintr is an agent pack for keeping a private psychological self-tracking ledger on the filesystem.**
 
 It gives AI agents a portable skill, a Markdown-based psychological ledger, templates, and documentation so tools like Hermes, Claude Code, OpenCode, OpenClaw, Claude Cowork, and other personal assistants can help you document how you feel, structure difficult situations the way cognitive-behavioral therapy taught us (thought records), keep therapy context, and produce a weekly report you can hand to your therapist — without running a database, an app, or a service.
 
-## What psytr is
+## What sintr is
 
-psytr is not a backend. It is a small operating manual for LLM agents:
+sintr is not a backend. It is a small operating manual for LLM agents:
 
 - a **skill** that teaches an agent to conduct a supportive capture conversation, structure entries with a sound CBT-based schema, log check-ins, keep therapy context, and draft weekly reports;
 - a **filesystem layout** of Markdown files that both you and your agent can read and edit;
@@ -18,10 +18,10 @@ psytr is not a backend. It is a small operating manual for LLM agents:
 The core idea: the agent is the interface, and plain Markdown files are the product.
 
 ```text
-You ──chat/voice──> Agent ──read/write──> ~/psytr/*.md ──weekly──> report ──approve──> therapist
+You ──chat/voice──> Agent ──read/write──> ~/sintr/*.md ──weekly──> report ──approve──> therapist
 ```
 
-## What psytr is not
+## What sintr is not
 
 - Not therapy, not a diagnosis, not a crisis service. It is a documentation tool for work done in professional care.
 - Not a replacement for your therapist — it feeds sessions better context.
@@ -30,7 +30,7 @@ You ──chat/voice──> Agent ──read/write──> ~/psytr/*.md ──wee
 ## Ledger layout
 
 ```text
-psytr/
+sintr/
   README.md
   config.md
   checkins/YYYY-MM.md            # daily mood/energy/sleep check-ins
@@ -44,9 +44,9 @@ psytr/
 ## Repository layout
 
 ```text
-psytr/
+sintr/
   SKILL.md                  # Portable skill pack for agents
-  templates/psytr/         # Starter ledger files
+  templates/sintr/         # Starter ledger files
   installers/               # Agent-specific install helper
   docs/                     # Documentation (install, design)
   references/               # Deep dives: entry framework, report guide, privacy & safety
@@ -57,9 +57,9 @@ psytr/
 ## Quick start (Hermes)
 
 ```bash
-git clone https://github.com/tiagomoraes/psytr.git
-cd psytr
-make install-hermes          # installs the skill + creates ~/psytr from templates
+git clone https://github.com/tiagomoraes/sintr.git
+cd sintr
+make install-hermes          # installs the skill + creates ~/sintr from templates
 ```
 
 Then talk to your agent:
@@ -85,7 +85,7 @@ See [`docs/example-report.md`](docs/example-report.md) for a full (fictional) ex
 
 ## Privacy
 
-Your ledger is sensitive. Keep it local, keep it private, and read `references/privacy-and-safety.md` before wiring any sharing workflow. psytr never shares content with anyone without your explicit approval.
+Your ledger is sensitive. Keep it local, keep it private, and read `references/privacy-and-safety.md` before wiring any sharing workflow. sintr never shares content with anyone without your explicit approval.
 
 ## License
 

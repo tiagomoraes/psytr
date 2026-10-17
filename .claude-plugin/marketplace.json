@@ -1,12 +1,12 @@
 {
-  "name": "psytr",
+  "name": "sintr",
   "owner": {
     "name": "Tiago Moraes"
   },
   "description": "Filesystem-native psychological self-tracking skill pack for AI agents.",
   "plugins": [
     {
-      "name": "psytr",
+      "name": "sintr",
       "source": "./",
       "description": "Manage a private psychological self-tracking ledger through Markdown files instead of an API or database.",
       "version": "0.1.0",

@@ -1,10 +1,10 @@
 # Privacy & safety
 
-psytr handles some of the most sensitive data a person can produce about themselves. These rules are non-negotiable for any agent using this skill.
+sintr handles some of the most sensitive data a person can produce about themselves. These rules are non-negotiable for any agent using this skill.
 
 ## Data handling
 
-- **Local-first.** The ledger is a folder on the owner's machine. There is no psytr cloud, no sync, no analytics.
+- **Local-first.** The ledger is a folder on the owner's machine. There is no sintr cloud, no sync, no analytics.
 - Permissions: ledger directory `700`, files `600`. Never relax this silently.
 - **Do not copy ledger content anywhere**: not into shared team chats, group messages, public notes, shared agent memory banks, or third-party services. If a tool (memory, summary, embedding) would export entries, exclude psychological content by default.
 - Git: optional and only with care (private repo or none; never public). Encrypt at rest only if the owner asks; document the tradeoff.
@@ -31,7 +31,7 @@ If the person expresses risk of self-harm, suicide, or violence:
    - Anywhere: local emergency number, or a hospital emergency department.
 4. Do not try to manage a crisis through journaling. The person's safety comes before any capture or record.
 5. You may register a minimal note afterwards if it serves the person; never as surveillance, never as a substitute for help.
-6. psytr is **not** an emergency service. Say so plainly when asked about capabilities.
+6. sintr is **not** an emergency service. Say so plainly when asked about capabilities.
 
 ## Clinical limits
 

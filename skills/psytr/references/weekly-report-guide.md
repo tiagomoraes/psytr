@@ -1,6 +1,6 @@
 # Weekly report guide
 
-The weekly report is psytr's flagship artifact: a plain-language summary of the owner's emotional week, prepared **for the therapist**, written by the agent from the ledger, and **reviewed by the owner before anything is sent**.
+The weekly report is sintr's flagship artifact: a plain-language summary of the owner's emotional week, prepared **for the therapist**, written by the agent from the ledger, and **reviewed by the owner before anything is sent**.
 
 The report exists to give the therapist the context they cannot get from a 50-minute session: what actually happened during the week, in the owner's own words.
 

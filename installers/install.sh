@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# psytr installer.
+# sintr installer.
 #
 #   ./installers/install.sh <agent> [ledger-path]   install for one agent
 #   ./installers/install.sh                          show detected agents (installs nothing)
 #
 # Supported <agent> values: hermes, claude-code, generic.
-# Default ledger path: ~/psytr (override with the second argument or PSYTR_LEDGER).
+# Default ledger path: ~/sintr (override with the second argument or SINTR_LEDGER).
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PSYTR_HOME="${PSYTR_HOME:-$HOME/.psytr}"
-SKILL_SRC="$REPO_DIR/skills/psytr"
-TEMPLATE_SRC="$REPO_DIR/templates/psytr"
+SINTR_HOME="${SINTR_HOME:-$HOME/.sintr}"
+SKILL_SRC="$REPO_DIR/skills/sintr"
+TEMPLATE_SRC="$REPO_DIR/templates/sintr"
 
 AGENT="${1:-}"
-LEDGER_PATH="${2:-${PSYTR_LEDGER:-$HOME/psytr}}"
+LEDGER_PATH="${2:-${SINTR_LEDGER:-$HOME/sintr}}"
 
 if [ -z "$AGENT" ]; then
-  echo "psytr — detected agents (this installs nothing):"
+  echo "sintr — detected agents (this installs nothing):"
   if [ -d "${HERMES_HOME:-$HOME/.hermes}" ]; then
     echo "  hermes      -> ./installers/install.sh hermes      [ledger-path]"
   fi
@@ -54,24 +54,24 @@ install_skill() {
 
 install_scripts() {
   # The weekly digest collector, installed for schedulers (cron, systemd, etc.).
-  mkdir -p "$PSYTR_HOME/bin"
-  cp "$REPO_DIR/scripts/week_collect.py" "$PSYTR_HOME/bin/week_collect.py"
-  chmod 700 "$PSYTR_HOME/bin/week_collect.py" 2>/dev/null || true
+  mkdir -p "$SINTR_HOME/bin"
+  cp "$REPO_DIR/scripts/week_collect.py" "$SINTR_HOME/bin/week_collect.py"
+  chmod 700 "$SINTR_HOME/bin/week_collect.py" 2>/dev/null || true
 }
 
 case "$AGENT" in
   hermes)
-    install_skill "${HERMES_HOME:-$HOME/.hermes}/skills/psytr"
+    install_skill "${HERMES_HOME:-$HOME/.hermes}/skills/sintr"
     copy_templates
     install_scripts
     ;;
   claude-code)
-    install_skill "$HOME/.claude/skills/psytr"
+    install_skill "$HOME/.claude/skills/sintr"
     copy_templates
     install_scripts
     ;;
   generic)
-    install_skill "$PSYTR_HOME/skill"
+    install_skill "$SINTR_HOME/skill"
     copy_templates
     install_scripts
     ;;
@@ -82,12 +82,12 @@ case "$AGENT" in
 esac
 
 secure_ledger
-mkdir -p "$PSYTR_HOME"
-printf 'ledger_path=%s\n' "$LEDGER_PATH" > "$PSYTR_HOME/config"
-cp "$SKILL_SRC/SKILL.md" "$PSYTR_HOME/psytr.md"
-chmod 600 "$PSYTR_HOME/config" "$PSYTR_HOME/psytr.md" 2>/dev/null || true
-echo "psytr installed for $AGENT."
+mkdir -p "$SINTR_HOME"
+printf 'ledger_path=%s\n' "$LEDGER_PATH" > "$SINTR_HOME/config"
+cp "$SKILL_SRC/SKILL.md" "$SINTR_HOME/sintr.md"
+chmod 600 "$SINTR_HOME/config" "$SINTR_HOME/sintr.md" 2>/dev/null || true
+echo "sintr installed for $AGENT."
 echo "  ledger:    $LEDGER_PATH"
-echo "  home:      $PSYTR_HOME (config + canonical instruction copy)"
-echo "  collector: $PSYTR_HOME/bin/week_collect.py"
-echo "Next: fill $(printf '%s' "$LEDGER_PATH")/config.md, then ask your agent for the psytr skill."
+echo "  home:      $SINTR_HOME (config + canonical instruction copy)"
+echo "  collector: $SINTR_HOME/bin/week_collect.py"
+echo "Next: fill $(printf '%s' "$LEDGER_PATH")/config.md, then ask your agent for the sintr skill."
