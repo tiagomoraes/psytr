@@ -1,20 +1,21 @@
 > **Example report — fictional data.** This is the Markdown the agent writes and the
-> person reviews, in the owner's language (Portuguese, in this example). The therapist
-> receives it as [`example-report.pdf`](example-report.pdf), rendered by
+> person reviews, in the owner's language (Portuguese, in this example), for the session of
+> Monday 19 October at 18:00: prepared an hour before it, it covers the 7 days up to then.
+> The therapist receives it as [`example-report.pdf`](example-report.pdf), rendered by
 > `scripts/report_pdf.py` with the numbers, the sentiment chart and the day-by-day grid
 > computed from the check-ins. Source ledger: `scripts/fixtures/demo-ledger/`
 > (rebuild with `make example-pdf`). Structure and reasons: `skills/sintr/references/report-framework.md`.
 
 ---
-week: 2026-W42
-range: 2026-10-12 → 2026-10-18
+session: 2026-10-19T18:00
+range: 2026-10-12 17:00 → 2026-10-19 17:00
 status: reviewed
-generated_at: 2026-10-18T22:40:00Z
+generated_at: 2026-10-19T20:05:00Z
 sent_to:
 sent_at:
 ---
 
-# Relatório semanal — Demo Person — 2026-W42
+# Relatório para a sessão de 19/10 — Demo Person
 
 ## Como foi a semana <!-- week -->
 
@@ -31,11 +32,11 @@ Foi uma semana puxada no trabalho. Os dois momentos mais difíceis vieram cedo: 
 
 O humor ficou em 2 nos dias do planejamento e do feedback (terça e quinta) e subiu para 4 na sexta e no sábado; a ansiedade fez o caminho inverso, de 4 para 2 e 1. As noites mais curtas foram as que antecederam terça (6h) e quinta (5h30). Não houve check-in na quarta.
 
-- seg 12/10 — "já acordei pensando na sprint"
 - ter 13/10 — "acordei cansado"
 - qui 15/10 — "fui dormir 1h terminando a entrega"
 - sáb 17/10 — "dormi sem despertador"
 - dom 18/10 — "domingo à tarde bateu aquela ansiedade de segunda"
+- seg 19/10 — "acordei mais leve, hoje tem sessão"
 
 ## Momentos que marcaram <!-- moments -->
 

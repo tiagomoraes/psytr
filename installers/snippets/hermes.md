@@ -13,4 +13,4 @@ Example prompts (in the owner's language; English examples):
 - "Generate my weekly report."
 - "Send the report to my therapist."   (only after you reviewed it)
 
-Weekly automation: create a Hermes cron job (agent-driven) that runs the report flow before your session and delivers the draft PDF to you for review. Keep sends to third parties behind explicit approval.
+Weekly automation: create a Hermes cron job (agent-driven) that runs the report flow an hour before your session (`week_collect.py --schedule` prints when, from `config.md`) and delivers the draft PDF to you for review. Keep sends to third parties behind explicit approval.

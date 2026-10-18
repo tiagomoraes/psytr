@@ -24,14 +24,14 @@ sintr/
   therapy/current.md           # goals, themes, tasks (updated in place)
   therapy/sessions/YYYY-MM.md  # append-only post-session notes
   insights/current.md          # distilled observations (3+ data points rule)
-  reports/YYYY-Www.md          # weekly reports with lifecycle status (+ .pdf, the sent artifact)
+  reports/YYYY-MM-DD.md        # one report per session, with lifecycle status (+ .pdf, the sent artifact)
 ```
 
 Decisions and rationale:
 
 - **Monthly append-only logs** keep diffs small, make history auditable, and avoid rewriting facts. Live state that answers "what is true now?" lives in `therapy/current.md` and `insights/current.md`.
 - **Stable field keys in English, values in the owner's language.** Keys make files machine-parseable across users and locales; values (thoughts, emotions, situations) stay in the person's own language and voice.
-- **ISO timestamps in UTC; ISO weeks for reports.** Unambiguous across timezones; weeks align with how therapy sessions are usually discussed.
+- **ISO timestamps in UTC; reports by session.** Unambiguous across timezones. A report is prepared `report_lead` (default 1h) before its session and covers the 7 days up to then, so consecutive reports meet exactly and the report is fresh for the session; ISO weeks remain for people without a fixed session.
 - **Intensity 0–100 for emotions.** Wide enough for nuance, coarse enough to compare across weeks; matches standard thought-record practice.
 - **Tier 1 / Tier 2 split.** Tier 1 is always captureable; Tier 2 (cognitive restructuring) is a skill that benefits from support and practice — offered, never forced, and allowed to wait for the session.
 
@@ -39,7 +39,7 @@ Decisions and rationale:
 
 1. **Capture** — person tells a situation → short supportive conversation → structured entry → confirmation → append.
 2. **Check-in** — one message → parse what's given → append; never invent missing numbers.
-3. **Weekly report** — collector digest → agent writes the report Markdown → PDF preview → owner review → `reviewed` → final PDF → explicit approval → the PDF is sent via gateway → record `sent_to`/`sent_at`. Structure and sources: `skills/sintr/references/report-framework.md`.
+3. **Weekly report** — an hour before the session: collector digest → agent writes the report Markdown → PDF preview → owner review → `reviewed` → final PDF → explicit approval → the PDF is sent via gateway → record `sent_to`/`sent_at`. Structure and sources: `skills/sintr/references/report-framework.md`.
 4. **Therapy** — post-session notes + tasks feed `therapy/current.md`; the report references open tasks.
 
 ## Privacy model

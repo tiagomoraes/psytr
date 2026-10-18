@@ -1,5 +1,5 @@
 ---
-week: YYYY-Www
+session: YYYY-MM-DDTHH:MM
 range:
 status: draft
 generated_at:
@@ -7,10 +7,13 @@ sent_to:
 sent_at:
 ---
 
-# Weekly report — {name} — YYYY-Www
+# Report for the session of YYYY-MM-DD — {name}
 
 <!--
 For the agent (comments are not printed). Guide: references/weekly-report-guide.md.
+- Save it as reports/YYYY-MM-DD.md, the session's date, with the session and
+  range lines the collector prints. Without a fixed session it is a calendar
+  week instead: reports/YYYY-Www.md with `week: YYYY-Www` in place of `session`.
 - Write in the owner's language; translate the headings, keep the key marker
   after each one (week, session, mood, moments, patterns, helped) so the PDF
   knows which section is which.

@@ -195,11 +195,11 @@
   therapy/current.md           <span class="k"># goals, themes, tasks (updated in place)</span>
   therapy/sessions/YYYY-MM.md  <span class="k"># append-only post-session notes</span>
   insights/current.md          <span class="k"># observations backed by 3+ dated data points</span>
-  reports/YYYY-Www.md          <span class="k"># weekly reports with lifecycle status</span>
-  reports/YYYY-Www.pdf         <span class="k"># the PDF the therapist receives</span></pre>
+  reports/YYYY-MM-DD.md        <span class="k"># one report per session, with lifecycle status</span>
+  reports/YYYY-MM-DD.pdf       <span class="k"># the PDF the therapist receives</span></pre>
           </figure>
           <dl class="specs doc-block">
-            <div class="specs__row"><dt>Time</dt><dd>Timestamps in UTC ISO 8601, dates as <code>YYYY-MM-DD</code>, reports by ISO week (<code>YYYY-Www</code>). Week ranges are computed in the ledger's timezone.</dd></div>
+            <div class="specs__row"><dt>Time</dt><dd>Timestamps in UTC ISO 8601, dates as <code>YYYY-MM-DD</code>, reports by the date of the session they are for (<code>YYYY-MM-DD</code>; ISO week <code>YYYY-Www</code> without a fixed session). Report periods are computed in the ledger's timezone.</dd></div>
             <div class="specs__row"><dt>IDs</dt><dd><code>entry-YYYY-MM-DD-NNN</code> and <code>checkin-YYYY-MM-DD</code>. Never reused.</dd></div>
             <div class="specs__row"><dt>Unknowns</dt><dd>Omitted, or written as <code>unknown</code>. Never guessed. Partial entries are valid and can grow later.</dd></div>
             <div class="specs__row"><dt>Corrections</dt><dd>Fix the live entry and add a dated note in the same file. History is never rewritten silently.</dd></div>
@@ -256,8 +256,8 @@
           <h2 id="pipeline-title" class="doc-h2">The weekly pipeline</h2>
           <p class="prose">The report is the product surface: the loop week → digest → report → session is what the owner actually experiences. Each step has one&nbsp;owner.</p>
           <ol class="pipeline doc-block">
-            <li><span class="pipeline__step">Collect</span> <code>scripts/week_collect.py</code> reads the week's entries and check-ins in the ledger's timezone and prints a Markdown digest: the check-in table with averages, every entry, emotion and tag frequency, and the raw entry blocks. Stdlib only, deterministic, exit&nbsp;0 even for an empty&nbsp;week.</li>
-            <li><span class="pipeline__step">Draft</span> The agent writes <code>reports/YYYY-Www.md</code> following the weekly report guide: six short sections in plain language, the owner's own words in quotes, dates for every pattern, observations labeled as&nbsp;observations. It types no numbers.</li>
+            <li><span class="pipeline__step">Collect</span> An hour before the session (<code>report_lead</code>), <code>scripts/week_collect.py</code> reads the entries and check-ins of the 7 days up to that moment, in the ledger's timezone, and prints a Markdown digest: the check-in table with averages, every entry, emotion and tag frequency, and the raw entry blocks. Stdlib only, deterministic, exit&nbsp;0 even for an empty&nbsp;week.</li>
+            <li><span class="pipeline__step">Draft</span> The agent writes <code>reports/2026-10-19.md</code>, named by the session, following the weekly report guide: six short sections in plain language, the owner's own words in quotes, dates for every pattern, observations labeled as&nbsp;observations. It types no numbers.</li>
             <li><span class="pipeline__step">Preview</span> <code>scripts/report_pdf.py --draft</code> prints the report as a PDF marked as a draft, with the numbers, the chart and the grid computed from the check-ins. It looks up every quote in the ledger and warns about anything it cannot find word for&nbsp;word.</li>
             <li><span class="pipeline__step">Review</span> The owner reads the preview and asks for changes; the agent edits the Markdown and prints again. <code>status: reviewed</code>, then the final&nbsp;PDF.</li>
             <li><span class="pipeline__step">Approve</span> Only an explicit approval enables sending. <code>require_approval: true</code> is the default in <code>config.md</code>.</li>
@@ -269,7 +269,7 @@
             <button class="copy copy--icon" type="button" data-copy="#cmd-collect" aria-label="Copy the collector command"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
           </div>
           <div class="cmd doc-block">
-            <pre id="cmd-report"><span class="p">$ </span>python3 scripts/report_pdf.py --ledger ~/sintr --week 2026-W42 --draft   <span class="k"># preview</span></pre>
+            <pre id="cmd-report"><span class="p">$ </span>python3 scripts/report_pdf.py --ledger ~/sintr --session 2026-10-19 --draft   <span class="k"># preview</span></pre>
             <button class="copy copy--icon" type="button" data-copy="#cmd-report" aria-label="Copy the report command"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
           </div>
           <figure class="file file--wide doc-block">
@@ -421,7 +421,8 @@
                 <tr><td><code>make install-claude</code></td><td>The same for <code>claude-code</code></td></tr>
                 <tr><td><code>make install-generic</code></td><td>The same for <code>generic</code></td></tr>
                 <tr><td><code>make test</code></td><td>Unit tests for the collector and the report generator (<code>scripts/test_*.py</code>)</td></tr>
-                <tr><td><code>make report-pdf WEEK=2026-W42</code></td><td>Prints that week's reviewed report to <code>~/sintr/reports/2026-W42.pdf</code> (<code>LEDGER=</code> for another ledger)</td></tr>
+                <tr><td><code>make report-pdf</code></td><td>Prints the next session's reviewed report to <code>~/sintr/reports/&lt;date&gt;.pdf</code> (<code>SESSION=2026-10-19</code> for another, <code>WEEK=2026-W42</code> for a calendar week, <code>LEDGER=</code> for another ledger)</td></tr>
+                <tr><td><code>make report-schedule</code></td><td>When to prepare the report, from <code>config.md</code>, with a cron line for it</td></tr>
                 <tr><td><code>make example-pdf</code></td><td>Rebuilds <code>docs/example-report.pdf</code> from the fictional fixture ledger</td></tr>
                 <tr><td><code>make validate</code></td><td>Tests plus repository structure checks</td></tr>
                 <tr><td><code>make package</code></td><td><code>git archive</code> into <code>dist/sintr-agent-pack.tar.gz</code></td></tr>
@@ -433,9 +434,9 @@
 
           <h3 class="doc-h3">First run</h3>
           <ol class="pipeline doc-block">
-            <li><span class="pipeline__step">Configure</span> Fill <code>~/sintr/config.md</code>: <code>name</code>, <code>language</code>, <code>timezone</code>, therapist name and contact, session day and time, <code>report_day</code> and <code>report_time</code>. Keep <code>require_approval: true</code> unless you deliberately decide otherwise.</li>
+            <li><span class="pipeline__step">Configure</span> Fill <code>~/sintr/config.md</code>: <code>name</code>, <code>language</code>, <code>timezone</code>, therapist name and contact, <code>session_day</code> and <code>session_time</code> (the report is prepared <code>report_lead</code>, one hour by default, before each session). Keep <code>require_approval: true</code> unless you deliberately decide otherwise.</li>
             <li><span class="pipeline__step">Capture</span> Describe a situation and confirm the structured entry appears in <code>entries/YYYY-MM.md</code>.</li>
-            <li><span class="pipeline__step">Report</span> Ask for the weekly report and review the draft PDF your agent sends you (<code>reports/YYYY-Www.draft.pdf</code>) before you wire any schedule. Printing it needs Google Chrome, Chromium or Edge, found automatically, or Playwright; without one, the script still writes the HTML for you to print from a&nbsp;browser.</li>
+            <li><span class="pipeline__step">Report</span> Ask for the weekly report and review the draft PDF your agent sends you (<code>reports/&lt;session date&gt;.draft.pdf</code>) before you wire any schedule. Printing it needs Google Chrome, Chromium or Edge, found automatically, or Playwright; without one, the script still writes the HTML for you to print from a&nbsp;browser.</li>
           </ol>
           <p class="prose prose--quiet doc-block">To update: <code>git pull</code> and re-run the same install command; skill files are replaced and the ledger is never overwritten. To uninstall: delete the installed skill folder and, if you want, the ledger. Nothing else is touched.</p>
         </section>
@@ -461,14 +462,15 @@
         <!-- Scheduling -->
         <section id="scheduling" class="doc-section" aria-labelledby="scheduling-title">
           <h2 id="scheduling-title" class="doc-h2">Scheduling</h2>
-          <p class="prose">sintr has no daemon. Run the weekly flow with whatever scheduler your environment already&nbsp;has.</p>
+          <p class="prose">sintr has no daemon. The report is prepared an hour before each session (<code>report_lead</code> in <code>config.md</code>), so it is fresh when the session starts and covers the 7 days up to then; each report starts exactly where the previous one ended. <code>week_collect.py --schedule</code> prints that moment from <code>session_day</code>, <code>session_time</code> and <code>timezone</code>, with a cron line. Run the flow with whatever scheduler your environment already&nbsp;has.</p>
           <dl class="specs doc-block">
-            <div class="specs__row"><dt>Hermes</dt><dd>An agent-driven cron job scheduled before your session, so it can write the report. For example, Sundays at 20:00 with the prompt: &ldquo;sintr: generate this week's report from the ledger, save it to reports/, render the draft PDF and send it to me for review. Do not send anything to the therapist without my approval.&rdquo;</dd></div>
-            <div class="specs__row"><dt>cron, launchd, systemd</dt><dd>Schedule the collector for the digest and let your agent pick it up at your next interaction. Keep the output inside the ledger so it inherits its permissions.</dd></div>
+            <div class="specs__row"><dt>Hermes</dt><dd>An agent-driven cron job an hour before your session, so it can write the report; the agent can set it up from <code>config.md</code>. For example, Mondays at 17:00 for an 18:00 session, with the prompt: &ldquo;sintr: prepare the report for today's session, render the draft PDF and send it to me for review. Do not send anything to the therapist without my approval.&rdquo;</dd></div>
+            <div class="specs__row"><dt>cron, launchd, systemd</dt><dd>Schedule the collector for the digest at the same moment and let your agent pick it up. Keep the output inside the ledger so it inherits its permissions. A rescheduled session takes <code>--session 2026-10-22T19:00</code>; without a fixed session, use <code>--week</code> on <code>report_day</code>/<code>report_time</code>.</dd></div>
           </dl>
           <div class="cmd doc-block">
-            <pre id="cmd-cron"><span class="k"># crontab example: Sundays at 20:00</span>
-0 20 * * 0  python3 ~/.sintr/bin/week_collect.py --ledger ~/sintr --week this --out ~/sintr/reports/digest-latest.md</pre>
+            <pre id="cmd-cron"><span class="k"># crontab example: an 18:00 Monday session (from week_collect.py --schedule)</span>
+CRON_TZ=America/Sao_Paulo
+0 17 * * 1  python3 ~/.sintr/bin/week_collect.py --ledger ~/sintr --out ~/sintr/reports/digest-latest.md</pre>
             <button class="copy copy--icon" type="button" data-copy="#cmd-cron" aria-label="Copy the crontab example"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
           </div>
         </section>

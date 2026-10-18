@@ -11,10 +11,9 @@ Every person, place and event in it is invented.
 ## Therapy
 - therapist_name: Dra. Ana Exemplo
 - therapist_contact:
-- session_day: Wednesday
+- session_day: Monday
 - session_time: 18:00
-- report_day: Sunday
-- report_time: 20:00
+- report_lead: 1h
 - require_approval: true
 - report_disclaimer: true
 

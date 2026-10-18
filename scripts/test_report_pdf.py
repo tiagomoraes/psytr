@@ -13,7 +13,7 @@ import sys
 import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -67,7 +67,7 @@ class TestReportParsing(unittest.TestCase):
         self.assertEqual(moments[0]["fields"]["did"], "x")
 
     def test_template_sections(self):
-        template = FIXTURE.parents[2] / "templates" / "sintr" / "reports" / "YYYY-Www.md"
+        template = FIXTURE.parents[2] / "templates" / "sintr" / "reports" / "YYYY-MM-DD.md"
         report = rp.parse_report(template.read_text(encoding="utf-8"))
         self.assertEqual([s["key"] for s in report["sections"]], list(rp.SECTION_KEYS))
         # the template's own moment is a placeholder, never printed as a card
@@ -76,7 +76,13 @@ class TestReportParsing(unittest.TestCase):
 
     def test_docs_example_mirrors_fixture(self):
         docs = (FIXTURE.parents[2] / "docs" / "example-report.md").read_text(encoding="utf-8")
-        self.assertIn((FIXTURE / "reports" / "2026-W42.md").read_text(encoding="utf-8"), docs)
+        self.assertIn((FIXTURE / "reports" / "2026-10-19.md").read_text(encoding="utf-8"), docs)
+
+    def test_first_h1_is_the_title_even_with_a_section_word(self):
+        report = rp.parse_report("# Relatório para a sessão de 19/10\n\n## Como foi a semana <!-- week -->\nx\n")
+        self.assertEqual(report["title"], "Relatório para a sessão de 19/10")
+        self.assertEqual([s["key"] for s in report["sections"]], ["week"])
+        self.assertEqual(report["notes"], [])
 
     def test_disclaimer_dropped(self):
         last = "\n".join(self.report["sections"][-1]["lines"])
@@ -239,7 +245,7 @@ class TestBuild(unittest.TestCase):
         self.assertIn('<html lang="pt-BR">', page)
         self.assertIn("12 a 18 de outubro.", page)
         self.assertIn("Confidencial · para Dra. Ana Exemplo", page)
-        self.assertIn("quarta, 21/10, 18h", page)
+        self.assertIn("segunda, 19/10, 18h", page)  # next session, from config.md
         # coverage is honest: six of seven days, and which one is missing
         self.assertIn("6 de 7 dias", page)
         self.assertIn("sem check-in: qua", page)
@@ -350,6 +356,54 @@ class TestBuild(unittest.TestCase):
             self.assertNotIn('class="chart"', page)
             self.assertNotIn('class="stats"', page)
             self.assertEqual(warnings, [])
+
+
+class TestSessionReport(unittest.TestCase):
+    """The default: a report for a session, covering the 7 days that end
+    report_lead (1h) before it. The fixture's session is Monday at 18:00."""
+
+    def test_document(self):
+        page, meta, warnings = rp.build(FIXTURE, session_spec="2026-10-19")
+        self.assertEqual(warnings, [])
+        self.assertEqual((meta["kind"], meta["week"]), ("session", "2026-10-19"))
+        self.assertIn("13 a 19 de outubro.", page)  # Mon 12 after 17:00 holds nothing: not shown
+        self.assertIn("<dt>Sessão</dt><dd>segunda, 19/10, 18h</dd>", page)
+        self.assertIn("6 de 7 dias", page)
+        self.assertIn("sem check-in: qua", page)
+        self.assertIn("<dt>Momentos registrados</dt><dd>5</dd>", page)
+        self.assertIn("acordei mais leve, hoje tem sessão", page)  # the session morning is in
+        self.assertNotIn("Próxima sessão", page)
+
+    def test_next_session_by_default(self):
+        _, meta, _ = rp.build(FIXTURE, now=datetime(2026, 10, 19, 17, 5, tzinfo=TZ))
+        self.assertEqual(meta["week"], "2026-10-19")
+        self.assertEqual(meta["end"], datetime(2026, 10, 19, 17, 0, tzinfo=TZ))
+
+    def test_rescheduled_session_pins_its_time(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = copy_fixture(tmp)
+            text = (ledger / "reports" / "2026-10-19.md").read_text(encoding="utf-8")
+            (ledger / "reports" / "2026-10-27.md").write_text(
+                text.replace("session: 2026-10-19T18:00", "session: 2026-10-27T20:00"), encoding="utf-8")
+            _, meta, _ = rp.build(ledger, session_spec="2026-10-27")
+            self.assertEqual(meta["end"], datetime(2026, 10, 27, 19, 0, tzinfo=TZ))
+
+    def test_cli(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = copy_fixture(tmp)
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                code = rp.main(["--ledger", str(ledger), "--session", "2026-10-19", "--renderer", "html"])
+            self.assertEqual(code, 0)
+            self.assertTrue((ledger / "reports" / "2026-10-19.html").exists())
+
+    def test_period_days(self):
+        start = datetime(2026, 10, 12, 17, 0, tzinfo=TZ)
+        end = datetime(2026, 10, 19, 17, 0, tzinfo=TZ)
+        days = rp.period_days(start, end, TZ, set())
+        self.assertEqual((days[0], days[-1], len(days)), (date(2026, 10, 13), date(2026, 10, 19), 7))
+        # an entry on the evening after the previous session brings that day in
+        days = rp.period_days(start, end, TZ, {date(2026, 10, 12)})
+        self.assertEqual((days[0], len(days)), (date(2026, 10, 12), 8))
 
 
 class TestWeakModelOutput(unittest.TestCase):
