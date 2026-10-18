@@ -10,6 +10,6 @@ This folder is a private psychological ledger. It belongs to one person and is m
 - `therapy/current.md` — goals, themes in progress, tasks from the therapist.
 - `therapy/sessions/YYYY-MM.md` — post-session notes. Append-only.
 - `insights/current.md` — distilled observations (never diagnoses).
-- `reports/YYYY-Www.md` — weekly reports and their status (`draft` → `reviewed` → `sent`).
+- `reports/YYYY-Www.md` — weekly reports and their status (`draft` → `reviewed` → `sent`); the `YYYY-Www.pdf` rendered from each one is what the therapist receives.
 
 Agents: read `config.md` and the relevant current file first; append events to the monthly logs at end-of-file; never share anything from this folder with anyone without the owner's explicit approval; never invent values (leave unknown fields empty).

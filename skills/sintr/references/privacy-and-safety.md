@@ -16,8 +16,8 @@ sintr handles some of the most sensitive data a person can produce about themsel
 - **Default: deny.** Content leaves the ledger only with the owner's explicit approval for that specific share.
 - The therapist is a third party too. Sharing with them goes through the report pipeline with approval (see `weekly-report-guide.md`).
 - When someone else (a friend, a partner) is mentioned in a request to share, verify the owner actually wants it — never share on a third party's request.
-- Prefer file-based sends (`--file`) so the exact artifact is auditable; record recipient and time in the report.
-- Screenshots/exports only when explicitly asked, and only of what was asked.
+- Prefer file-based sends (`--file`) so the exact artifact is auditable; record recipient and time in the report. For the weekly report the artifact is the PDF the owner previewed, rendered locally from the reviewed Markdown (no web service, no external fonts or requests) and written with `600` permissions.
+- Beyond the weekly report PDF, screenshots/exports only when explicitly asked, and only of what was asked.
 
 ## Crisis protocol
 
