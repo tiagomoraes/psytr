@@ -345,6 +345,8 @@ A near-monochrome paper-and-graphite palette; the only chroma is window light an
 **Body Font:** Hanken Grotesk (with ui-sans-serif, system-ui), self-hosted variable 300 to 700
 **Label/Mono Font:** Fragment Mono (with ui-monospace, SF Mono, Menlo), 400 only, `/tech/` only
 
+**Other scripts:** the home is published in eight languages. Latin text everywhere stays in the two faces above. Japanese falls back to the reader's own system faces (Hiragino Mincho / Yu Mincho / Noto Serif JP for the serif role, Hiragino Sans / Yu Gothic / Noto Sans JP for the sans role); Simplified Chinese likewise (Songti / Noto Serif SC, PingFang / Microsoft YaHei / Noto Sans SC). In those scripts headings drop the negative tracking, sit at line-height 1.3, use no synthetic italics, and the display steps down (max 4.1rem) so the hero still opens on its button. German display steps down to 4.75rem and its running text hyphenates. The person's quoted words take each language's own marks (“…”, „…“, « … », 「…」).
+
 **Character:** A calm, precise notebook serif at light weight carries every heading, the person's words and the report itself, against a quiet grotesk that labels and explains and never competes. The mono is a material, not a mood: it means "this is the actual file", and it is shown only to readers who asked to see inside.
 
 ### Hierarchy
@@ -438,6 +440,7 @@ Black, quiet, confident; the only filled controls on the page.
 
 ### Navigation
 - **Style:** an 88px bar (72px under 720px) with the serif wordmark and window glyph on the left; text links at 500 in Ink Two turn ink on hover; a small ink pill closes the row. The home links How it works, Privacy and Under the hood, and its pill reads "Get started"; `/tech/` links Home, Privacy and GitHub, and its pill reads "Install". Under 720px the text links go: the home keeps only its pill, `/tech/` keeps the GitHub mark (22px) and its pill.
+- **Language menu (home):** a 40px outlined pill (hairline, Ink Two, globe icon plus the short code: EN, PT, 日本語…) sits before the ink pill and stays visible on mobile. It opens a native `<details>` panel: white, 14px radius, the lifted shadow, 6px inset; each language is written in its own name and script, the current one ink at 600 with a 6px ink dot. Outside click and Escape close it. The footer repeats the list as a single wrapping line under "This page in". Choosing a language is remembered; first visits follow the browser's language list.
 - **Contents list (`/tech/`):** a caption title, then links at 0.9375rem in Ink Three on a single left hairline, 6px 0 6px 16px. The current section (marked by script as an enhancement) turns ink at 500 with a 7px ink dot sitting on the hairline. Under 900px it becomes a static two-column list with a hairline under each link.
 
 ### Lists and Diagrams
