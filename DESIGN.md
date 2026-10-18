@@ -74,6 +74,12 @@ typography:
     fontWeight: 400
     lineHeight: 1.25
     letterSpacing: "-0.01em"
+  payoff:
+    fontFamily: "Source Serif 4, Iowan Old Style, Charter, Georgia, serif"
+    fontSize: "clamp(1.875rem, 1.2rem + 2vw, 3rem)"
+    fontWeight: 300
+    lineHeight: 1.1
+    letterSpacing: "-0.02em"
   note-value-large:
     fontFamily: "Source Serif 4, Iowan Old Style, Charter, Georgia, serif"
     fontSize: "1.375rem"
@@ -132,6 +138,7 @@ rounded:
 spacing:
   gutter: "clamp(20px, 5vw, 72px)"
   section: "clamp(104px, 13vw, 208px)"
+  section-home: "clamp(88px, 10vw, 148px)"
   column-gap: "24px"
   container: "1360px"
   note-margin: "44px"
@@ -197,6 +204,22 @@ components:
   paper-status:
     textColor: "{colors.ink-2}"
     typography: "{typography.caption}"
+  setup-message:
+    backgroundColor: "{colors.wash}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.file}"
+    padding: "20px 22px"
+  payoff-line:
+    textColor: "{colors.ink}"
+    typography: "{typography.payoff}"
+  promise-row:
+    textColor: "{colors.ink-2}"
+    typography: "{typography.body}"
+    padding: "22px 0 0"
+  chat-time-divider:
+    textColor: "{colors.ink-3}"
+    padding: "18px 0 0"
   ask-card:
     textColor: "{colors.ink}"
     rounded: "{rounded.bubble}"
@@ -266,16 +289,16 @@ This file records the visual system of the public **sintr** website (`site/`): t
 
 **Creative North Star: "The Consulting-Room Wall"**
 
-The page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. On the home, as the reader moves through the week, the light changes time of day (morning, noon, dusk, early morning, evening, golden hour, night, late morning, dawn) and cross-fades rather than jumps. On `/tech/` the same light is held at noon in the header and fades out before the reading starts.
+The page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. On the home, as the reader moves through the week, the light changes time of day (morning, noon, dusk, evening, night, late morning, dawn) and cross-fades rather than jumps; the early-morning and golden-hour palettes stay defined for future sections. On `/tech/` the same light is held at noon in the header and fades out before the reading starts.
 
-Hierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading. The two pages share every token and face but show the product in two registers. The home demonstrates it as a person lives it: every artifact is a **notebook card**, white paper with faint school-paper rules and a peach margin line, human labels in the sans and the person's own words in the serif. `/tech/` demonstrates it as it is built: real sintr file formats set as selectable Fragment Mono text in white cards captioned by their path, beside specification tables and numbered pipeline steps. The mono face lives on `/tech/` only.
+Hierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading. The two pages share every token and face but show the product in two registers. The home demonstrates it as a person lives it, one mock per idea: a single **notebook card** in the hero (white paper with faint school-paper rules and a peach margin line, human labels in the sans and the person's own words in the serif) that writes itself on load, then a conversation in chat bubbles and the report as a sheet of paper. `/tech/` demonstrates it as it is built: real sintr file formats set as selectable Fragment Mono text in white cards captioned by their path, beside specification tables and numbered pipeline steps. The mono face lives on `/tech/` only.
 
 Density is low and the pace is slow. Sections are separated by large vertical rests and single hairlines, not by fills or boxes. Motion is opt-in and unhurried: the light moves over about three seconds, leaves sway on 13 and 17 second cycles, and content settles in with a short blur-to-sharp fade. With JavaScript off or reduced motion requested, the light rests at the top of the page and everything reads. The wellness-app default (pastel blob hero, phone mockup, feature-card trio), the developer-tool default (dark terminal page, install commands up front) and developer-portal chrome are all rejected.
 
 **Key Characteristics:**
 - White ground, graphite ink, black pill controls; light is the only color, echoed faintly on paper.
 - Light serif display (weight 300) carrying hierarchy by size and two tones, never by labels.
-- Two registers of artifact: notebook cards on the home (sans labels, serif words), real file cards in mono on `/tech/`.
+- Two registers of artifact: the notebook card on the home (sans labels, serif words; one per page, in the hero), real file cards in mono on `/tech/`.
 - Hairline-ruled structure on a 12-column grid with generous section rests.
 - A time-of-day light that moves with the reader on the home, stays in the header on the reading page, and disappears into a static wash when motion is unwelcome.
 
@@ -304,12 +327,12 @@ A near-monochrome paper-and-graphite palette; the only chroma is window light an
 - **Soft Ink** (`ink-soft`): large text and marks only: the second tone of two-tone statements, step and pipeline numerals, list dashes, the empty checkbox outline, flow arrowheads. Below 4.5:1, so never for small text.
 - **Hairline** (`rule`): every card edge, section divider, row rule, tab baseline and the contents list's left rule.
 - **Strong Hairline** (`rule-strong`): flow edges, the stations spine, link underlines at rest, hover borders.
-- **Wash** (`wash`): the one tinted surface: your own chat bubbles, command blocks, inline code, and option hover.
+- **Wash** (`wash`): the one tinted surface: your own chat bubbles, command blocks, inline code, option hover, and the setup message inside the home's closed disclosure.
 
 ### Named Rules
 **The Light Is the Only Color Rule.** Chroma lives in the window light. On paper it appears only as the light's own faint echoes: the peach highlighter, the notebook's sky rules and peach margin, and the draft dot. Gradients never fill text, buttons or cards; the light is a projection on the wall, multiplied onto whatever it falls across.
 
-**The Morning Wash Exception.** Exactly one surface per page carries a faint light gradient as a fill: the setup-message card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). One per page, and only on the single call to act.
+**The Morning Wash Exception.** At most one surface per page carries a faint light gradient as a fill: the setup-message card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). Today that card lives on `/tech/` only ("The setup message from the home page"). The home no longer uses the exception: its setup message sits on plain Wash with a hairline inside a closed disclosure, so on the home the window light is the only color apart from the highlighter and the paper's faint echoes.
 
 **The Verbatim Rule.** Peach highlights a person's own words. If the words are not a quotation of the person, they do not get the highlighter.
 
@@ -325,14 +348,15 @@ A near-monochrome paper-and-graphite palette; the only chroma is window light an
 - **Display** (300, clamp 2.75rem to 5.75rem, 1.02, -0.028em, balanced): the home hero headline only. The `/tech/` headline uses **Display Doc**, the same voice capped at 5rem (clamp 2.75rem to 5rem).
 - **Headline Statement** (300, clamp 2.25rem to 4.5rem, 1.06, -0.024em, max 15.5em): two-tone statements, each clause on its own line, the second in Soft Ink.
 - **Headline** (300, clamp 2.125rem to 3.75rem, 1.06, -0.022em): home section heads; an XL variant reaches 5rem.
-- **Title** (300, clamp 1.875rem to 3.125rem, 1.1, -0.02em, max 13em): the day headings. The time of day opens the sentence as an italic Ink Three line inside the heading ("*Tuesday, 7:40 pm.* Something happened at work.").
+- **Title** (300, clamp 1.875rem to 3.125rem, 1.1, -0.02em, max 13em): the day headings. The time of day opens the sentence as an italic Ink Three line inside the heading ("*Tuesday, 7:40 pm.* Tell it while it's fresh.").
+- **Payoff** (300, clamp 1.875rem to 3rem, 1.1, -0.02em, max 16em, balanced): the closing line of a scene sequence, set like a day heading without being one, with its own italic Ink Three day stamp opening the sentence ("*Monday, 6 pm.* The hour starts with Tuesday, ...").
 - **Doc Heading** (300, clamp 2rem to 2.875rem, 1.08, -0.02em, 24px below): section heads on `/tech/`, one per hairline-topped section.
 - **Step Numeral / Step Title** (300 at 2.75rem, line-height 1, Soft Ink; then 400 at 1.5rem, 1.2, -0.012em): the three get-started steps. Pipeline numerals on `/tech/` are the same light serif at 1.75rem.
-- **Title Small** (400, 1.375rem, 1.25, -0.01em): sub-heads (the setup message card, the lifecycle), privacy promise terms, and the `/tech/` sub-sections (48px above, 14px below).
+- **Title Small** (400, 1.375rem, 1.25, -0.01em): sub-heads (the `/tech/` setup message card, the lifecycle), privacy promise terms, and the `/tech/` sub-sections (48px above, 14px below).
 - **Lede** (400, clamp 1.125rem to 1.3125rem, 1.55, max 34em, Ink Two; 38em on `/tech/`): the hero paragraph.
 - **Body** (400, 1.0625rem, 1.65; 1rem under 720px): prose at max 36em in Ink Two (40em in the `/tech/` text column); quiet prose steps to 1rem in Ink Three.
 - **Document** (serif 400, 1.0625rem, 1.62): the body of the report paper; its section heads switch to the grotesk at 600, 0.9375rem.
-- **Note Value** (serif 400, 1.0625rem, 1.45): the person's words in a notebook card, its observations and its tasks. Inline check-in values step up to **Note Value Large** (1.375rem, tabular, never wrapped; 1.1875rem when the card is under 360px). The card's time line is the serif italic at 1rem in Ink Two.
+- **Note Value** (serif 400, 1.0625rem, 1.45): the person's words in a notebook card, its observations and its tasks. Inline check-in values step up to **Note Value Large** (1.375rem, tabular, never wrapped; 1.1875rem when the card is under 360px). The card's time line is the serif italic at 1rem in Ink Two; the time divider inside a conversation is the same italic at 1rem in Ink Three.
 - **Caption** (400, 0.8125rem, 1.45, Ink Three): human labels in notebook cards, the contents title, fact terms, table headers, flow edge labels, the draft status, segmented-toggle labels. Card tags and file notes drop to 0.75rem.
 - **Label** (500, 0.9375rem to 1rem, line-height 1): buttons, nav, tabs, segmented options, the disclosure summary. Sentence case, never uppercase.
 - **File Body / File Path** (mono, 0.8125rem / 1.8 and 0.75rem / 1.4): contents and path captions of real files, on `/tech/` only. Command blocks are mono at 0.8438rem / 1.85.
@@ -346,13 +370,13 @@ A near-monochrome paper-and-graphite palette; the only chroma is window light an
 
 ## Layout
 
-A centered container (1360px max) with a fluid gutter (clamp 20px to 72px) holds a 12-column grid with a 24px column gap. Home compositions are asymmetric splits on that grid: copy in columns 1 to 5 or 1 to 7, artifacts in 7 to 12 or 8 to 12, with alternate days flipped so the artifact leads. Day copy is sticky (top 12vh) beside its artifact on desktop; the report lifecycle column is sticky at 14vh. Section rests are large (clamp 104px to 208px); sections are divided by one full-width hairline. The hero fills the first viewport minus the 88px header and leaves the upper-right wall empty for the light. The get-started section sets three steps in three equal columns (gap 40px 24px), then the setup-message card in columns 1 to 7 beside a short "then" column in 9 to 12.
+A centered container (1360px max) with a fluid gutter (clamp 20px to 72px) holds a 12-column grid with a 24px column gap. Home compositions are asymmetric splits on that grid: copy in columns 1 to 5 or 1 to 7, artifacts in 7 to 12 or 8 to 12; a flipped day grid (artifact leading in 1 to 6, copy in 8 to 12) stays available, though the home's two scenes no longer use it. Day copy is sticky (top 12vh) beside its artifact on desktop; the report lifecycle column is sticky at 14vh. Section rests are large (clamp 104px to 208px, the `section` token); the home runs a tighter rhythm (`section-home`, clamp 88px to 148px) because the page is shorter, while `/tech/` keeps the original. Sections are divided by one full-width hairline. The hero fills the first viewport minus the 88px header and leaves the upper-right wall empty for the light. The "why" section sets its two-tone statement in columns 1 to 7 beside a single paragraph in 8 to 12, bottom-aligned. The report scene closes with the payoff line 64px to 112px below it. Privacy is a heading, then three promises in three equal columns (gap 24px) under one ink rule, then a one-sentence note at max 46em. The get-started section sets three steps in three equal columns (gap 40px 24px), then the closed setup disclosure below them at max 880px. The older privacy split (lead in 1 to 5, promise list in 7 to 12) and the get-started setup-card-plus-"then" row (1 to 7 and 9 to 12) remain defined but are not on the home.
 
 `/tech/` is a reading layout on the same grid: a 3-column contents list sticky at 28px beside a 9-column text column. Each section opens on a hairline with a fluid rest (clamp 56px to 88px) and scrolls into view 24px below the top. Content blocks sit 28px apart; specification tables, pipeline lists, file cards and command blocks share that rhythm. Wide files keep their lines and scroll horizontally rather than wrap.
 
-The flow line lives in its own size container (`flow`). It stays on one line while it fits, then turns into a vertical spine with 44px-tall edges: when its container is 1100px or narrower on the home, 860px or narrower on `/tech/`. A notebook card is also a size container: under 500px its rows stack label over value.
+The flow line lives in its own size container (`flow`) and appears on `/tech/` only since the home was cut. It stays on one line while it fits, then turns into a vertical spine with 44px-tall edges: when its container is 860px or narrower on `/tech/` (a 1100px home breakpoint is still defined). A notebook card is also a size container: under 500px its rows stack label over value.
 
-Responsive behavior: at 1100px the hero copy widens to 8 columns. At 900px every split collapses to a single column, sticky positioning is released, artifacts drop below their copy with a 44px to 64px rest, the steps stack, the contents list becomes a static two-column list (each link on a hairline, 48px above the text) and the front matter pair stacks. At 720px body steps to 1rem, the header shrinks to 72px and drops its text links: the home keeps only the "Get started" pill, `/tech/` keeps the GitHub mark (22px) and the "Install" pill. The home light becomes one fixed oversized pane (150vw) that no longer travels, multi-column lists and specification rows stack, the setup card tightens to 22px 18px 20px, and chat bubbles widen to 92%. Below 380px button padding tightens. Parallax drift runs only above 900px.
+Responsive behavior: at 1100px the hero copy widens to 8 columns. At 900px every split collapses to a single column, sticky positioning is released, artifacts drop below their copy with a 44px to 64px rest, the steps stack, the three promises stack with a hairline under each (18px 0), the contents list becomes a static two-column list (each link on a hairline, 48px above the text) and the front matter pair stacks. At 720px body steps to 1rem, the header shrinks to 72px and drops its text links: the home keeps only the "Get started" pill, `/tech/` keeps the GitHub mark (22px) and the "Install" pill. The home light becomes one fixed oversized pane (150vw) that no longer travels, multi-column lists and specification rows stack, the setup card tightens to 22px 18px 20px, and chat bubbles widen to 92%. Below 380px button padding tightens. Parallax drift runs only above 900px.
 
 ### Named Rules
 **The Held Wall Rule.** The first viewport keeps one wall region empty so the light has somewhere to land. Do not fill the upper right of the hero.
@@ -370,11 +394,11 @@ Hybrid and low. Surfaces are white on white and separate primarily by a 1px hair
 - **Paper Ring** (`box-shadow: 0 0 0 4px` or `5px` in paper white; `3px` pale peach on the draft dot): knocks dots out of the line or ground they sit on.
 
 ### Named Rules
-**The Hairline First Rule.** A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the "Your sintr folder" card in the privacy section deliberately drops its shadow, and the reading page's tables and lists are hairline only.
+**The Hairline First Rule.** A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the folder variant of the notebook card deliberately drops its shadow, the home's setup message sits on Wash with a hairline and no shadow, and the reading page's tables and lists are hairline only.
 
 ## Shapes
 
-Soft rectangles and full pills. Controls are pills (999px) without exception: buttons, copy buttons, the segmented toggle and its options, the skip link, the small "of 100" scale chip in a notebook card. Containers soften by role: chat bubbles 20px with one 6px tail corner on the speaker's side, the setup card 20px, the help panel 18px, notebook and file cards 14px, command blocks 12px, inline code and focus rings 6px, drawn checkboxes 4px. The report paper is nearly square (6px, 4px on mobile) because it is a sheet of paper, not a card. Lines are 1px throughout (1.5px on checkbox outlines and the disclosure chevron); markers are 7px to 13px circles and 7px chevrons built from borders. The recurring silhouettes are the skewed window grid, in the light and in the brand glyph, and the notebook's ruled page with its margin line.
+Soft rectangles and full pills. Controls are pills (999px) without exception: buttons, copy buttons, the segmented toggle and its options, the skip link, the small "of 100" scale chip in a notebook card. Containers soften by role: chat bubbles 20px with one 6px tail corner on the speaker's side, the setup card 20px, the help panel 18px, notebook and file cards and the home's setup message 14px, command blocks 12px, inline code and focus rings 6px, drawn checkboxes 4px. The report paper is nearly square (6px, 4px on mobile) because it is a sheet of paper, not a card. Lines are 1px throughout (1.5px on checkbox outlines and the disclosure chevron); markers are 7px to 13px circles and 7px chevrons built from borders. The recurring silhouettes are the skewed window grid, in the light and in the brand glyph, and the notebook's ruled page with its margin line.
 
 ## Components
 
@@ -395,14 +419,16 @@ Black, quiet, confident; the only filled controls on the page.
 - **State:** hover and selected turn the label ink; the selected tab grows a 2px ink underline from the left (scaleX, 0.6s). Panels fade up 6px over 0.7s. Native radios, no JavaScript required.
 
 ### Cards / Containers
-- **Notebook card (signature, home):** white, 1px hairline, 14px radius, Card shadow, clipped, and a size container. A 1px Notebook Margin line runs full height 26px from the left; all content starts at 44px. The head carries the time in serif italic (Ink Two) and a small sans tag on the right (0.75rem, Ink Three) above a Hairline. Rows are label over value or label beside value (a 7rem to 9.5rem label column, 18px gap), separated by Notebook Rule hairlines; under 500px of card width they stack. A quoted thought is a real `q` with curly quotes under the peach highlighter; an intensity carries a small hairline pill chip ("85 of 100"). Variants: the **hero** card (max 460px, Lift shadow, pushed right), the **check-in** card (max 440px, three inline values in Note Value Large, tabular and never wrapped, then a closing line with a sans label), the **tasks** card (rows with drawn 16px checkboxes: 1.5px Soft Ink outline when open, an ink fill with a white border-built check when done), the **paragraph** card (one serif observation at 1.5 line-height), and the **folder** card (max 460px, no shadow, a 13px stroked lock in its tag).
+- **Notebook card (signature, home):** the home shows exactly one, the hero card, which writes itself on load; the other variants below remain available system components but are not on the home. It is white, 1px hairline, 14px radius, Card shadow, clipped, and a size container. A 1px Notebook Margin line runs full height 26px from the left; all content starts at 44px. The head carries the time in serif italic (Ink Two) and a small sans tag on the right (0.75rem, Ink Three) above a Hairline. Rows are label over value or label beside value (a 7rem to 9.5rem label column, 18px gap), separated by Notebook Rule hairlines; under 500px of card width they stack. A quoted thought is a real `q` with curly quotes under the peach highlighter; an intensity carries a small hairline pill chip ("85 of 100"). Variants: the **hero** card (max 460px, Lift shadow, pushed right), the **check-in** card (max 440px, three inline values in Note Value Large, tabular and never wrapped, then a closing line with a sans label), the **tasks** card (rows with drawn 16px checkboxes: 1.5px Soft Ink outline when open, an ink fill with a white border-built check when done), the **paragraph** card (one serif observation at 1.5 line-height), and the **folder** card (max 460px, no shadow, a 13px stroked lock in its tag).
 - **File card (signature, `/tech/`):** white, 1px hairline, 14px radius, Card shadow, clipped. A caption bar carries the real path in mono Ink Three (with an optional plain-sans note on the right) above a hairline; the body is mono at 0.8125rem / 1.8 with keys in Ink Three, numbers tabular, and quoted thoughts under the peach highlighter. The wide variant keeps lines unwrapped and scrolls horizontally; the narrow variant stops at 460px; two cards can sit side by side as a before-and-after pair (20px gap).
 - **Report paper (signature):** a sheet, not a card: 6px radius, Lift shadow, generous fluid padding, serif body, grotesk section heads, short dash list markers in Soft Ink, and an italic foot over a hairline. On the home it opens straight on its title; above it sits a small status line (caption, Ink Two) led by the draft dot. The mono path and front matter of a report are shown on `/tech/` only, as file cards.
-- **Setup card (the call to act):** the one tinted container, 20px radius, the morning wash gradient, no border, no shadow, padding 28px 28px 26px. A head row pairs a Title Small heading with the ink Copy pill; a short Ink Two lead explains who the message is for; the message itself sits inside a disclosure under a 10% ink hairline, its summary a 500 label led by a 7px border-built chevron that turns from right to down over 0.4s. The message is grotesk at 1.0625rem / 1.66.
+- **Setup card (the call to act, `/tech/`):** the one tinted container, 20px radius, the morning wash gradient, no border, no shadow, padding 28px 28px 26px. A head row pairs a Title Small heading with the ink Copy pill; a short Ink Two lead explains who the message is for; the message itself sits inside a disclosure under a 10% ink hairline, its summary a 500 label led by a 7px border-built chevron that turns from right to down over 0.4s. The message is grotesk at 1.0625rem / 1.66. The disclosure-with-lead form is defined but no page uses it now; `/tech/` shows the message open under its head row.
+- **Setup disclosure (home):** no card and no gradient. A closed disclosure (max 880px) opens on the same 10% ink hairline and chevron summary ("Read the setup message before you copy it"); inside, the message sits on Wash with a 1px Hairline, 14px radius, 20px 22px padding, grotesk at 1.0625rem / 1.66, followed by a 0.875rem Ink Two foot. The copy action lives in the first get-started step, not beside the message.
 - **Help panel:** hairline outline only, 18px radius, 24px 26px padding.
 - **Command block (`/tech/`):** Wash fill, hairline, 12px radius, mono at 0.8438rem / 1.85, room on the right for the copy icon; shell prompts are Ink Three and unselectable.
 
 ### Chat Bubbles
+- **Time divider:** inside a conversation, a later moment is marked by a full-width line: a 1px Hairline on top, 18px above the text, 14px above the rule, the day and time in serif italic at 1rem, Ink Three ("*Thursday, 8:50 am*"). It separates two exchanges; it is not a heading.
 - **You:** Wash fill, ink text, aligned right, 20px radius with a 6px bottom-right tail.
 - **Agent:** white with a hairline, Ink Two text, aligned left, 6px bottom-left tail.
 - Max width 82% (92% under 720px), 13px 18px padding, 0.9688rem / 1.5, 12px between messages. The **mini** bubble (9px 14px, 0.875rem, full width) illustrates the get-started steps.
@@ -412,12 +438,15 @@ Black, quiet, confident; the only filled controls on the page.
 - **Contents list (`/tech/`):** a caption title, then links at 0.9375rem in Ink Three on a single left hairline, 6px 0 6px 16px. The current section (marked by script as an enhancement) turns ink at 500 with a 7px ink dot sitting on the hairline. Under 900px it becomes a static two-column list with a hairline under each link.
 
 ### Lists and Diagrams
-- **Definition rows:** serif terms against Ink Three definitions on a fixed term column, separated by hairlines; the privacy list opens on a full ink rule.
+- **Definition rows:** serif terms against Ink Three definitions on a fixed term column, separated by hairlines (the `fields` list, available but no longer on the home); the privacy list opens on a full ink rule.
+- **Promises, three in a row (home privacy):** three ruled points under one ink rule, in three equal columns (gap 24px); each a Title Small serif term over Ink Two body text, 8px apart, 22px of top padding, no row hairlines. Under 900px they stack, each closed by a Hairline (18px 0). The two-column promise list (serif term column beside the text, hairlines between rows) remains the longer form.
 - **Specification table (`/tech/`):** a serif term column (1.125rem, 9rem to 12rem) beside an Ink Two sans description, a single ink hairline on top and Hairlines between rows (16px 0 17px); stacks under 720px.
 - **Plain table (`/tech/`):** 0.9375rem rows on Hairlines, caption-size Ink Three headers over an ink rule, first column unwrapped, inside a horizontally scrolling wrapper.
 - **Facts line (`/tech/` hero):** a wrapping row of caption terms over serif values (1.1875rem), 14px 40px apart, on a hairline, max 900px.
 - **Flow and stations:** states named in serif, edges as 1px Strong Hairline lines with border-built arrowheads and caption labels; the one irreversible gate is marked in ink with a filled dot knocked out by a paper ring.
-- **Get-started steps (home):** three columns, each opened by a 1px ink rule, a light-serif numeral in Soft Ink (2.75rem), a serif step title (1.5rem), Ink Three text at 0.9688rem, and a small illustration made of the step's real action: the ink copy button, or mini chat bubbles.
+- **Get-started steps (home):** three columns, each opened by a 1px ink rule, a light-serif numeral in Soft Ink (2.75rem), a serif step title (1.5rem), Ink Three text at 0.9688rem, and an optional illustration made of the step's real action. On the home only the first step carries one, the ink copy button; mini chat-bubble illustrations remain available.
+- **Two-tone statement beside a why (home):** a Headline Statement (first clause ink, second Soft Ink) in seven columns, bottom-aligned with one Ink Two paragraph in the remaining five; under 900px the paragraph drops below.
+- **Payoff line (home):** a single Payoff-size serif sentence closing the scene sequence, opened by its own italic Ink Three day stamp on its own line, no rule, no card.
 - **Pipeline (`/tech/`):** numbered rows on Hairlines with a light-serif Soft Ink numeral (1.75rem) hanging in a 52px left column, a 600 step name, then Ink Two text.
 - **Dash list (`/tech/`):** short 8px Soft Ink dashes, Ink Two at 0.9688rem, 8px apart.
 
@@ -432,7 +461,7 @@ Black, quiet, confident; the only filled controls on the page.
 
 ### Do:
 - **Do** keep every filled control Graphite Ink on white, as a full pill; selected states are ink too.
-- **Do** show the product on the home as notebook cards: human labels in the sans, the person's words in the serif, sky rules and a peach margin.
+- **Do** show the product on the home with one mock per idea; when it is a notebook card, put human labels in the sans and the person's words in the serif, on sky rules with a peach margin.
 - **Do** show real file formats on `/tech/` as selectable mono text in a white, hairline-edged card captioned with the file's path.
 - **Do** carry hierarchy with light serif size steps and line breaks, putting context (like the time of day) inside the heading sentence.
 - **Do** keep small text at Ink Three (#6b6e75) or darker; reserve Soft Ink for large type and marks.
@@ -442,7 +471,7 @@ Black, quiet, confident; the only filled controls on the page.
 - **Do** self-host every font and asset; the site loads nothing from third parties.
 
 ### Don't:
-- **Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), its faint echoes on paper, and the single morning-wash setup card per page.
+- **Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), its faint echoes on paper, and at most one morning-wash setup card per page (currently on `/tech/` only).
 - **Don't** add eyebrows, kickers, uppercase labels, or icon tiles above headings.
 - **Don't** use the mono face on the home, or anywhere outside real file contents, paths and commands on `/tech/`.
 - **Don't** use the peach highlighter on anything but a person's own quoted words.

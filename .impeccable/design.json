@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-18T01:17:00+00:00",
+  "generatedAt": "2026-10-18T12:00:00+00:00",
   "title": "Design System: sintr website",
   "scope": "Public website only (site/): the home (site/index.html) and Under the hood (site/tech/index.html). The product data model is documented in docs/DESIGN.md.",
   "extensions": {
@@ -330,6 +330,10 @@
         "displayName": "Title",
         "purpose": "Day headings, opened by an italic Ink Three time of day inside the sentence."
       },
+      "payoff": {
+        "displayName": "Payoff",
+        "purpose": "The home's closing scene line, opened by its own italic Ink Three day stamp; max 16em, balanced."
+      },
       "doc-heading": {
         "displayName": "Doc Heading",
         "purpose": "Section heads on /tech/, one per hairline-topped section."
@@ -344,11 +348,11 @@
       },
       "title-small": {
         "displayName": "Title Small",
-        "purpose": "Sub-heads, privacy promise terms, and /tech/ sub-sections."
+        "purpose": "Sub-heads, privacy promise terms (including the three-in-a-row promises), and /tech/ sub-sections."
       },
       "note-value-large": {
         "displayName": "Note Value Large",
-        "purpose": "Inline check-in values in a notebook card; tabular, never wrapped."
+        "purpose": "Inline check-in values in a notebook card; tabular, never wrapped. Available; not on the home since revision 3."
       },
       "lede": {
         "displayName": "Lede",
@@ -524,7 +528,7 @@
       {
         "name": "write",
         "value": "row opacity .9s, delay i*150ms + 200ms; highlighter 1.4s at 1.35s",
-        "purpose": "The capture notebook card writes itself row by row, then the quoted thought is highlighted."
+        "purpose": "The hero notebook card, the only one on the home, writes itself row by row on load, then the quoted thought is highlighted."
       },
       {
         "name": "highlight",
@@ -544,7 +548,7 @@
       {
         "name": "disclosure",
         "value": "chevron rotate -45deg to 45deg, .4s var(--ease)",
-        "purpose": "The setup message disclosure opens."
+        "purpose": "The setup message disclosure opens (the home's closed setup disclosure)."
       },
       {
         "name": "toc-current",
@@ -571,7 +575,7 @@
       {
         "name": "stack",
         "value": "900px",
-        "purpose": "All splits single-column, sticky released, steps stack, contents list becomes a static two-column list, front matter pair stacks; parallax off at or below."
+        "purpose": "All splits single-column, sticky released, steps stack, the three promises stack with a hairline under each, contents list becomes a static two-column list, front matter pair stacks; parallax off at or below."
       },
       {
         "name": "mobile",
@@ -586,7 +590,7 @@
       {
         "name": "flow-home",
         "value": "@container flow (max-width: 1100px)",
-        "purpose": "Home flow line becomes a vertical spine."
+        "purpose": "Home flow line becomes a vertical spine. Still defined; the home no longer shows the flow line."
       },
       {
         "name": "flow-doc",
@@ -608,6 +612,14 @@
       "home": "Fixed to the viewport with motion; recolors and moves with each section's data-time.",
       "tech": "Absolute in the header (inset 0 0 auto 0, height 92vh), mask-image linear-gradient(#000 55%, transparent); held at noon, translate(2vw,-4vh) scale(1.05) rotate(-2deg), opacity .78.",
       "mobile": "Under 720px one 150vw pane, rotate(-4deg), opacity .62 (.42 at night)."
+    },
+    "spacingMeta": {
+      "section": {
+        "purpose": "Section rest on /tech/ (and the original home rhythm)."
+      },
+      "section-home": {
+        "purpose": "Tighter section rest on the home since revision 3: body:not(.page-tech) { --section: clamp(88px, 10vw, 148px) }."
+      }
     }
   },
   "components": [
@@ -654,7 +666,7 @@
       "name": "Notebook Card",
       "kind": "card",
       "refersTo": "notebook-card",
-      "description": "Signature artifact on the home: a moment as a person's notebook page. Sky ruled hairlines, a peach margin rule, sans labels, serif words, the quoted thought highlighted.",
+      "description": "Signature artifact on the home: a moment as a person's notebook page. Sky ruled hairlines, a peach margin rule, sans labels, serif words, the quoted thought highlighted. The home shows exactly one, in the hero, writing itself on load.",
       "html": "<figure class=\"ds-note\"><figcaption class=\"ds-note__head\"><span class=\"ds-note__when\">Tuesday, 7:40 pm</span><span class=\"ds-note__tag\">A moment, in your words</span></figcaption><dl class=\"ds-note__rows\"><div class=\"ds-note__row\"><dt>What went through your mind</dt><dd><q class=\"ds-said\">there's no way I can handle this</q></dd></div><div class=\"ds-note__row\"><dt>How you felt</dt><dd>Anxious <span class=\"ds-note__scale\">85 of 100</span></dd></div><div class=\"ds-note__row\"><dt>In your body</dt><dd>Tight chest, clenched jaw</dd></div><div class=\"ds-note__row\"><dt>What you did</dt><dd>Said yes to all of it</dd></div></dl></figure>",
       "css": ".ds-note { position: relative; max-width: 460px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 14px; box-shadow: 0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22); overflow: hidden; container-type: inline-size; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-note::before { content: \"\"; position: absolute; top: 0; bottom: 0; left: 26px; width: 1px; background: #f2cdb9; } .ds-note__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 14px 20px 12px 44px; border-bottom: 1px solid var(--rule, #e8e6e1); } .ds-note__when { font-family: \"Source Serif 4\", Georgia, serif; font-style: italic; font-size: 1rem; color: var(--ink-2, #474a51); } .ds-note__tag { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--ink-3, #6b6e75); } .ds-note__rows { margin: 0; padding: 2px 20px 6px 44px; } .ds-note__row { display: grid; grid-template-columns: minmax(7rem, 9.5rem) 1fr; gap: 2px 18px; padding: 11px 0 10px; border-bottom: 1px solid #e5edf4; } .ds-note__row:last-child { border-bottom: 0; } .ds-note__row dt { font-size: .8125rem; line-height: 1.45; color: var(--ink-3, #6b6e75); padding-top: 3px; } .ds-note__row dd { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; color: var(--ink, #16171a); } @container (max-width: 500px) { .ds-note__row { grid-template-columns: 1fr; padding: 9px 0 8px; } .ds-note__row dt { padding-top: 0; } } .ds-said { quotes: \"\\201C\" \"\\201D\"; background: linear-gradient(to top, transparent 0 8%, var(--mark, #fbe0cd) 8% 42%, transparent 42%) no-repeat; padding-inline: .06em; } .ds-note__scale { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--rule, #e8e6e1); border-radius: 999px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .75rem; color: var(--ink-3, #6b6e75); font-variant-numeric: tabular-nums; vertical-align: 2px; }"
     },
@@ -670,7 +682,7 @@
       "name": "Notebook Check-in and Tasks",
       "kind": "card",
       "refersTo": "notebook-card-value-inline",
-      "description": "Notebook variants: three inline check-in values that never wrap, and homework rows with drawn checkboxes; the folder variant drops its shadow and carries a small lock.",
+      "description": "Notebook variants, available but not on the home since revision 3: three inline check-in values that never wrap, and homework rows with drawn checkboxes; the folder variant drops its shadow and carries a small lock.",
       "html": "<div class=\"ds-stack\"><figure class=\"ds-note\"><figcaption class=\"ds-note__head\"><span class=\"ds-note__when\">Thursday, Oct 15 · morning</span><span class=\"ds-note__tag\">Check-in</span></figcaption><dl class=\"ds-note__rows ds-note__rows--inline\"><div class=\"ds-note__row\"><dt>Mood</dt><dd>2 of 5</dd></div><div class=\"ds-note__row\"><dt>Anxiety</dt><dd>4 of 5</dd></div><div class=\"ds-note__row\"><dt>Sleep</dt><dd>5½ hours</dd></div></dl><p class=\"ds-note__line\"><span class=\"ds-note__label\">Note</span> worked late again; 1:1 with my manager today</p></figure><figure class=\"ds-note ds-note--folder\"><figcaption class=\"ds-note__head\"><span class=\"ds-note__when\">From your sessions</span><span class=\"ds-note__tag\"><svg class=\"ds-lock\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"3\" y=\"7\" width=\"10\" height=\"7\" rx=\"1.5\"/><path d=\"M5.5 7V5a2.5 2.5 0 0 1 5 0v2\"/></svg>Only you can open it</span></figcaption><ul class=\"ds-tasks\"><li class=\"is-done\"><span class=\"ds-tick\"></span><span>Notice what happens right before saying “yes”</span></li><li><span class=\"ds-tick\"></span><span>Keep one midday pause, even in heavy weeks</span></li></ul></figure></div>",
       "css": ".ds-note { position: relative; max-width: 460px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 14px; box-shadow: 0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22); overflow: hidden; container-type: inline-size; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-note::before { content: \"\"; position: absolute; top: 0; bottom: 0; left: 26px; width: 1px; background: #f2cdb9; } .ds-note__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 14px 20px 12px 44px; border-bottom: 1px solid var(--rule, #e8e6e1); } .ds-note__when { font-family: \"Source Serif 4\", Georgia, serif; font-style: italic; font-size: 1rem; color: var(--ink-2, #474a51); } .ds-note__tag { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--ink-3, #6b6e75); } .ds-note__rows { margin: 0; padding: 2px 20px 6px 44px; } .ds-note__row { display: grid; grid-template-columns: minmax(7rem, 9.5rem) 1fr; gap: 2px 18px; padding: 11px 0 10px; border-bottom: 1px solid #e5edf4; } .ds-note__row:last-child { border-bottom: 0; } .ds-note__row dt { font-size: .8125rem; line-height: 1.45; color: var(--ink-3, #6b6e75); padding-top: 3px; } .ds-note__row dd { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; color: var(--ink, #16171a); } @container (max-width: 500px) { .ds-note__row { grid-template-columns: 1fr; padding: 9px 0 8px; } .ds-note__row dt { padding-top: 0; } } .ds-said { quotes: \"\\201C\" \"\\201D\"; background: linear-gradient(to top, transparent 0 8%, var(--mark, #fbe0cd) 8% 42%, transparent 42%) no-repeat; padding-inline: .06em; } .ds-note__scale { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--rule, #e8e6e1); border-radius: 999px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .75rem; color: var(--ink-3, #6b6e75); font-variant-numeric: tabular-nums; vertical-align: 2px; } .ds-stack { display: grid; gap: 24px; } .ds-note__rows--inline { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0 clamp(18px, 7cqi, 40px); padding-bottom: 0; } .ds-note__rows--inline .ds-note__row { grid-template-columns: 1fr; border-bottom: 0; padding: 14px 0 12px; } .ds-note__rows--inline .ds-note__row dd { font-size: 1.375rem; font-variant-numeric: tabular-nums; white-space: nowrap; } .ds-note__line { margin: 0; padding: 12px 20px 16px 44px; border-top: 1px solid #e5edf4; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; } .ds-note__label { display: block; margin-bottom: 2px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .8125rem; color: var(--ink-3, #6b6e75); } .ds-tasks { margin: 0; padding: 4px 20px 4px 44px; list-style: none; } .ds-tasks li { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0 10px; border-bottom: 1px solid #e5edf4; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; } .ds-tasks li:last-child { border-bottom: 0; } .ds-tick { position: relative; flex: none; width: 16px; height: 16px; margin-top: 4px; border: 1.5px solid var(--ink-soft, #82858c); border-radius: 4px; } .is-done .ds-tick { background: var(--ink, #16171a); border-color: var(--ink, #16171a); } .is-done .ds-tick::after { content: \"\"; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid #fff; border-width: 0 1.6px 1.6px 0; transform: rotate(42deg); } .ds-note--folder { box-shadow: none; } .ds-lock { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }"
     },
@@ -678,7 +690,7 @@
       "name": "Get-started Steps",
       "kind": "custom",
       "refersTo": "step",
-      "description": "Three steps under ink rules: a light serif numeral, a serif title, quiet text, and an illustration made of the step's real action.",
+      "description": "Three steps under ink rules: a light serif numeral, a serif title, quiet text, and an optional illustration made of the step's real action. On the home only step one carries one (the ink copy button); mini chat bubbles remain available.",
       "html": "<ol class=\"ds-steps\"><li class=\"ds-step\"><h3 class=\"ds-step__title\">Copy the setup message</h3><p class=\"ds-step__text\">It's a message for your assistant, not for you.</p></li><li class=\"ds-step\"><h3 class=\"ds-step__title\">Paste it to your assistant</h3><p class=\"ds-step__text\">Start a conversation and paste it in.</p><div class=\"ds-step__art\"><p class=\"ds-mini ds-mini--you\">Please set up sintr for me…</p></div></li><li class=\"ds-step\"><h3 class=\"ds-step__title\">Answer a few questions</h3><p class=\"ds-step__text\">Skip anything you'd rather not share.</p><div class=\"ds-step__art\"><p class=\"ds-mini ds-mini--agent\">Which language should I write your notes in?</p><p class=\"ds-mini ds-mini--you\">Portuguese, please.</p></div></li></ol>",
       "css": ".ds-steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; margin: 0; padding: 0; list-style: none; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-step { counter-increment: step; display: flex; flex-direction: column; padding-top: 26px; border-top: 1px solid var(--ink, #16171a); } .ds-step::before { content: counter(step); font-family: \"Source Serif 4\", Georgia, serif; font-size: 2.75rem; font-weight: 300; line-height: 1; color: var(--ink-soft, #82858c); margin-bottom: 18px; } .ds-step__title { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.012em; } .ds-step__text { margin: 10px 0 0; color: var(--ink-3, #6b6e75); font-size: .9688rem; line-height: 1.55; } .ds-step__art { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 24px; } .ds-mini { margin: 0; padding: 9px 14px; border-radius: 20px; font-size: .875rem; line-height: 1.5; } .ds-mini--you { align-self: flex-end; background: var(--wash, #f5f4f1); border-bottom-right-radius: 6px; color: var(--ink, #16171a); } .ds-mini--agent { background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-bottom-left-radius: 6px; color: var(--ink-2, #474a51); } @media (max-width: 900px) { .ds-steps { grid-template-columns: 1fr; } }"
     },
@@ -686,9 +698,33 @@
       "name": "Setup Card",
       "kind": "card",
       "refersTo": "ask-card",
-      "description": "The one call to act per page: morning-wash card with a heading, an ink Copy pill, a lead, and the message inside a disclosure that starts closed.",
+      "description": "The morning-wash call to act, at most one per page and currently on /tech/ only: a heading, an ink Copy pill, and the message (the lead-plus-closed-disclosure form is defined but unused). The home uses the Setup Disclosure instead.",
       "html": "<div class=\"ds-ask\"><div class=\"ds-ask__head\"><h3 class=\"ds-ask__title\">The setup message</h3><button class=\"ds-ask__copy\" type=\"button\">Copy</button></div><p class=\"ds-ask__lead\">A message for your assistant, not for you.</p><details class=\"ds-ask__details\"><summary>Read the message before you copy it</summary><blockquote class=\"ds-ask__text\">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer.</blockquote></details></div>",
       "css": ".ds-ask { max-width: 620px; padding: 28px 28px 26px; border-radius: 20px; background: linear-gradient(162deg, #e9f2f8 0%, #f3f2ee 48%, #f9ebe1 100%); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; color: var(--ink, #16171a); } .ds-ask__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; } .ds-ask__title { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-weight: 400; font-size: 1.375rem; line-height: 1.25; letter-spacing: -.01em; } .ds-ask__copy { min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--ink, #16171a); color: #fff; font: inherit; font-size: .9375rem; font-weight: 500; cursor: pointer; transition: background-color .4s cubic-bezier(.16, 1, .3, 1), transform .5s cubic-bezier(.16, 1, .3, 1); } .ds-ask__copy:hover { background: #000; transform: translateY(-1px); } .ds-ask__copy:focus-visible, .ds-ask__details summary:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; border-radius: 6px; } .ds-ask__lead { margin: 14px 0 0; color: var(--ink-2, #474a51); } .ds-ask__details { margin-top: 18px; border-top: 1px solid rgba(22, 23, 26, .1); } .ds-ask__details summary { display: inline-flex; align-items: center; gap: 10px; padding: 14px 0 4px; font-weight: 500; cursor: pointer; list-style: none; } .ds-ask__details summary::-webkit-details-marker { display: none; } .ds-ask__details summary::before { content: \"\"; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .4s cubic-bezier(.16, 1, .3, 1); } .ds-ask__details[open] summary::before { transform: rotate(45deg); } .ds-ask__text { margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.66; }"
+    },
+    {
+      "name": "Setup Disclosure",
+      "kind": "custom",
+      "refersTo": "setup-message",
+      "description": "The home's setup message: a closed disclosure with a chevron summary on a 10% ink hairline; the message sits on plain Wash with a hairline, no gradient, no shadow.",
+      "html": "<details class=\"ds-setup\"><summary>Read the setup message before you copy it</summary><div class=\"ds-setup__body\"><blockquote class=\"ds-setup__text\">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer.</blockquote><p class=\"ds-setup__foot\">It only uses what's published in the sintr project.</p></div></details>",
+      "css": ".ds-setup { max-width: 880px; border-top: 1px solid rgba(22, 23, 26, .1); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; color: var(--ink, #16171a); } .ds-setup summary { display: inline-flex; align-items: center; gap: 10px; padding: 14px 0 4px; font-weight: 500; cursor: pointer; list-style: none; } .ds-setup summary::-webkit-details-marker { display: none; } .ds-setup summary::before { content: \"\"; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .4s cubic-bezier(.16, 1, .3, 1); } .ds-setup[open] summary::before { transform: rotate(45deg); } .ds-setup summary:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; border-radius: 6px; } .ds-setup__body { padding-top: 6px; } .ds-setup__text { margin: 12px 0 0; padding: 20px 22px; border-radius: 14px; background: var(--wash, #f5f4f1); border: 1px solid var(--rule, #e8e6e1); font-size: 1.0625rem; line-height: 1.66; overflow-wrap: anywhere; } .ds-setup__foot { margin: 12px 0 0; font-size: .875rem; color: var(--ink-2, #474a51); }"
+    },
+    {
+      "name": "Promises, Three in a Row",
+      "kind": "custom",
+      "refersTo": "promise-row",
+      "description": "The home's privacy points: three ruled points under one ink rule, serif term over Ink Two text; they stack with hairlines under 900px. Not cards.",
+      "html": "<dl class=\"ds-promises\"><div class=\"ds-promises__row\"><dt>On your computer</dt><dd>A folder, like a notebook in a drawer. No app, no account, no cloud.</dd></div><div class=\"ds-promises__row\"><dt>Locked to you</dt><dd>Other people using the same computer can't open it.</dd></div><div class=\"ds-promises__row\"><dt>Never passed around</dt><dd>Nothing is copied into chats or other services, and deleting means deleting.</dd></div></dl>",
+      "css": ".ds-promises { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; margin: 0; border-top: 1px solid var(--ink, #16171a); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-promises__row { display: grid; gap: 8px; padding: 22px 0 0; } .ds-promises dt { font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.375rem; font-weight: 400; line-height: 1.25; letter-spacing: -.01em; } .ds-promises dd { margin: 0; color: var(--ink-2, #474a51); line-height: 1.55; } @media (max-width: 900px) { .ds-promises { grid-template-columns: 1fr; } .ds-promises__row { padding: 18px 0; border-bottom: 1px solid var(--rule, #e8e6e1); } }"
+    },
+    {
+      "name": "Payoff Line",
+      "kind": "custom",
+      "refersTo": "payoff-line",
+      "description": "A closing serif line after the scenes, opened by its own italic day stamp; no rule, no card.",
+      "html": "<p class=\"ds-payoff\"><span class=\"ds-when\">Monday, 6 pm.</span> The hour starts with Tuesday, not with today.</p>",
+      "css": ".ds-payoff { margin: 0; max-width: 16em; font-family: \"Source Serif 4\", Georgia, serif; font-weight: 300; font-size: clamp(1.875rem, 1.2rem + 2vw, 3rem); line-height: 1.1; letter-spacing: -.02em; color: var(--ink, #16171a); text-wrap: balance; } .ds-when { display: block; font-style: italic; color: var(--ink-3, #6b6e75); font-weight: 300; }"
     },
     {
       "name": "Contents List",
@@ -718,9 +754,9 @@
       "name": "Chat Bubbles",
       "kind": "custom",
       "refersTo": "chat-bubble-you",
-      "description": "Your messages on Wash at the right, the agent's on white with a hairline at the left; one tight tail corner on the speaker's side.",
-      "html": "<div class=\"ds-chat\"><p class=\"ds-msg ds-msg--you\">Can we write down what happened at planning today?</p><p class=\"ds-msg ds-msg--agent\">That sounds like a lot landing at once. What went through your mind right then?</p></div>",
-      "css": ".ds-chat { display: flex; flex-direction: column; gap: 12px; max-width: 500px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-msg { margin: 0; max-width: 82%; padding: 13px 18px; border-radius: 20px; font-size: .9688rem; line-height: 1.5; } .ds-msg--you { align-self: flex-end; background: var(--wash, #f5f4f1); border-bottom-right-radius: 6px; color: var(--ink, #16171a); } .ds-msg--agent { align-self: flex-start; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-bottom-left-radius: 6px; color: var(--ink-2, #474a51); }"
+      "description": "Your messages on Wash at the right, the agent's on white with a hairline at the left; one tight tail corner on the speaker's side. A later moment in the same conversation is marked by an italic serif time divider on a hairline.",
+      "html": "<div class=\"ds-chat\"><p class=\"ds-msg ds-msg--you\">Can we write down what happened at planning? I'm still wound up.</p><p class=\"ds-msg ds-msg--agent\">Of course. What went through your mind right then?</p><p class=\"ds-chat__when\">Thursday, 8:50 am</p><p class=\"ds-msg ds-msg--you\">Mood 2 of 5, slept 5½ hours.</p><p class=\"ds-msg ds-msg--agent\">Noted for Thursday.</p></div>",
+      "css": ".ds-chat { display: flex; flex-direction: column; gap: 12px; max-width: 500px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-msg { margin: 0; max-width: 82%; padding: 13px 18px; border-radius: 20px; font-size: .9688rem; line-height: 1.5; } .ds-msg--you { align-self: flex-end; background: var(--wash, #f5f4f1); border-bottom-right-radius: 6px; color: var(--ink, #16171a); } .ds-msg--agent { align-self: flex-start; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-bottom-left-radius: 6px; color: var(--ink-2, #474a51); } .ds-chat__when { align-self: stretch; margin: 14px 0 0; padding-top: 18px; border-top: 1px solid var(--rule, #e8e6e1); font-family: \"Source Serif 4\", Georgia, serif; font-style: italic; font-size: 1rem; color: var(--ink-3, #6b6e75); }"
     },
     {
       "name": "Command Block",
@@ -733,11 +769,11 @@
   ],
   "narrative": {
     "northStar": "The Consulting-Room Wall",
-    "overview": "**Creative North Star: \"The Consulting-Room Wall\"**\n\nThe page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. On the home, as the reader moves through the week, the light changes time of day (morning, noon, dusk, early morning, evening, golden hour, night, late morning, dawn) and cross-fades rather than jumps. On `/tech/` the same light is held at noon in the header and fades out before the reading starts.\n\nHierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading. The two pages share every token and face but show the product in two registers. The home demonstrates it as a person lives it: every artifact is a **notebook card**, white paper with faint school-paper rules and a peach margin line, human labels in the sans and the person's own words in the serif. `/tech/` demonstrates it as it is built: real sintr file formats set as selectable Fragment Mono text in white cards captioned by their path, beside specification tables and numbered pipeline steps. The mono face lives on `/tech/` only.\n\nDensity is low and the pace is slow. Sections are separated by large vertical rests and single hairlines, not by fills or boxes. Motion is opt-in and unhurried: the light moves over about three seconds, leaves sway on 13 and 17 second cycles, and content settles in with a short blur-to-sharp fade. With JavaScript off or reduced motion requested, the light rests at the top of the page and everything reads. The wellness-app default (pastel blob hero, phone mockup, feature-card trio), the developer-tool default (dark terminal page, install commands up front) and developer-portal chrome are all rejected.",
+    "overview": "**Creative North Star: \"The Consulting-Room Wall\"**\n\nThe page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. On the home, as the reader moves through the week, the light changes time of day (morning, noon, dusk, evening, night, late morning, dawn) and cross-fades rather than jumps; the early-morning and golden-hour palettes stay defined for future sections. On `/tech/` the same light is held at noon in the header and fades out before the reading starts.\n\nHierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading. The two pages share every token and face but show the product in two registers. The home demonstrates it as a person lives it, one mock per idea: a single **notebook card** in the hero (white paper with faint school-paper rules and a peach margin line, human labels in the sans and the person's own words in the serif) that writes itself on load, then a conversation in chat bubbles and the report as a sheet of paper. `/tech/` demonstrates it as it is built: real sintr file formats set as selectable Fragment Mono text in white cards captioned by their path, beside specification tables and numbered pipeline steps. The mono face lives on `/tech/` only.\n\nDensity is low and the pace is slow. Sections are separated by large vertical rests and single hairlines, not by fills or boxes. Motion is opt-in and unhurried: the light moves over about three seconds, leaves sway on 13 and 17 second cycles, and content settles in with a short blur-to-sharp fade. With JavaScript off or reduced motion requested, the light rests at the top of the page and everything reads. The wellness-app default (pastel blob hero, phone mockup, feature-card trio), the developer-tool default (dark terminal page, install commands up front) and developer-portal chrome are all rejected.",
     "keyCharacteristics": [
       "White ground, graphite ink, black pill controls; light is the only color, echoed faintly on paper.",
       "Light serif display (weight 300) carrying hierarchy by size and two tones, never by labels.",
-      "Two registers of artifact: notebook cards on the home (sans labels, serif words), real file cards in mono on `/tech/`.",
+      "Two registers of artifact: the notebook card on the home (sans labels, serif words; one per page, in the hero), real file cards in mono on `/tech/`.",
       "Hairline-ruled structure on a 12-column grid with generous section rests.",
       "A time-of-day light that moves with the reader on the home, stays in the header on the reading page, and disappears into a static wash when motion is unwelcome."
     ],
@@ -749,7 +785,7 @@
       },
       {
         "name": "The Morning Wash Exception",
-        "body": "Exactly one surface per page carries a faint light gradient as a fill: the setup-message card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). One per page, and only on the single call to act.",
+        "body": "At most one surface per page carries a faint light gradient as a fill: the setup-message card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). Today that card lives on `/tech/` only (\"The setup message from the home page\"). The home no longer uses the exception: its setup message sits on plain Wash with a hairline inside a closed disclosure, so on the home the window light is the only color apart from the highlighter and the paper's faint echoes.",
         "section": "colors"
       },
       {
@@ -784,13 +820,13 @@
       },
       {
         "name": "The Hairline First Rule",
-        "body": "A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the \"Your sintr folder\" card in the privacy section deliberately drops its shadow, and the reading page's tables and lists are hairline only.",
+        "body": "A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the folder variant of the notebook card deliberately drops its shadow, the home's setup message sits on Wash with a hairline and no shadow, and the reading page's tables and lists are hairline only.",
         "section": "elevation"
       }
     ],
     "dos": [
       "**Do** keep every filled control Graphite Ink on white, as a full pill; selected states are ink too.",
-      "**Do** show the product on the home as notebook cards: human labels in the sans, the person's words in the serif, sky rules and a peach margin.",
+      "**Do** show the product on the home with one mock per idea; when it is a notebook card, put human labels in the sans and the person's words in the serif, on sky rules with a peach margin.",
       "**Do** show real file formats on `/tech/` as selectable mono text in a white, hairline-edged card captioned with the file's path.",
       "**Do** carry hierarchy with light serif size steps and line breaks, putting context (like the time of day) inside the heading sentence.",
       "**Do** keep small text at Ink Three (#6b6e75) or darker; reserve Soft Ink for large type and marks.",
@@ -800,7 +836,7 @@
       "**Do** self-host every font and asset; the site loads nothing from third parties."
     ],
     "donts": [
-      "**Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), its faint echoes on paper, and the single morning-wash setup card per page.",
+      "**Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), its faint echoes on paper, and at most one morning-wash setup card per page (currently on `/tech/` only).",
       "**Don't** add eyebrows, kickers, uppercase labels, or icon tiles above headings.",
       "**Don't** use the mono face on the home, or anywhere outside real file contents, paths and commands on `/tech/`.",
       "**Don't** use the peach highlighter on anything but a person's own quoted words.",

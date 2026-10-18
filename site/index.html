@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>sintr — the week between sessions, kept in your own words</title>
-  <meta name="description" content="sintr helps you keep the week between therapy sessions. Tell your AI assistant what happened, the way you'd tell a friend; on Sunday you get your week on one page to read, change and share with your therapist only if you say so. Private, on your own computer.">
+  <title>sintr — a private mood diary for the week between therapy sessions</title>
+  <meta name="description" content="sintr is a private mood diary you keep by talking to your AI assistant. Before each therapy session, your week is waiting on one page, in your own words, shared with your therapist only if you say so. It stays on your own computer.">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <link rel="canonical" href="https://sintr.tiagomoraes.cloud/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sintr.tiagomoraes.cloud/">
   <meta property="og:title" content="sintr — the week between sessions, kept in your own words">
-  <meta property="og:description" content="Tell your AI assistant what happened, the way you'd tell a friend. Before your session, your week on one page, shared with your therapist only if you say so.">
+  <meta property="og:description" content="A private mood diary you keep by talking to your AI assistant. Before each session, your week on one page, shared only if you say so.">
   <meta property="og:image" content="https://sintr.tiagomoraes.cloud/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -135,22 +135,21 @@
       <div class="wrap hero__grid">
         <div class="hero__copy">
           <h1 id="hero-title" class="display">The week between sessions, kept in <span class="hl">your own words.</span></h1>
-          <p class="lede">When something happens, you tell your AI assistant, the way you'd tell a friend. It asks a question or two and writes it down for you. Before your next session, your week is waiting on one page, for you to read, change, and share with your therapist only if you&nbsp;want.</p>
+          <p class="lede">sintr is a private mood diary you keep by talking to your AI assistant. Before each therapy session, your week is waiting on one page, ready for you and your&nbsp;therapist.</p>
           <div class="hero__actions">
-            <a class="btn btn--ink" href="#start">Get started in three steps</a>
-            <a class="link" href="#week">See what a week looks like</a>
+            <a class="btn btn--ink" href="#start">Get started</a>
+            <a class="link" href="#week">See how it works</a>
           </div>
-          <p class="hero__meta">Private by design. Your notes live in a folder on your own computer, not in an app or a&nbsp;cloud.</p>
         </div>
 
         <div class="hero__art" data-depth="-0.06">
-          <figure class="note note--hero" aria-label="A moment, written down: fictional example">
-            <figcaption class="note__head"><span class="note__when">Tuesday, 7:40 pm</span><span class="note__tag">A moment, in your words</span></figcaption>
+          <figure class="note note--hero" data-write aria-label="A moment, written down: fictional example">
+            <figcaption class="note__head"><span class="note__when">Tuesday, 7:40 pm</span><span class="note__tag">Saved moment</span></figcaption>
             <dl class="note__rows">
-              <div class="note__row"><dt>What went through your mind</dt><dd><q class="said">there's no way I can handle this</q></dd></div>
-              <div class="note__row"><dt>How you felt</dt><dd>Anxious <span class="note__scale">85 of 100</span></dd></div>
-              <div class="note__row"><dt>In your body</dt><dd>Tight chest, clenched jaw</dd></div>
-              <div class="note__row"><dt>What you did</dt><dd>Said yes to all of it</dd></div>
+              <div class="note__row ln"><dt>What happened</dt><dd>Three new tasks in one sprint. Said yes to all of them.</dd></div>
+              <div class="note__row ln"><dt>What went through your mind</dt><dd><q class="said">there's no way I can handle this</q></dd></div>
+              <div class="note__row ln"><dt>How you felt</dt><dd>Anxious <span class="note__scale">85 of 100</span></dd></div>
+              <div class="note__row ln"><dt>In your body</dt><dd>Tight chest, clenched jaw</dd></div>
             </dl>
           </figure>
         </div>
@@ -158,105 +157,47 @@
     </section>
 
     <!-- ───────────────────────── Why ───────────────────────── -->
-    <section class="idea" data-time="noon" aria-labelledby="idea-title">
-      <div class="wrap">
+    <section class="idea idea--lean" data-time="noon" aria-labelledby="idea-title">
+      <div class="wrap idea__grid">
         <h2 id="idea-title" class="statement" data-reveal>
-          <span class="statement__a">Therapy gets fifty minutes of your&nbsp;week.</span>
-          <span class="statement__b">The rest of it is easy to&nbsp;lose.</span>
+          <span class="statement__a">Therapy gets fifty minutes a&nbsp;week.</span>
+          <span class="statement__b">Your week happens in the rest of&nbsp;it.</span>
         </h2>
-        <div class="idea__body">
-          <p class="prose" data-reveal>You sit down and remember how you feel right now. Tuesday is a blur. The thing that shook you on Wednesday never quite gets told, or it comes out as &ldquo;it was a hard week.&rdquo; sintr helps you keep those moments while they're still fresh, in your own words, so the hour you have is about the week you actually&nbsp;lived.</p>
-          <p class="prose prose--quiet" data-reveal>There's no new app to open and nothing to learn. You talk to the AI assistant you already use, and it keeps the notes for&nbsp;you.</p>
-        </div>
-
-        <div class="flow-wrap">
-          <ol class="flow" aria-label="How your week reaches your therapist" data-reveal>
-          <li class="flow__node"><span class="flow__name">You</span><span class="flow__edge">talk or type</span></li>
-          <li class="flow__node"><span class="flow__name">Your assistant</span><span class="flow__edge">writes it down</span></li>
-          <li class="flow__node"><span class="flow__name">Your private folder</span><span class="flow__edge">every Sunday</span></li>
-          <li class="flow__node"><span class="flow__name">Your week, on one page</span><span class="flow__edge flow__edge--gate">you say yes</span></li>
-          <li class="flow__node"><span class="flow__name">Your therapist</span></li>
-        </ol>
-        </div>
+        <p class="prose idea__why" data-reveal>By the session, Tuesday is a blur. You remember how you feel today, and what shook you midweek never quite gets&nbsp;told.</p>
       </div>
     </section>
 
-    <!-- ───────────────────────── The week ───────────────────────── -->
+    <!-- ───────────────────────── How it feels ───────────────────────── -->
     <div id="week" class="week">
-      <div class="wrap week__intro">
-        <h2 class="h-section" data-reveal>One week, kept.</h2>
-        <p class="prose" data-reveal>A fictional week, from Tuesday to Monday. This is what using sintr feels like, from the first message to the session.</p>
-      </div>
-
-      <!-- Capture -->
+      <!-- Tuesday -->
       <section class="day day--capture" data-time="dusk" aria-labelledby="capture-title">
         <div class="wrap day__grid">
           <div class="day__copy">
-            <h3 id="capture-title" class="h-day" data-reveal><span class="when">Tuesday, 7:40&nbsp;pm.</span> Something happened at&nbsp;work.</h3>
-            <p class="prose" data-reveal>You tell your assistant what happened, the way you'd tell a friend. It listens first. Then it asks one or two questions, like what went through your mind or how strong the feeling was, and writes the moment down in a shape your therapist will recognize. You see it before it's&nbsp;saved.</p>
-            <dl class="fields" data-reveal>
-              <div class="fields__row"><dt>What happened</dt><dd>When, where, who was there.</dd></div>
-              <div class="fields__row"><dt>What went through your mind</dt><dd>Your exact words, in quotes. Never reworded.</dd></div>
-              <div class="fields__row"><dt>How you felt</dt><dd>The feelings you name, and how strong they were, from 0 to 100.</dd></div>
-              <div class="fields__row"><dt>In your body</dt><dd>Anything you noticed physically.</dd></div>
-              <div class="fields__row"><dt>What you did</dt><dd>What came next. &ldquo;Nothing&rdquo; counts.</dd></div>
-            </dl>
-            <p class="prose prose--quiet" data-reveal>If you want, it can help you look at a thought more closely. It never pushes, and that can always wait for the session. If your therapist works with CBT, you'll recognize this as a thought&nbsp;record.</p>
+            <h3 id="capture-title" class="h-day" data-reveal><span class="when">Tuesday, 7:40&nbsp;pm.</span> Tell it while it's&nbsp;fresh.</h3>
+            <p class="prose" data-reveal>You tell your assistant what happened, the way you'd tell a friend. It asks one or two questions, then saves&nbsp;it.</p>
+            <p class="prose prose--quiet" data-reveal>On ordinary days, one line is&nbsp;enough.</p>
           </div>
 
           <div class="day__art" data-depth="-0.05">
             <div class="chat" aria-label="Example conversation with an AI assistant">
-              <p class="chat__msg chat__msg--you" data-reveal>Can we write down what happened at planning today? I'm still wound&nbsp;up.</p>
-              <p class="chat__msg chat__msg--agent" data-reveal>That sounds like a lot landing at once. What happened, and what went through your mind right&nbsp;then?</p>
-              <p class="chat__msg chat__msg--you" data-reveal>Three new tasks in the same sprint. I just thought: there's no way I can handle this. And I said yes to all of&nbsp;it.</p>
-              <p class="chat__msg chat__msg--agent" data-reveal>From 0 to 100, how strong was the anxiety in that moment? Anything in your&nbsp;body?</p>
-              <p class="chat__msg chat__msg--you" data-reveal>85. Tight chest, jaw clenched. Still working&nbsp;now.</p>
+              <p class="chat__msg chat__msg--you" data-reveal>Can we write down what happened at planning? I'm still wound&nbsp;up.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal>Of course. What went through your mind right then, and how strong was the anxiety, from 0 to&nbsp;100?</p>
+              <p class="chat__msg chat__msg--you" data-reveal>&ldquo;There's no way I can handle this.&rdquo; About&nbsp;85.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal>Saved. We can look at that thought more closely now, or leave it for your&nbsp;session.</p>
+              <p class="chat__when" data-reveal>Thursday, 8:50&nbsp;am</p>
+              <p class="chat__msg chat__msg--you" data-reveal>Mood 2 of 5, slept 5½&nbsp;hours.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal>Noted for Thursday.</p>
             </div>
-            <figure class="note" data-write aria-label="The moment as it was written down: fictional example">
-              <figcaption class="note__head"><span class="note__when">Tuesday, Oct 13 · 7:40 pm</span><span class="note__tag">Saved after you said it looked right</span></figcaption>
-              <dl class="note__rows">
-                <div class="note__row ln"><dt>What happened</dt><dd>Sprint planning. Three new tasks landed in the same sprint, and I said yes to all of them on the spot.</dd></div>
-                <div class="note__row ln"><dt>What went through your mind</dt><dd><q class="said">there's no way I can handle this</q></dd></div>
-                <div class="note__row ln"><dt>How you felt</dt><dd>Anxious <span class="note__scale">85 of 100</span></dd></div>
-                <div class="note__row ln"><dt>In your body</dt><dd>Tight chest, clenched jaw</dd></div>
-                <div class="note__row ln"><dt>What you did</dt><dd>Accepted everything and kept working into the night</dd></div>
-                <div class="note__row ln"><dt>Around it</dt><dd>Back-to-back meetings since 9am</dd></div>
-              </dl>
-            </figure>
           </div>
         </div>
       </section>
 
-      <!-- Check-in -->
-      <section class="day day--checkin" data-time="early" aria-labelledby="checkin-title">
-        <div class="wrap day__grid day__grid--flip">
-          <div class="day__copy">
-            <h3 id="checkin-title" class="h-day" data-reveal><span class="when">Thursday, 8:50&nbsp;am.</span> One line is&nbsp;enough.</h3>
-            <p class="prose" data-reveal>A check-in is one message: your mood, your sleep, whatever you feel like saying. No forms to fill in, no streaks, no reminders to feel guilty&nbsp;about.</p>
-            <p class="prose prose--quiet" data-reveal>If you don't mention something, it isn't written down. Nothing is ever made up for&nbsp;you.</p>
-          </div>
-          <div class="day__art" data-depth="-0.04">
-            <p class="chat__msg chat__msg--you chat__msg--solo" data-reveal>Mood 2 out of 5, anxiety 4, slept five and a half hours. Worked late again. 1:1 with my manager&nbsp;today.</p>
-            <figure class="note note--checkin" data-reveal aria-label="The check-in as it was written down: fictional example">
-              <figcaption class="note__head"><span class="note__when">Thursday, Oct 15 · morning</span><span class="note__tag">Check-in</span></figcaption>
-              <dl class="note__rows note__rows--inline">
-                <div class="note__row"><dt>Mood</dt><dd>2 of 5</dd></div>
-                <div class="note__row"><dt>Anxiety</dt><dd>4 of 5</dd></div>
-                <div class="note__row"><dt>Sleep</dt><dd>5½ hours</dd></div>
-              </dl>
-              <p class="note__line"><span class="note__label">Note</span> worked late again; 1:1 with my manager today</p>
-            </figure>
-            <p class="chat__msg chat__msg--agent chat__msg--solo" data-reveal>Noted for Thursday.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Weekly summary -->
+      <!-- Sunday -->
       <section class="day day--report" data-time="evening" aria-labelledby="report-title">
         <div class="wrap">
           <div class="report__head">
-            <h3 id="report-title" class="h-day h-day--wide" data-reveal><span class="when">Sunday, 8&nbsp;pm.</span> Your week, on one&nbsp;page.</h3>
-            <p class="prose" data-reveal>On Sunday evening, your assistant puts your week together: what happened, how you felt, what helped, and a few things you might want to bring up. Patterns are written as observations, with dates, and never as a diagnosis. It's a draft for you first. You read it, change anything, and decide whether it goes&nbsp;anywhere.</p>
+            <h3 id="report-title" class="h-day h-day--wide" data-reveal><span class="when">Sunday, 8&nbsp;pm.</span> The week comes&nbsp;together.</h3>
+            <p class="prose" data-reveal>Your assistant writes it up: what happened, how you felt, what helped, and what you might want to bring up. Patterns are noted as observations, never as&nbsp;diagnoses.</p>
           </div>
 
           <div class="report__grid">
@@ -268,72 +209,50 @@
                 <label class="seg__opt seg__opt--pt" for="rl-pt">Português <span class="seg__hint">original</span></label>
                 <label class="seg__opt seg__opt--en" for="rl-en">English</label>
               </div>
-
               <p class="paper__status"><span class="paper__dot" aria-hidden="true"></span> Draft, waiting for you</p>
-              <article class="paper paper--pt" lang="pt-BR" aria-label="Example weekly report, original Portuguese">
+
+              <article class="paper paper--pt" lang="pt-BR" aria-label="Example weekly report, original Portuguese, abridged">
                 <h4 class="paper__title">Relatório semanal — Demo Person — 2026-W42</h4>
                 <h5>Resumo</h5>
                 <p>Semana de carga alta no trabalho, com dois picos de ansiedade no início (pressão de prazos em 13/10 e um feedback recebido como crítica em 15/10) e uma recuperação clara no fim de semana, incluindo uma pausa no meio do dia pela primeira vez em semanas e um jantar em família tranquilo.</p>
-                <h5>Humor, energia e sono</h5>
-                <ul>
-                  <li>Humor médio 3,0/5 (mínimos de 2 em 13 e 15/10; máximos de 4 em 16 e 17/10).</li>
-                  <li>Ansiedade média 2,8/5, com picos de 4/5 em 13 e 15/10 e queda para 1/5 em 17/10.</li>
-                  <li>Sono médio 6,7h, com duas noites ruins (6h em 13/10; 5,5h em 15/10), ambas por trabalho à noite.</li>
-                </ul>
                 <h5>Situações marcantes</h5>
                 <ul>
                   <li><b>13/10</b> — Reunião de planning com três demandas na mesma sprint: <mark>“eu não vou dar conta disso”</mark>; ansiedade 85. Aceitou tudo na hora e continuou trabalhando à noite.</li>
                   <li><b>15/10</b> — Feedback individual do gestor sobre ritmo de entrega: <mark>“ele acha que eu sou lento”</mark>; ansiedade 70, vergonha 55. Pediu desculpas repetidamente durante a conversa.</li>
-                  <li><b>16/10</b> — Caminhada de vinte minutos sem telefone: culpa 40 e alívio 30; “primeira vez em semanas que parei no meio do dia”.</li>
-                  <li><b>16/10</b> — Jantar em família tranquilo: contentamento 60; ficou conversando até tarde.</li>
                 </ul>
                 <h5>Temas e padrões recorrentes</h5>
                 <ul>
                   <li>Observação: as duas situações de maior sofrimento (13 e 15/10) foram no trabalho e envolvendo avaliação/expectativa externa.</li>
-                  <li>Observação: nas duas, a resposta registrada foi aceitar ou se desculpar na hora, sem negociar.</li>
-                  <li>Observação: a pausa de 16/10 e o fim de semana melhoraram humor e ansiedade (4/5 de humor e 1/5 de ansiedade em 17/10).</li>
                 </ul>
                 <h5>Temas para a sessão</h5>
                 <ul>
                   <li>Padrão de aceitar demanda em excesso na hora e trabalhar à noite — o que acontece antes de dizer “sim”?</li>
                   <li>Feedback recebido como avaliação de valor pessoal (vergonha, pedir desculpas repetidamente).</li>
-                  <li>O papel do sono na ansiedade (dormir mal → pico no dia seguinte).</li>
                 </ul>
                 <p class="paper__foot">Resumo preparado a partir de auto-registros (check-ins e entradas estruturadas) com auxílio do assistente pessoal. Não é avaliação clínica.</p>
               </article>
 
-              <article class="paper paper--en" lang="en" aria-label="Example weekly report, English translation">
+              <article class="paper paper--en" lang="en" aria-label="Example weekly report, English translation, abridged">
                 <h4 class="paper__title">Weekly report — Demo Person — 2026-W42</h4>
                 <h5>Summary</h5>
                 <p>A week of heavy workload, with two anxiety peaks early on (deadline pressure on Oct 13 and feedback taken as criticism on Oct 15) and a clear recovery over the weekend, including a midday break for the first time in weeks and a calm family dinner.</p>
-                <h5>Mood, energy and sleep</h5>
-                <ul>
-                  <li>Average mood 3.0/5 (lows of 2 on Oct 13 and 15; highs of 4 on Oct 16 and 17).</li>
-                  <li>Average anxiety 2.8/5, peaking at 4/5 on Oct 13 and 15 and dropping to 1/5 on Oct 17.</li>
-                  <li>Average sleep 6.7h, with two bad nights (6h on Oct 13; 5.5h on Oct 15), both from working late.</li>
-                </ul>
                 <h5>Notable situations</h5>
                 <ul>
                   <li><b>Oct 13</b> — Planning meeting with three demands in the same sprint: <mark>“there's no way I can handle this”</mark>; anxiety 85. Accepted everything on the spot and kept working into the night.</li>
                   <li><b>Oct 15</b> — One-on-one feedback from the manager about delivery pace: <mark>“he thinks I'm slow”</mark>; anxiety 70, shame 55. Apologized repeatedly during the conversation.</li>
-                  <li><b>Oct 16</b> — Twenty-minute walk without the phone: guilt 40 and relief 30; “first time in weeks I stopped in the middle of the day”.</li>
-                  <li><b>Oct 16</b> — Calm family dinner: contentment 60; stayed talking until late.</li>
                 </ul>
                 <h5>Recurring themes and patterns</h5>
                 <ul>
                   <li>Observation: the two most distressing situations (Oct 13 and 15) were at work and involved external evaluation or expectations.</li>
-                  <li>Observation: in both, the recorded response was to accept or apologize on the spot, without negotiating.</li>
-                  <li>Observation: the break on Oct 16 and the weekend improved mood and anxiety (mood 4/5 and anxiety 1/5 on Oct 17).</li>
                 </ul>
                 <h5>Topics for the session</h5>
                 <ul>
                   <li>The pattern of taking on too much on the spot and working at night — what happens just before saying “yes”?</li>
                   <li>Feedback heard as a judgment of personal worth (shame, apologizing repeatedly).</li>
-                  <li>The role of sleep in anxiety (sleeping badly → a peak the next day).</li>
                 </ul>
                 <p class="paper__foot">Summary prepared from self-reports (check-ins and structured entries) with the help of a personal assistant. Not a clinical assessment.</p>
               </article>
-              <p class="report__src">An example from a fictional week. This person writes in Portuguese, so their summary does too. Yours comes out in your&nbsp;language.</p>
+              <p class="report__src">Abridged from a fictional example. This person writes in Portuguese, so their summary does too; yours comes out in your&nbsp;language.</p>
             </div>
 
             <aside class="report__flow" aria-labelledby="lifecycle-title">
@@ -341,78 +260,35 @@
               <ol class="stations">
                 <li class="stations__item" data-reveal>
                   <span class="stations__state">A draft, for you</span>
-                  <p>Your assistant tells you it's ready, with a short summary.</p>
-                </li>
-                <li class="stations__item" data-reveal>
-                  <span class="stations__state">You read it</span>
-                  <p>Change any word you like. It's your week.</p>
+                  <p>Read it and change anything. It's your week.</p>
                 </li>
                 <li class="stations__item stations__item--gate" data-reveal>
                   <span class="stations__state">Your yes</span>
-                  <p>Only an explicit &ldquo;send it&rdquo; sends it. It's the one step that can't be undone, so it never happens on its own.</p>
+                  <p>Only an explicit &ldquo;send it&rdquo; sends it. It never happens on its own.</p>
                 </li>
                 <li class="stations__item" data-reveal>
                   <span class="stations__state">Sent</span>
-                  <p>It goes to your therapist the way you chose, like WhatsApp or email, and the summary notes who received it and when.</p>
+                  <p>To your therapist, the way you chose, with a note of who got it and when.</p>
                 </li>
               </ol>
             </aside>
           </div>
-        </div>
-      </section>
 
-      <!-- Session -->
-      <section class="day day--session" data-time="golden" aria-labelledby="session-title">
-        <div class="wrap day__grid">
-          <div class="day__copy">
-            <h3 id="session-title" class="h-day" data-reveal><span class="when">Monday, 6&nbsp;pm.</span> You walk in with the&nbsp;week.</h3>
-            <p class="prose" data-reveal>The summary doesn't replace the conversation. It gives it a better first five&nbsp;minutes.</p>
-            <p class="prose prose--quiet" data-reveal>Afterwards, tell your assistant what you agreed on. It keeps the homework and brings it back in next week's summary. When something keeps coming up, it points it out gently, as something to explore with your therapist, never as a&nbsp;label.</p>
-          </div>
-          <div class="day__art day__art--pair" data-depth="-0.04">
-            <figure class="note" data-reveal aria-label="Notes from therapy: fictional example">
-              <figcaption class="note__head"><span class="note__when">From your sessions</span><span class="note__tag">Homework</span></figcaption>
-              <ul class="note__tasks">
-                <li class="is-done"><span class="tick" aria-hidden="true"></span><span><span class="sr-only">Done: </span>Notice what happens right before saying &ldquo;yes&rdquo;</span></li>
-                <li><span class="tick" aria-hidden="true"></span><span><span class="sr-only">Not yet: </span>Keep one midday pause, even in heavy weeks</span></li>
-              </ul>
-              <p class="note__line"><span class="note__label">To bring up</span> feedback heard as a verdict on me</p>
-            </figure>
-            <figure class="note" data-reveal aria-label="Something that keeps coming up: fictional example">
-              <figcaption class="note__head"><span class="note__when">Something that keeps coming up</span><span class="note__tag">An observation</span></figcaption>
-              <p class="note__para">Being evaluated at work came right before saying yes on the spot, on Sep 29, Oct 13 and Oct 15. Worth bringing to the&nbsp;session.</p>
-            </figure>
-          </div>
+          <p class="payoff" data-reveal><span class="when">Monday, 6&nbsp;pm.</span> The hour starts with Tuesday, not with&nbsp;today.</p>
         </div>
       </section>
     </div>
 
     <!-- ───────────────────────── Privacy ───────────────────────── -->
-    <section id="privacy" class="privacy" data-time="night" aria-labelledby="privacy-title">
-      <div class="wrap privacy__grid">
-        <div class="privacy__lead">
-          <h2 id="privacy-title" class="h-section h-section--xl" data-reveal>Your thoughts stay&nbsp;yours.</h2>
-          <p class="prose" data-reveal>sintr is a folder on your computer, like a notebook in a drawer. It isn't an app. There's no account and no cloud. Nobody else sees it, and not even your therapist receives anything without your explicit&nbsp;OK.</p>
-          <figure class="note note--folder" data-reveal aria-label="What your sintr folder holds">
-            <figcaption class="note__head"><span class="note__when">Your sintr folder</span><span class="note__tag"><svg class="lock" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.6 0V7"/></svg> Only you can open it</span></figcaption>
-            <dl class="note__rows">
-              <div class="note__row"><dt>Check-ins</dt><dd>A line a day, when you feel like it</dd></div>
-              <div class="note__row"><dt>Moments</dt><dd>The situations you talked through</dd></div>
-              <div class="note__row"><dt>Therapy</dt><dd>Goals, homework and notes after sessions</dd></div>
-              <div class="note__row"><dt>Patterns</dt><dd>Observations, never diagnoses</dd></div>
-              <div class="note__row"><dt>Weekly summaries</dt><dd>Each draft, and what was sent to whom</dd></div>
-            </dl>
-          </figure>
-        </div>
-        <dl class="promises">
-          <div class="promises__row" data-reveal><dt>On your computer</dt><dd>Everything stays in one folder on your own machine. No app, no account, no copy in the cloud.</dd></div>
-          <div class="promises__row" data-reveal><dt>Locked to you</dt><dd>The folder is set up so other people using the same computer can't open it.</dd></div>
-          <div class="promises__row" data-reveal><dt>Nothing goes out without your OK</dt><dd>Not even to your therapist. You say yes each time, for that one summary.</dd></div>
-          <div class="promises__row" data-reveal><dt>You can see what was sent</dt><dd>Every summary records who received it and when.</dd></div>
-          <div class="promises__row" data-reveal><dt>Never passed around</dt><dd>Your notes are never copied into group chats, shared notes or other services.</dd></div>
-          <div class="promises__row" data-reveal><dt>Delete means delete</dt><dd>Ask, confirm what exactly, and it's gone. No hidden copies.</dd></div>
+    <section id="privacy" class="privacy privacy--lean" data-time="night" aria-labelledby="privacy-title">
+      <div class="wrap">
+        <h2 id="privacy-title" class="h-section h-section--xl" data-reveal>Your thoughts stay&nbsp;yours.</h2>
+        <dl class="promises promises--three">
+          <div class="promises__row" data-reveal><dt>On your computer</dt><dd>A folder, like a notebook in a drawer. No app, no account, no&nbsp;cloud.</dd></div>
+          <div class="promises__row" data-reveal><dt>Locked to you</dt><dd>Other people using the same computer can't open&nbsp;it.</dd></div>
+          <div class="promises__row" data-reveal><dt>Never passed around</dt><dd>Nothing is copied into chats or other services, and deleting means&nbsp;deleting.</dd></div>
         </dl>
-        <p class="privacy__note" data-reveal>One thing to know: sintr runs no servers of its own, but the AI assistant you talk to usually sends what you type to the company behind it, as it does with everything else you tell it. Choose an assistant you're comfortable sharing this with. <a class="link" href="tech/#privacy">The technical details</a></p>
+        <p class="privacy__note" data-reveal>One thing to know: the AI assistant you talk to usually sends what you type to the company behind it. Choose one you're comfortable with. <a class="link" href="tech/#privacy">Technical&nbsp;details</a></p>
       </div>
     </section>
 
@@ -421,16 +297,13 @@
       <div class="wrap">
         <div class="start__head">
           <h2 id="start-title" class="h-section" data-reveal>Start in three&nbsp;steps.</h2>
-          <div class="start__intro">
-            <p class="prose" data-reveal>You don't need to know anything technical. You need an AI assistant that works directly on your computer and can save files there, such as Claude Code, Hermes, OpenCode or OpenClaw. Assistants that only live in a browser chat can't keep a private folder for&nbsp;you.</p>
-            <p class="prose prose--quiet" data-reveal>Claude Cowork and similar desktop apps need one extra manual step, which is <a class="link" href="tech/#install-generic">described on the technical page</a>; you may want help from someone technical for it. Not sure about yours? Ask it whether it can save files on your&nbsp;computer.</p>
-          </div>
+          <p class="prose start__intro" data-reveal>You need an AI assistant that runs on your computer and can save files there, like Claude Code, Hermes, OpenCode or OpenClaw. Browser-only chats can't. Claude Cowork needs one extra manual step, <a class="link" href="tech/#install-generic">described on the technical&nbsp;page</a>.</p>
         </div>
 
         <ol class="steps">
           <li class="step" data-reveal>
             <h3 class="step__title">Copy the setup message</h3>
-            <p class="step__text">It's a message for your assistant, not for you. It tells it where to get sintr and how to set it up.</p>
+            <p class="step__text">It's written for your assistant: where to get sintr and how to set it up.</p>
             <div class="step__art">
               <a class="btn btn--ink" href="#setup-message" data-copy="#setup-text" data-copied="Copied. Now paste it.">
                 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
@@ -440,48 +313,21 @@
           </li>
           <li class="step" data-reveal>
             <h3 class="step__title">Paste it to your assistant</h3>
-            <p class="step__text">Start a conversation and paste it in. It sets everything up and explains what it's doing. It may ask permission first; that's normal.</p>
-            <div class="step__art">
-              <p class="chat__msg chat__msg--you chat__msg--mini">Please set up sintr for me. It's a private journal for therapy&hellip;</p>
-            </div>
+            <p class="step__text">It sets everything up and explains each step. It may ask permission first; that's normal.</p>
           </li>
           <li class="step" data-reveal>
             <h3 class="step__title">Answer a few questions</h3>
-            <p class="step__text">Your language, your time zone, your therapist and your session day. Skip anything you'd rather not share.</p>
-            <div class="step__art">
-              <p class="chat__msg chat__msg--agent chat__msg--mini">Which language should I write your notes in?</p>
-              <p class="chat__msg chat__msg--you chat__msg--mini">Portuguese, please.</p>
-            </div>
+            <p class="step__text">Your language, time zone, therapist and session day. Then just talk to it when you need to.</p>
           </li>
         </ol>
 
-        <div class="start__after">
-          <div id="setup-message" class="ask" data-reveal>
-            <div class="ask__head">
-              <h3 class="h-small">The setup message</h3>
-              <button class="copy" type="button" data-copy="#setup-text">
-                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
-                <span data-label>Copy</span>
-              </button>
-            </div>
-            <p class="ask__lead">A message for your assistant, not for you. It tells it where to get sintr and how to set it up, and asks it to explain each step in plain words.</p>
-            <details class="ask__details">
-              <summary>Read the message before you copy it</summary>
-              <blockquote id="setup-text" class="ask__text">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer. Clone https://github.com/tiagomoraes/sintr.git, read docs/INSTALL.md, and run the installer that matches you (./installers/install.sh with hermes, claude-code or generic), using ~/sintr as my journal folder. Explain each step to me in plain words before you do it. Then open ~/sintr/config.md and fill it in with me: ask for my language, time zone and therapy details one at a time, and leave empty anything I don't give you. Keep require_approval: true, and never send anything to anyone without asking me first.</blockquote>
-              <p class="ask__foot">It only uses what's published in the sintr project.</p>
-            </details>
+        <details id="setup-message" class="setup ask__details" data-reveal>
+          <summary>Read the setup message before you copy it</summary>
+          <div class="setup__body">
+            <blockquote id="setup-text" class="ask__text">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer. Clone https://github.com/tiagomoraes/sintr.git, read docs/INSTALL.md, and run the installer that matches you (./installers/install.sh with hermes, claude-code or generic), using ~/sintr as my journal folder. Explain each step to me in plain words before you do it. Then open ~/sintr/config.md and fill it in with me: ask for my language, time zone and therapy details one at a time, and leave empty anything I don't give you. Keep require_approval: true, and never send anything to anyone without asking me first.</blockquote>
+            <p class="ask__foot">It only uses what's published in the sintr project.</p>
           </div>
-
-          <div class="then" data-reveal>
-            <h3 class="h-small">Then just talk to it</h3>
-            <p class="prose prose--quiet">Whenever you need to, in your own words. For example:</p>
-            <div class="then__msgs">
-              <p class="chat__msg chat__msg--you">I need to talk about something that happened today&hellip;</p>
-              <p class="chat__msg chat__msg--you">Mood 3 out of 5, slept six hours.</p>
-              <p class="chat__msg chat__msg--you">Can you put my week together for therapy?</p>
-            </div>
-          </div>
-        </div>
+        </details>
       </div>
     </section>
 
@@ -493,8 +339,7 @@
           <span class="statement__b">Your therapist does the&nbsp;therapy.</span>
         </h2>
         <div class="honest__body">
-          <p class="prose" data-reveal>It isn't therapy, it doesn't diagnose, and it isn't for emergencies. It won't label you, judge your moods or tell you what to do. It keeps an honest record of your week, so your time with a professional goes&nbsp;further.</p>
-          <p class="prose prose--quiet" data-reveal>If you tell your assistant you might be in danger, sintr asks it to stop taking notes and help you reach a person right&nbsp;away.</p>
+          <p class="prose" data-reveal>It isn't therapy, a diagnosis or an emergency service. It won't label you or tell you what to&nbsp;do.</p>
           <div class="help" data-reveal>
             <p class="help__title">If you're in danger or thinking about harming yourself, please reach a person&nbsp;now.</p>
             <ul class="help__lines">
@@ -504,6 +349,7 @@
               <li><span>Portugal</span> SNS24 <a href="tel:808242424">808 24 24 24</a></li>
               <li><span>Anywhere</span> your local emergency number</li>
             </ul>
+            <p class="help__note">If you tell your assistant, sintr asks it to stop taking notes and help you find someone right&nbsp;away.</p>
           </div>
         </div>
       </div>
@@ -514,7 +360,7 @@
     <div class="wrap foot__grid">
       <div class="foot__brand">
         <p class="mark mark--foot"><span class="mark__word">sintr</span></p>
-        <p class="foot__line">A private notebook for the week between therapy&nbsp;sessions.</p>
+        <p class="foot__line">A private mood diary for the week between therapy&nbsp;sessions.</p>
       </div>
       <nav class="foot__links" aria-label="More">
         <a href="tech/">Under the hood</a>

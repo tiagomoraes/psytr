@@ -133,6 +133,52 @@ a fictional demo ledger. Only the scratch ledger path was replaced with `~/sintr
 in between are marked with an ellipsis. Install paths come from `installers/install.sh`, and
 targets from the `Makefile`.
 
+## Revision 3: a lean home, positioned as a mood diary
+
+The owner liked the narrative but found the home long and repetitive. He also asked to
+position sintr as a **mood diary**, which is a simpler way to understand it. The cut is
+editorial, not visual: the world, the tokens and the motion are unchanged.
+
+- **Each idea appears once.**
+  - The hero says what sintr is: "a private mood diary you keep by talking to your AI
+    assistant", and that the week is waiting on one page before each session.
+  - The next section says why: therapy gets fifty minutes a week, and your week happens in the
+    rest of it.
+  - The two scenes show how it works. "Fresh", "one page" and "your own words" each appear
+    exactly once.
+  - Approval appears only in the report section; privacy no longer repeats it.
+- **Two scenes instead of four.**
+  - Tuesday is the conversation. The check-in is now a one-line exchange inside it.
+  - Sunday is the report, still with its PT/EN toggle, now abridged: summary, two situations,
+    one observation, two topics.
+  - Monday is a single closing line with its own day stamp: "Monday, 6 pm. The hour starts
+    with Tuesday, not with today."
+- **One mock per idea.** The notebook card appears only in the hero, where it also writes
+  itself on load. The capture scene shows the conversation, not the card again.
+- **Cut:**
+  - the flow diagram, which restated the narrative;
+  - the "One week, kept" intro;
+  - the session cards;
+  - the folder card and three of the six privacy promises;
+  - the second copy button and its lead;
+  - the acted-out chat bubbles in steps 2 and 3, and the "then just talk to it" examples;
+  - the gradient wash on the setup message (it now sits on the plain wash), so on the home the
+    window light is the only color again.
+- **Privacy** is three points in a row plus a one-sentence caveat that links to `/tech/`.
+  **Getting started** keeps the three steps and the copyable message, now in a single "Read
+  the setup message before you copy it" disclosure under the steps.
+- **A shorter page gets a slightly tighter rhythm.** `--section` is `clamp(88px, 10vw, 148px)`
+  on the home, compared with 104–208px before. `/tech/` keeps its own rhythm.
+- **Measured** (reduced motion, so nothing animates during measurement):
+
+  | | Before | After | Change |
+  |---|---|---|---|
+  | Words in `<main>` | 1,970 | 825 | −58% |
+  | Page height at 1440 | 10,220 px (11.4 screens) | 6,448 px (7.2 screens) | −37% |
+  | Page height at 390 | 15,529 px (18.4 screens) | 8,180 px (9.7 screens) | −47% |
+  | Sections | 9 | 7 | |
+  | Mock pieces (cards, bubbles, papers) | 21 | 9 | |
+
 ## Privacy of the site itself
 
 The page loads nothing from third parties: no analytics, no cookies, no font CDN. The fonts,
@@ -143,7 +189,7 @@ future edit.
 
 ```text
 site/
-  index.html        the home: purpose, the week, privacy, three steps to start
+  index.html        the home: what it is and why, two scenes, the report, privacy, three steps
   tech/index.html   Under the hood: formats, pipeline, install, privacy architecture, repo
   styles.css        tokens, layout, light, motion
   main.js           copy, time-of-day observer, reveals, parallax, contents highlight (progressive enhancement)
