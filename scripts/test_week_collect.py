@@ -306,6 +306,34 @@ class TestSessionPeriod(unittest.TestCase):
         self.assertIn("reports/2026-10-19.md", text)
         self.assertFalse(wc.schedule({"timezone": "UTC"}, TZ)[1])
 
+    def test_config_values_ignore_trailing_notes(self):
+        # people fill the template in place, so its notes stay after their values
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = make_ledger(tmp)
+            (ledger / "config.md").write_text(
+                "- timezone: America/Recife\n"
+                "- session_day: terça                    # e.g. Wednesday\n"
+                "- session_time: 11:00              # normalmente\n"
+                "- report_lead: 1h                 # how long before the session the report is prepared\n",
+                encoding="utf-8")
+            cfg = wc.read_config(ledger)
+            self.assertEqual((cfg["session_day"], cfg["session_time"], cfg["report_lead"]), ("terça", "11:00", "1h"))
+            text, ok = wc.schedule(cfg, TZ, now=self.at(2026, 10, 18, 20, 0))
+            self.assertTrue(ok)
+            self.assertIn("Tuesdays at 10:00", text)
+
+    def test_template_config_parses(self):
+        # the shipped template, filled in place, must not leak its notes into values
+        template = Path(__file__).resolve().parent.parent / "templates" / "sintr" / "config.md"
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = make_ledger(tmp)
+            text = template.read_text(encoding="utf-8")
+            text = text.replace("- session_day: ", "- session_day: Monday").replace("- session_time: ", "- session_time: 18:00")
+            (ledger / "config.md").write_text(text, encoding="utf-8")
+            cfg = wc.read_config(ledger)
+            self.assertNotIn("#", "".join(cfg.values()))
+            self.assertEqual(wc.resolve_period(cfg, TZ, now=self.at(2026, 10, 19, 9, 0))["label"], "2026-10-19")
+
     def test_session_digest(self):
         with tempfile.TemporaryDirectory() as tmp:
             ledger = make_ledger(tmp)
