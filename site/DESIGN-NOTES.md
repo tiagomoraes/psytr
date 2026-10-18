@@ -231,6 +231,24 @@ The home exists in English (`/`), Brazilian Portuguese (`/pt-br/`), Spanish (`/e
 - **To add a language:** add it to `i18n/locales.json` and write `i18n/<code>.json` following
   `TRANSLATING.md`.
 
+## The report as a PDF
+
+The weekly report became a short PDF (`scripts/report_pdf.py`, structure and sources in
+`skills/sintr/references/report-framework.md`), so the Sunday scene follows it:
+
+- **The paper** is abridged from the new example (`docs/example-report.md`, printed as
+  `docs/example-report.pdf`) in the PDF's order: how the week went, for the session, two moments
+  (the hardest and the best one) and one dated observation. Its title is the PDF's: the dates of
+  the week, then "Demo Person's week, in their own words".
+- **The copy** says what the person receives: a short PDF with how the week went, what to talk
+  about, a chart of mood and sleep, and the moments in their own words. The lifecycle names the
+  PDF: the draft is read as a PDF, and the same PDF is what is sent.
+- **The source line** links the full four-page example PDF on GitHub.
+- **`/tech/`** gains a Preview step (the draft PDF and the verbatim check) and a "What the
+  therapist receives" list; the send step names the PDF; the print layout leaves the roadmap.
+- **Languages.** The new strings were translated for every locale and stamped; the removed
+  `report.doc_summary*`, `doc_situation*` and `doc_topic*` keys are gone from all files.
+
 ## Privacy of the site itself
 
 The page loads nothing from third parties: no analytics, no cookies, no font CDN. The fonts,

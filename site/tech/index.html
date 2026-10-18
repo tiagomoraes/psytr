@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Under the hood · sintr</title>
-  <meta name="description" content="How sintr works inside: a portable skill plus a plain-Markdown ledger, a deterministic weekly collector, the report approval lifecycle, install instructions for Claude Code, Hermes and any file-capable agent, and the privacy architecture.">
+  <meta name="description" content="How sintr works inside: a portable skill plus a plain-Markdown ledger, a deterministic weekly collector, the weekly report as a PDF and its approval lifecycle, install instructions for Claude Code, Hermes and any file-capable agent, and the privacy architecture.">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <link rel="canonical" href="https://sintr.tiagomoraes.cloud/tech/">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://sintr.tiagomoraes.cloud/tech/">
   <meta property="og:title" content="Under the hood · sintr">
-  <meta property="og:description" content="A skill plus a Markdown ledger, a stdlib weekly collector, an approval-gated report, and install steps for every agent.">
+  <meta property="og:description" content="A skill plus a Markdown ledger, a stdlib weekly collector, an approval-gated PDF report, and install steps for every agent.">
   <meta property="og:image" content="https://sintr.tiagomoraes.cloud/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -139,7 +139,7 @@
         <dl class="facts">
           <div><dt>Backend</dt><dd>None</dd></div>
           <div><dt>Storage</dt><dd>Plain Markdown on your disk</dd></div>
-          <div><dt>Collector</dt><dd>Python, stdlib only</dd></div>
+          <div><dt>Scripts</dt><dd>Python, stdlib only</dd></div>
           <div><dt>License</dt><dd>MIT</dd></div>
         </dl>
         <p class="doc-hero__back">New here? <a class="link" href="../">Start with what sintr is for</a>.</p>
@@ -171,14 +171,14 @@
             <li class="flow__node"><span class="flow__name">You</span><span class="flow__edge">chat or voice</span></li>
             <li class="flow__node"><span class="flow__name">Agent</span><span class="flow__edge">read / write</span></li>
             <li class="flow__node"><span class="flow__name"><code>~/sintr/*.md</code></span><span class="flow__edge">weekly</span></li>
-            <li class="flow__node"><span class="flow__name">Report</span><span class="flow__edge flow__edge--gate">approve</span></li>
+            <li class="flow__node"><span class="flow__name">PDF report</span><span class="flow__edge flow__edge--gate">approve</span></li>
             <li class="flow__node"><span class="flow__name">Therapist</span></li>
           </ol>
         </div>
           <h3 class="doc-h3">Two languages, on purpose</h3>
           <p class="prose">The pack is written in English: instructions, field keys and examples. In use, the conversation, the values in the ledger and the reports follow the owner's language and words. Keys stay in English so files stay parseable across locales; values stay verbatim so nothing is lost in&nbsp;translation.</p>
           <h3 class="doc-h3">Deterministic where possible</h3>
-          <p class="prose">Counting is done by a stdlib Python script, not by the model. The model writes prose on top of those facts and is instructed never to invent numbers, emotions or diagnoses. Unknown stays unknown.</p>
+          <p class="prose">Counting is done by a stdlib Python script, not by the model. The model writes prose on top of those facts and is instructed never to invent numbers, emotions or diagnoses. The report's numbers, chart and day-by-day grid are computed by a second script, which also checks every quote against the ledger. Unknown stays unknown.</p>
         </section>
 
         <!-- The ledger -->
@@ -195,7 +195,8 @@
   therapy/current.md           <span class="k"># goals, themes, tasks (updated in place)</span>
   therapy/sessions/YYYY-MM.md  <span class="k"># append-only post-session notes</span>
   insights/current.md          <span class="k"># observations backed by 3+ dated data points</span>
-  reports/YYYY-Www.md          <span class="k"># weekly reports with lifecycle status</span></pre>
+  reports/YYYY-Www.md          <span class="k"># weekly reports with lifecycle status</span>
+  reports/YYYY-Www.pdf         <span class="k"># the PDF the therapist receives</span></pre>
           </figure>
           <dl class="specs doc-block">
             <div class="specs__row"><dt>Time</dt><dd>Timestamps in UTC ISO 8601, dates as <code>YYYY-MM-DD</code>, reports by ISO week (<code>YYYY-Www</code>). Week ranges are computed in the ledger's timezone.</dd></div>
@@ -256,15 +257,20 @@
           <p class="prose">The report is the product surface: the loop week → digest → report → session is what the owner actually experiences. Each step has one&nbsp;owner.</p>
           <ol class="pipeline doc-block">
             <li><span class="pipeline__step">Collect</span> <code>scripts/week_collect.py</code> reads the week's entries and check-ins in the ledger's timezone and prints a Markdown digest: the check-in table with averages, every entry, emotion and tag frequency, and the raw entry blocks. Stdlib only, deterministic, exit&nbsp;0 even for an empty&nbsp;week.</li>
-            <li><span class="pipeline__step">Draft</span> The agent writes <code>reports/YYYY-Www.md</code> following the weekly report guide: plain language, the owner's vocabulary, dates for every pattern, observations labeled as&nbsp;observations.</li>
-            <li><span class="pipeline__step">Review</span> The owner reads and edits; the agent applies the changes. <code>status: reviewed</code>.</li>
+            <li><span class="pipeline__step">Draft</span> The agent writes <code>reports/YYYY-Www.md</code> following the weekly report guide: six short sections in plain language, the owner's own words in quotes, dates for every pattern, observations labeled as&nbsp;observations. It types no numbers.</li>
+            <li><span class="pipeline__step">Preview</span> <code>scripts/report_pdf.py --draft</code> prints the report as a PDF marked as a draft, with the numbers, the chart and the grid computed from the check-ins. It looks up every quote in the ledger and warns about anything it cannot find word for&nbsp;word.</li>
+            <li><span class="pipeline__step">Review</span> The owner reads the preview and asks for changes; the agent edits the Markdown and prints again. <code>status: reviewed</code>, then the final&nbsp;PDF.</li>
             <li><span class="pipeline__step">Approve</span> Only an explicit approval enables sending. <code>require_approval: true</code> is the default in <code>config.md</code>.</li>
-            <li><span class="pipeline__step">Send</span> Through the configured gateway, preferably as a file so the exact artifact is traceable, for example <code>hermes send --to whatsapp:&lt;number&gt; --file &lt;report&gt;</code>.</li>
+            <li><span class="pipeline__step">Send</span> The PDF the owner read, never the Markdown, through the configured gateway, for example <code>hermes send --to whatsapp:&lt;number&gt; --file reports/2026-W42.pdf</code>.</li>
             <li><span class="pipeline__step">Record</span> <code>status: sent</code>, <code>sent_to</code> and <code>sent_at</code> are written into the front matter, and nothing&nbsp;else.</li>
           </ol>
           <div class="cmd doc-block">
             <pre id="cmd-collect"><span class="p">$ </span>python3 scripts/week_collect.py --ledger ~/sintr --week this   <span class="k"># or: last, 2026-W42</span></pre>
             <button class="copy copy--icon" type="button" data-copy="#cmd-collect" aria-label="Copy the collector command"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+          </div>
+          <div class="cmd doc-block">
+            <pre id="cmd-report"><span class="p">$ </span>python3 scripts/report_pdf.py --ledger ~/sintr --week 2026-W42 --draft   <span class="k"># preview</span></pre>
+            <button class="copy copy--icon" type="button" data-copy="#cmd-report" aria-label="Copy the report command"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
           </div>
           <figure class="file file--wide doc-block">
             <figcaption class="file__path">digest (excerpt) <span class="file__note">real output, run on a fictional demo ledger</span></figcaption>
@@ -298,6 +304,14 @@
 - anxiety: 2x (avg 78, max 85)
 - shame: 1x (avg 55, max 55)</pre>
           </figure>
+          <h3 class="doc-h3">What the therapist receives</h3>
+          <dl class="specs doc-block">
+            <div class="specs__row"><dt>Page 1, a letter</dt><dd>How the week went, in a few warm lines; the owner's own topics for the session, as an open checklist; and how the report was made and how to read&nbsp;it.</dd></div>
+            <div class="specs__row"><dt>Page 2, the numbers</dt><dd>Averages with their number of days and the week before; mood, anxiety and sleep over the last four weeks as continuous lines, dotted across days without a check-in; the day-by-day grid; the day's own&nbsp;notes.</dd></div>
+            <div class="specs__row"><dt>The moments</dt><dd>Three to five notebook cards in thought-record order: what happened, what went through the owner's mind (verbatim, highlighted), the emotions with their intensity, the body, what they did. Then what repeated, as dated observations, and what&nbsp;helped.</dd></div>
+            <div class="specs__row"><dt>The checks</dt><dd>Every quote is looked up in the ledger and every intensity compared with its entry. Entries marked <code>share: no</code> never appear. The page is printed by a local headless Chrome from a self-contained HTML file (embedded fonts, no requests) and saved with mode&nbsp;<code>600</code>.</dd></div>
+            <div class="specs__row"><dt>Why this shape</dt><dd>The DBT diary card, the CBT mood check and thought record, and research on what helps clinicians before a session, with sources, in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/report-framework.md">references/report-framework.md</a>.</dd></div>
+          </dl>
           <div class="frontmatter doc-block">
             <figure class="file">
               <figcaption class="file__path">reports/2026-W42.md <span class="file__note">as drafted</span></figcaption>
@@ -322,7 +336,7 @@
 <span class="k">---</span></pre>
             </figure>
           </div>
-          <p class="prose prose--quiet doc-block">The fields that change on send are underlined. A quiet week gets a short &ldquo;quiet week&rdquo; report; nothing is fabricated to fill it. A full example lives in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/example-report.md">docs/example-report.md</a>, and the writing rules in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/weekly-report-guide.md">references/weekly-report-guide.md</a>.</p>
+          <p class="prose prose--quiet doc-block">The fields that change on send are underlined. A quiet week gets a short &ldquo;quiet week&rdquo; report; nothing is fabricated to fill it. A full example lives in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/example-report.pdf">docs/example-report.pdf</a>, printed from <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/example-report.md">docs/example-report.md</a>, and the writing rules in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/weekly-report-guide.md">references/weekly-report-guide.md</a>.</p>
         </section>
 
         <!-- Install -->
@@ -406,7 +420,9 @@
                 <tr><td><code>make install-hermes</code></td><td><code>./installers/install.sh hermes</code> with the ledger at <code>${SINTR_LEDGER:-~/sintr}</code></td></tr>
                 <tr><td><code>make install-claude</code></td><td>The same for <code>claude-code</code></td></tr>
                 <tr><td><code>make install-generic</code></td><td>The same for <code>generic</code></td></tr>
-                <tr><td><code>make test</code></td><td>Unit tests for the collector (<code>scripts/test_week_collect.py</code>)</td></tr>
+                <tr><td><code>make test</code></td><td>Unit tests for the collector and the report generator (<code>scripts/test_*.py</code>)</td></tr>
+                <tr><td><code>make report-pdf WEEK=2026-W42</code></td><td>Prints that week's reviewed report to <code>~/sintr/reports/2026-W42.pdf</code> (<code>LEDGER=</code> for another ledger)</td></tr>
+                <tr><td><code>make example-pdf</code></td><td>Rebuilds <code>docs/example-report.pdf</code> from the fictional fixture ledger</td></tr>
                 <tr><td><code>make validate</code></td><td>Tests plus repository structure checks</td></tr>
                 <tr><td><code>make package</code></td><td><code>git archive</code> into <code>dist/sintr-agent-pack.tar.gz</code></td></tr>
                 <tr><td><code>make preview-site</code></td><td>Serves this website from <code>site/</code> on port 8089</td></tr>
@@ -419,7 +435,7 @@
           <ol class="pipeline doc-block">
             <li><span class="pipeline__step">Configure</span> Fill <code>~/sintr/config.md</code>: <code>name</code>, <code>language</code>, <code>timezone</code>, therapist name and contact, session day and time, <code>report_day</code> and <code>report_time</code>. Keep <code>require_approval: true</code> unless you deliberately decide otherwise.</li>
             <li><span class="pipeline__step">Capture</span> Describe a situation and confirm the structured entry appears in <code>entries/YYYY-MM.md</code>.</li>
-            <li><span class="pipeline__step">Report</span> Ask for the weekly report, or run the collector directly, and review the draft in <code>reports/YYYY-Www.md</code> before you wire any schedule.</li>
+            <li><span class="pipeline__step">Report</span> Ask for the weekly report and review the draft PDF your agent sends you (<code>reports/YYYY-Www.draft.pdf</code>) before you wire any schedule. Printing it needs Google Chrome, Chromium or Edge, found automatically, or Playwright; without one, the script still writes the HTML for you to print from a&nbsp;browser.</li>
           </ol>
           <p class="prose prose--quiet doc-block">To update: <code>git pull</code> and re-run the same install command; skill files are replaced and the ledger is never overwritten. To uninstall: delete the installed skill folder and, if you want, the ledger. Nothing else is touched.</p>
         </section>
@@ -431,10 +447,10 @@
           <dl class="specs doc-block">
             <div class="specs__row"><dt>Storage</dt><dd>A local folder. The installer sets <code>700</code> on directories and <code>600</code> on files and never relaxes them. No sintr cloud, no sync, no telemetry.</dd></div>
             <div class="specs__row"><dt>Default deny</dt><dd>Content leaves the ledger only with the owner's explicit approval for that specific share. The therapist is a third party too. <code>require_approval: false</code> pre-authorizes scheduled sends, which are still recorded.</dd></div>
-            <div class="specs__row"><dt>Audit trail</dt><dd>Sends are file-based where possible, so the exact artifact is traceable. <code>sent_to</code> and <code>sent_at</code> go into the report's front matter.</dd></div>
-            <div class="specs__row"><dt>Containment</dt><dd>Ledger content is never copied into group chats, team channels, public notes, shared agent memory or third-party services. Memory, summary or embedding tools must exclude psychological content by default. Screenshots and exports happen only on explicit request.</dd></div>
+            <div class="specs__row"><dt>Audit trail</dt><dd>The weekly report goes out as the PDF the owner previewed, so the exact artifact is traceable. <code>sent_to</code> and <code>sent_at</code> go into the report's front matter.</dd></div>
+            <div class="specs__row"><dt>Containment</dt><dd>Ledger content is never copied into group chats, team channels, public notes, shared agent memory or third-party services. Memory, summary or embedding tools must exclude psychological content by default. Beyond the weekly report PDF, screenshots and exports happen only on explicit request.</dd></div>
             <div class="specs__row"><dt>Deletion</dt><dd>Confirm the scope, delete from the live files, add a dated tombstone only if the owner wants one. No secret copies.</dd></div>
-            <div class="specs__row"><dt>The model boundary</dt><dd>What you say to your agent, and every file it reads to answer you (for example the week's entries when it drafts a report), is sent to the agent's model provider as context, under that provider's data policy. sintr adds no other network path: the installer and the collector run locally. If that boundary matters to you, run your agent on a model you host yourself.</dd></div>
+            <div class="specs__row"><dt>The model boundary</dt><dd>What you say to your agent, and every file it reads to answer you (for example the week's entries when it drafts a report), is sent to the agent's model provider as context, under that provider's data policy. sintr adds no other network path: the installer, the collector and the PDF generator run locally. If that boundary matters to you, run your agent on a model you host yourself.</dd></div>
             <div class="specs__row"><dt>Git and backups</dt><dd>Optional, and only as a private repository or not at all. Backups are the owner's call; encrypted ones are recommended. An encrypted-at-rest option is on the roadmap.</dd></div>
             <div class="specs__row"><dt>Clinical limits</dt><dd>No diagnoses, no labels, no treatment or medication advice. On signs of acute risk the agent stops the journaling flow and points to human help: CVV 188 in Brazil, 988 in the US and Canada, 116 123 in the UK and Ireland, or the local emergency number.</dd></div>
             <div class="specs__row"><dt>Compliance</dt><dd>sintr makes no LGPD, HIPAA or GDPR claims. The architecture simply minimizes exposure: data leaves the owner's machine only through approved shares and the agent's own model calls.</dd></div>
@@ -447,7 +463,7 @@
           <h2 id="scheduling-title" class="doc-h2">Scheduling</h2>
           <p class="prose">sintr has no daemon. Run the weekly flow with whatever scheduler your environment already&nbsp;has.</p>
           <dl class="specs doc-block">
-            <div class="specs__row"><dt>Hermes</dt><dd>An agent-driven cron job scheduled before your session, so it can write the report. For example, Sundays at 20:00 with the prompt: &ldquo;sintr: generate this week's report from the ledger, save it to reports/, and send me a summary for review. Do not send anything to the therapist without my approval.&rdquo;</dd></div>
+            <div class="specs__row"><dt>Hermes</dt><dd>An agent-driven cron job scheduled before your session, so it can write the report. For example, Sundays at 20:00 with the prompt: &ldquo;sintr: generate this week's report from the ledger, save it to reports/, render the draft PDF and send it to me for review. Do not send anything to the therapist without my approval.&rdquo;</dd></div>
             <div class="specs__row"><dt>cron, launchd, systemd</dt><dd>Schedule the collector for the digest and let your agent pick it up at your next interaction. Keep the output inside the ledger so it inherits its permissions.</dd></div>
           </dl>
           <div class="cmd doc-block">
@@ -465,9 +481,9 @@
             <pre class="file__body"><span class="h">sintr/</span>
   skills/sintr/           <span class="k"># the skill: SKILL.md, references/, templates/</span>
   templates/sintr/        <span class="k"># the starter ledger</span>
-  scripts/                <span class="k"># week_collect.py and its tests (stdlib)</span>
+  scripts/                <span class="k"># week_collect.py, report_pdf.py and their tests (stdlib)</span>
   installers/             <span class="k"># install.sh and per-agent snippets</span>
-  docs/                   <span class="k"># INSTALL.md, DESIGN.md (product and data model), example report</span>
+  docs/                   <span class="k"># INSTALL.md, DESIGN.md (product and data model), example report (PDF)</span>
   site/                   <span class="k"># this website: static HTML, CSS and JS</span>
   .claude-plugin/         <span class="k"># Claude Code plugin and marketplace manifests</span>
   PRODUCT.md              <span class="k"># purpose, users, principles</span>
@@ -478,8 +494,8 @@
             <div class="specs__row"><dt>Contributing</dt><dd>Issues and pull requests are welcome on GitHub. Run <code>make validate</code> before opening a pull request.</dd></div>
             <div class="specs__row"><dt>New agents</dt><dd>Any agent with file tools works today. To add first-class support, add a snippet in <code>installers/snippets/</code> and, if the agent has a skills directory, a target in <code>installers/install.sh</code>.</dd></div>
             <div class="specs__row"><dt>The schema</dt><dd>Starter files live in <code>templates/sintr/</code>; the entry framework in <code>skills/sintr/references/entry-framework.md</code>. Add keys rather than renaming them: the collector keeps unknown keys as extras and passes the raw blocks through, but renamed keys stop being parsed.</dd></div>
-            <div class="specs__row"><dt>Roadmap</dt><dd>An encrypted-at-rest option (age or gpg), a print layout for report handoff, wearable and sleep import into check-ins, a multi-week trend view in <code>insights/</code>, and a local read-only view for browsing entries.</dd></div>
-            <div class="specs__row"><dt>Further reading</dt><dd><a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/INSTALL.md">docs/INSTALL.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/DESIGN.md">docs/DESIGN.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/SKILL.md">SKILL.md</a>, and the website's <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/DESIGN.md">DESIGN.md</a>.</dd></div>
+            <div class="specs__row"><dt>Roadmap</dt><dd>An encrypted-at-rest option (age or gpg), wearable and sleep import into check-ins, a multi-week trend view in <code>insights/</code>, and a local read-only view for browsing entries.</dd></div>
+            <div class="specs__row"><dt>Further reading</dt><dd><a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/INSTALL.md">docs/INSTALL.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/DESIGN.md">docs/DESIGN.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/SKILL.md">SKILL.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/report-framework.md">references/report-framework.md</a>, and the website's <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/DESIGN.md">DESIGN.md</a>.</dd></div>
           </dl>
         </section>
       </article>
