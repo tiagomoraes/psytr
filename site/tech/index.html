@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en" data-time="noon">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Under the hood · sintr</title>
+  <meta name="description" content="How sintr works inside: a portable skill plus a plain-Markdown ledger, a deterministic weekly collector, the report approval lifecycle, install instructions for Claude Code, Hermes and any file-capable agent, and the privacy architecture.">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://sintr.tiagomoraes.cloud/tech/">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sintr.tiagomoraes.cloud/tech/">
+  <meta property="og:title" content="Under the hood · sintr">
+  <meta property="og:description" content="A skill plus a Markdown ledger, a stdlib weekly collector, an approval-gated report, and install steps for every agent.">
+  <meta property="og:image" content="https://sintr.tiagomoraes.cloud/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../fonts/source-serif-4-roman.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/fragment-mono.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    (function (d) {
+      d.classList.add('js');
+      try {
+        if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('motion');
+        }
+      } catch (e) {}
+    })(document.documentElement);
+  </script>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body class="page-tech">
+  <a class="skip" href="#main">Skip to content</a>
+
+  <!-- Window light: the page's only color. Purely decorative. -->
+  <div class="sun" aria-hidden="true">
+    <svg class="sun__svg" viewBox="0 0 1000 1000" focusable="false">
+      <defs>
+        <linearGradient id="sun-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset=".18" class="sun__s1"/>
+          <stop offset=".5" class="sun__s2"/>
+          <stop offset=".82" class="sun__s3"/>
+        </linearGradient>
+        <filter id="sun-edge" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="11"/>
+        </filter>
+        <filter id="sun-leaf" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.4"/>
+        </filter>
+        <filter id="sun-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+          <feColorMatrix values="0 0 0 0 .42  0 0 0 0 .42  0 0 0 0 .44  0 0 0 .11 0"/>
+        </filter>
+        <!-- a tall two-by-three window, projected obliquely onto the wall -->
+        <mask id="sun-window" maskUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
+          <g filter="url(#sun-edge)" fill="#fff" transform="translate(430 110) skewX(-15) skewY(8)">
+            <rect x="0" y="0" width="150" height="188" rx="3"/>
+            <rect x="166" y="0" width="150" height="188" rx="3"/>
+            <rect x="0" y="204" width="150" height="188" rx="3"/>
+            <rect x="166" y="204" width="150" height="188" rx="3"/>
+            <rect x="0" y="408" width="150" height="188" rx="3"/>
+            <rect x="166" y="408" width="150" height="188" rx="3"/>
+          </g>
+        </mask>
+      </defs>
+      <g mask="url(#sun-window)">
+        <rect x="200" y="60" width="600" height="840" fill="url(#sun-grad)"/>
+        <rect x="200" y="60" width="600" height="840" filter="url(#sun-grain)"/>
+        <g class="sun__leaves" filter="url(#sun-leaf)">
+          <g class="sun__branch sun__branch--a">
+            <path class="sun__stem" d="M960 60 C 870 120, 800 170, 700 250 S 560 380, 500 470"/>
+            <path d="M900 104c-26-30-68-34-92-16 25 27 62 34 92 16z"/>
+            <path d="M866 128c9-39-10-76-39-87-7 36 9 71 39 87z"/>
+            <path d="M816 164c-32-23-74-20-94 4 28 19 67 21 94-4z"/>
+            <path d="M786 186c14-37 2-78-25-92-12 34-2 73 25 92z"/>
+            <path d="M733 225c-35-16-76-5-90 21 32 12 71 5 90-21z"/>
+            <path d="M701 250c19-34 16-76-7-94-18 30-16 69 7 94z"/>
+            <path d="M651 291c-35-11-74 5-85 34 34 7 69-5 85-34z"/>
+            <path d="M618 321c25-30 28-73 7-94-21 27-25 66-7 94z"/>
+            <path d="M575 362c-37-5-73 16-80 46 34 2 67-16 80-46z"/>
+            <path d="M545 398c27-27 35-67 18-92-23 23-32 62-18 92z"/>
+            <path d="M515 442c-35 2-65 28-67 58 34-5 62-28 67-58z"/>
+          </g>
+          <g class="sun__branch sun__branch--b">
+            <path class="sun__stem" d="M960 560 C 890 600, 830 650, 780 720 S 700 840, 690 920"/>
+            <path d="M902 590c-21-32-62-43-89-30 20 30 57 43 89 30z"/>
+            <path d="M865 615c16-35 7-76-18-92-12 34-5 71 18 92z"/>
+            <path d="M821 657c-30-25-73-27-94-5 27 23 66 27 94 5z"/>
+            <path d="M796 686c19-34 18-74-4-94-18 30-18 69 4 94z"/>
+            <path d="M757 739c-34-18-74-9-90 16 32 14 71 9 90-16z"/>
+            <path d="M732 776c25-28 30-69 11-92-21 25-27 64-11 92z"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="mark" href="../" aria-label="sintr home">
+        <svg class="mark__glyph" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="mark-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#cfe3f3"/>
+              <stop offset=".55" stop-color="#f6e1d3"/>
+              <stop offset="1" stop-color="#f7cfb5"/>
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="8" fill="#16171a"/>
+          <g fill="url(#mark-grad)" transform="translate(10.4 6.2) skewX(-14)">
+            <rect x="0" y="0" width="6" height="8.8" rx="1"/>
+            <rect x="7.2" y="0" width="6" height="8.8" rx="1"/>
+            <rect x="0" y="10.2" width="6" height="8.8" rx="1"/>
+            <rect x="7.2" y="10.2" width="6" height="8.8" rx="1"/>
+          </g>
+        </svg>
+        <span class="mark__word">sintr</span>
+      </a>
+      <nav class="top__nav" aria-label="Primary">
+        <a class="top__link" href="../">Home</a>
+        <a class="top__link" href="#privacy">Privacy</a>
+        <a class="top__link top__link--gh" href="https://github.com/tiagomoraes/sintr">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-1.9c-3.12.68-3.78-1.5-3.78-1.5-.51-1.3-1.25-1.64-1.25-1.64-1.02-.7.08-.68.08-.68 1.13.08 1.72 1.16 1.72 1.16 1 1.72 2.63 1.22 3.27.93.1-.73.39-1.22.71-1.5-2.49-.28-5.11-1.25-5.11-5.55 0-1.22.44-2.23 1.16-3.01-.12-.29-.5-1.43.11-2.97 0 0 .94-.3 3.08 1.15a10.7 10.7 0 0 1 5.6 0c2.14-1.45 3.08-1.15 3.08-1.15.61 1.54.23 2.68.11 2.97.72.78 1.16 1.79 1.16 3.01 0 4.31-2.63 5.26-5.13 5.54.4.35.76 1.03.76 2.08v3.08c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a class="btn btn--ink btn--sm" href="#install">Install</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="doc-hero" aria-labelledby="tech-title">
+      <div class="wrap">
+        <h1 id="tech-title" class="display display--doc">Under the&nbsp;hood.</h1>
+        <p class="lede">How sintr works inside, for builders and the curious: the files it writes, the pipeline behind the weekly report, how to install it on each agent, and exactly what happens to the data.</p>
+        <dl class="facts">
+          <div><dt>Backend</dt><dd>None</dd></div>
+          <div><dt>Storage</dt><dd>Plain Markdown on your disk</dd></div>
+          <div><dt>Collector</dt><dd>Python, stdlib only</dd></div>
+          <div><dt>License</dt><dd>MIT</dd></div>
+        </dl>
+        <p class="doc-hero__back">New here? <a class="link" href="../">Start with what sintr is for</a>.</p>
+      </div>
+    </section>
+
+    <div class="wrap doc">
+      <nav class="toc" aria-label="On this page">
+        <p class="toc__title">On this page</p>
+        <ol class="toc__list">
+          <li><a href="#model">The model</a></li>
+          <li><a href="#ledger">The ledger</a></li>
+          <li><a href="#formats">Entries and check-ins</a></li>
+          <li><a href="#pipeline">The weekly pipeline</a></li>
+          <li><a href="#install">Install</a></li>
+          <li><a href="#privacy">Privacy architecture</a></li>
+          <li><a href="#scheduling">Scheduling</a></li>
+          <li><a href="#repo">Repository</a></li>
+        </ol>
+      </nav>
+
+      <article class="doc__body">
+        <!-- The model -->
+        <section id="model" class="doc-section" aria-labelledby="model-title">
+          <h2 id="model-title" class="doc-h2">The model</h2>
+          <p class="prose">sintr is an agent pack: a portable skill (the instructions in <code>SKILL.md</code>) plus a filesystem layout of Markdown files. There is no backend, no database, no API and no MCP server. Any agent with file tools can operate it. The agent is the interface; the files are the&nbsp;product.</p>
+          <div class="flow-wrap">
+          <ol class="flow flow--doc" aria-label="Data flow">
+            <li class="flow__node"><span class="flow__name">You</span><span class="flow__edge">chat or voice</span></li>
+            <li class="flow__node"><span class="flow__name">Agent</span><span class="flow__edge">read / write</span></li>
+            <li class="flow__node"><span class="flow__name"><code>~/sintr/*.md</code></span><span class="flow__edge">weekly</span></li>
+            <li class="flow__node"><span class="flow__name">Report</span><span class="flow__edge flow__edge--gate">approve</span></li>
+            <li class="flow__node"><span class="flow__name">Therapist</span></li>
+          </ol>
+        </div>
+          <h3 class="doc-h3">Two languages, on purpose</h3>
+          <p class="prose">The pack is written in English: instructions, field keys and examples. In use, the conversation, the values in the ledger and the reports follow the owner's language and words. Keys stay in English so files stay parseable across locales; values stay verbatim so nothing is lost in&nbsp;translation.</p>
+          <h3 class="doc-h3">Deterministic where possible</h3>
+          <p class="prose">Counting is done by a stdlib Python script, not by the model. The model writes prose on top of those facts and is instructed never to invent numbers, emotions or diagnoses. Unknown stays unknown.</p>
+        </section>
+
+        <!-- The ledger -->
+        <section id="ledger" class="doc-section" aria-labelledby="ledger-title">
+          <h2 id="ledger-title" class="doc-h2">The ledger</h2>
+          <p class="prose">One folder, <code>~/sintr</code> by default, seeded from <code>templates/sintr/</code>. Monthly logs are append-only, and the files that answer &ldquo;what is true now?&rdquo; are edited in&nbsp;place.</p>
+          <figure class="file file--wide doc-block">
+            <figcaption class="file__path">~/sintr/</figcaption>
+            <pre class="file__body"><span class="h">sintr/</span>
+  README.md
+  config.md                    <span class="k"># language, timezone, therapist, schedule, require_approval</span>
+  checkins/YYYY-MM.md          <span class="k"># append-only quick check-ins</span>
+  entries/YYYY-MM.md           <span class="k"># append-only structured entries (thought records)</span>
+  therapy/current.md           <span class="k"># goals, themes, tasks (updated in place)</span>
+  therapy/sessions/YYYY-MM.md  <span class="k"># append-only post-session notes</span>
+  insights/current.md          <span class="k"># observations backed by 3+ dated data points</span>
+  reports/YYYY-Www.md          <span class="k"># weekly reports with lifecycle status</span></pre>
+          </figure>
+          <dl class="specs doc-block">
+            <div class="specs__row"><dt>Time</dt><dd>Timestamps in UTC ISO 8601, dates as <code>YYYY-MM-DD</code>, reports by ISO week (<code>YYYY-Www</code>). Week ranges are computed in the ledger's timezone.</dd></div>
+            <div class="specs__row"><dt>IDs</dt><dd><code>entry-YYYY-MM-DD-NNN</code> and <code>checkin-YYYY-MM-DD</code>. Never reused.</dd></div>
+            <div class="specs__row"><dt>Unknowns</dt><dd>Omitted, or written as <code>unknown</code>. Never guessed. Partial entries are valid and can grow later.</dd></div>
+            <div class="specs__row"><dt>Corrections</dt><dd>Fix the live entry and add a dated note in the same file. History is never rewritten silently.</dd></div>
+            <div class="specs__row"><dt>Scales</dt><dd>Emotions 0–100 at the time; check-in ratings out of 5; sleep in hours.</dd></div>
+          </dl>
+        </section>
+
+        <!-- Formats -->
+        <section id="formats" class="doc-section" aria-labelledby="formats-title">
+          <h2 id="formats-title" class="doc-h2">Entries and check-ins</h2>
+          <p class="prose">Entries follow the cognitive-behavioral thought record (Beck), adapted for chat. Tier&nbsp;1 is always captured. Tier&nbsp;2, the cognitive restructuring, is offered when the owner is steady and never forced; it can be added later with a dated&nbsp;note.</p>
+          <figure class="file file--wide doc-block">
+            <figcaption class="file__path">~/sintr/entries/2026-10.md <span class="file__note">fictional example</span></figcaption>
+            <pre class="file__body"><span class="h">## entry-2026-10-13-001</span>
+<span class="k">- ts:</span> 2026-10-13T22:40:00Z
+<span class="k">- title:</span> Planning, three demands in one sprint
+<span class="k">- situation:</span> sprint planning; three new demands landed in the same sprint.
+  Said yes to all of them on the spot.
+<span class="k">- thoughts:</span> <mark>"there's no way I can handle this"</mark>
+<span class="k">- emotions:</span> anxiety: 85
+<span class="k">- body:</span> tight chest, clenched jaw
+<span class="k">- behavior:</span> accepted everything; kept working into the night
+<span class="k">- context:</span> back-to-back meetings since 9am
+<span class="k">- tags:</span> work
+<span class="k">- hot_thought:</span> "there's no way I can handle this"
+<span class="k">- evidence_for:</span> two deliveries slipped last month
+<span class="k">- evidence_against:</span> the team has never complained about something I flagged early
+<span class="k">- alternative:</span> "I can say which one moves to the next sprint" (believability: 60)
+<span class="k">- emotions_after:</span> anxiety: 50
+<span class="k">- notes:</span> completed 2026-10-14 with hot_thought through emotions_after</pre>
+          </figure>
+          <figure class="file doc-block file--narrow">
+            <figcaption class="file__path">~/sintr/checkins/2026-10.md</figcaption>
+            <pre class="file__body"><span class="h">## checkin-2026-10-15</span>
+<span class="k">- ts:</span> 2026-10-15T11:50:00Z
+<span class="k">- mood:</span> <span class="num">2/5</span>
+<span class="k">- anxiety:</span> <span class="num">4/5</span>
+<span class="k">- sleep_h:</span> <span class="num">5.5</span>
+<span class="k">- note:</span> worked late again; 1:1 with my manager today</pre>
+          </figure>
+          <h3 class="doc-h3">How the agent captures</h3>
+          <dl class="specs doc-block">
+            <div class="specs__row"><dt>Receive first</dt><dd>Reflect what was heard in a line or two. No fixing, no reframing yet.</dd></div>
+            <div class="specs__row"><dt>Ask narrowly</dt><dd>One or two questions per message, only for fields that matter and are missing. Never a checklist.</dd></div>
+            <div class="specs__row"><dt>Verbatim</dt><dd>Thoughts in quotes, in the owner's exact words and language. Paraphrase loses the emotional meaning.</dd></div>
+            <div class="specs__row"><dt>Scale, don't editorialize</dt><dd>&ldquo;From 0 to 100, how strong was that?&rdquo; rather than &ldquo;that must have been awful.&rdquo;</dd></div>
+            <div class="specs__row"><dt>Write, then confirm</dt><dd>Show the entry, correct what the owner flags, then append it at the end of the month file and re-read the tail.</dd></div>
+          </dl>
+          <p class="prose prose--quiet doc-block">The full rules live in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/SKILL.md">SKILL.md</a> and <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/entry-framework.md">references/entry-framework.md</a>.</p>
+        </section>
+
+        <!-- Pipeline -->
+        <section id="pipeline" class="doc-section" aria-labelledby="pipeline-title">
+          <h2 id="pipeline-title" class="doc-h2">The weekly pipeline</h2>
+          <p class="prose">The report is the product surface: the loop week → digest → report → session is what the owner actually experiences. Each step has one&nbsp;owner.</p>
+          <ol class="pipeline doc-block">
+            <li><span class="pipeline__step">Collect</span> <code>scripts/week_collect.py</code> reads the week's entries and check-ins in the ledger's timezone and prints a Markdown digest: the check-in table with averages, every entry, emotion and tag frequency, and the raw entry blocks. Stdlib only, deterministic, exit&nbsp;0 even for an empty&nbsp;week.</li>
+            <li><span class="pipeline__step">Draft</span> The agent writes <code>reports/YYYY-Www.md</code> following the weekly report guide: plain language, the owner's vocabulary, dates for every pattern, observations labeled as&nbsp;observations.</li>
+            <li><span class="pipeline__step">Review</span> The owner reads and edits; the agent applies the changes. <code>status: reviewed</code>.</li>
+            <li><span class="pipeline__step">Approve</span> Only an explicit approval enables sending. <code>require_approval: true</code> is the default in <code>config.md</code>.</li>
+            <li><span class="pipeline__step">Send</span> Through the configured gateway, preferably as a file so the exact artifact is traceable, for example <code>hermes send --to whatsapp:&lt;number&gt; --file &lt;report&gt;</code>.</li>
+            <li><span class="pipeline__step">Record</span> <code>status: sent</code>, <code>sent_to</code> and <code>sent_at</code> are written into the front matter, and nothing&nbsp;else.</li>
+          </ol>
+          <div class="cmd doc-block">
+            <pre id="cmd-collect"><span class="p">$ </span>python3 scripts/week_collect.py --ledger ~/sintr --week this   <span class="k"># or: last, 2026-W42</span></pre>
+            <button class="copy copy--icon" type="button" data-copy="#cmd-collect" aria-label="Copy the collector command"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+          </div>
+          <figure class="file file--wide doc-block">
+            <figcaption class="file__path">digest (excerpt) <span class="file__note">real output, run on a fictional demo ledger</span></figcaption>
+            <pre class="file__body"><span class="h"># sintr weekly digest — 2026-W42</span>
+
+- range: 2026-10-12 → 2026-10-18 (America/Sao_Paulo)
+- entries: 2 · check-ins: 3
+- generated: 2026-10-18T00:48:13Z
+- ledger: ~/sintr
+
+<span class="h">## Check-ins</span>
+
+| date | mood | energy | anxiety | sleep_h | quality | note |
+|---|---|---|---|---|---|---|
+| 2026-10-13 | 2/5 | —/5 | 4/5 | 6 | — | — |
+| 2026-10-15 | 2/5 | —/5 | 4/5 | 5.5 | — | worked late again; 1:1 with my manager today |
+| 2026-10-17 | 4/5 | 4/5 | 1/5 | 8 | — | — |
+
+<span class="h">### Check-in aggregates</span>
+
+- days: 3
+- mood avg: 2.7 (2–4)
+- energy avg: 4.0 (4–4)
+- anxiety avg: 3.0 (1–4)
+- sleep avg: 6.5 h (5.5–8)
+
+<span class="k">…</span>
+
+<span class="h">## Emotion frequency</span>
+
+- anxiety: 2x (avg 78, max 85)
+- shame: 1x (avg 55, max 55)</pre>
+          </figure>
+          <div class="frontmatter doc-block">
+            <figure class="file">
+              <figcaption class="file__path">reports/2026-W42.md <span class="file__note">as drafted</span></figcaption>
+              <pre class="file__body"><span class="k">---</span>
+<span class="k">week:</span> 2026-W42
+<span class="k">range:</span> 2026-10-12 → 2026-10-18
+<span class="k">status:</span> draft
+<span class="k">generated_at:</span> 2026-10-17T21:34:14Z
+<span class="k">sent_to:</span>
+<span class="k">sent_at:</span>
+<span class="k">---</span></pre>
+            </figure>
+            <figure class="file">
+              <figcaption class="file__path">reports/2026-W42.md <span class="file__note">after approval and send</span></figcaption>
+              <pre class="file__body"><span class="k">---</span>
+<span class="k">week:</span> 2026-W42
+<span class="k">range:</span> 2026-10-12 → 2026-10-18
+<span class="k">status:</span> <span class="changed">sent</span>
+<span class="k">generated_at:</span> 2026-10-17T21:34:14Z
+<span class="k">sent_to:</span> <span class="changed">whatsapp:&lt;therapist&gt;</span>
+<span class="k">sent_at:</span> <span class="changed">2026-10-18T23:12:05Z</span>
+<span class="k">---</span></pre>
+            </figure>
+          </div>
+          <p class="prose prose--quiet doc-block">The fields that change on send are underlined. A quiet week gets a short &ldquo;quiet week&rdquo; report; nothing is fabricated to fill it. A full example lives in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/example-report.md">docs/example-report.md</a>, and the writing rules in <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/weekly-report-guide.md">references/weekly-report-guide.md</a>.</p>
+        </section>
+
+        <!-- Install -->
+        <section id="install" class="doc-section" aria-labelledby="install-title">
+          <h2 id="install-title" class="doc-h2">Install</h2>
+          <p class="prose">Installing means two things: putting the skill where your agent finds it, and creating the ledger from the templates. Every target also writes <code>~/.sintr/config</code> (the ledger path), <code>~/.sintr/sintr.md</code> (a canonical copy of the instructions) and the collector at <code>~/.sintr/bin/week_collect.py</code>. Nothing runs in the background, and re-installing never overwrites ledger&nbsp;files.</p>
+
+          <div class="agents doc-block">
+            <input class="sr-only" type="radio" name="agent" id="ag-claude" checked>
+            <input class="sr-only" type="radio" name="agent" id="ag-hermes">
+            <input class="sr-only" type="radio" name="agent" id="ag-generic">
+            <div class="agents__tabs" role="presentation">
+              <label for="ag-claude">Claude Code</label>
+              <label for="ag-hermes">Hermes</label>
+              <label for="ag-generic" id="install-generic">Any other agent</label>
+            </div>
+            <div class="agents__panels">
+              <div class="agents__panel agents__panel--claude">
+                <p class="agents__lead">The repository is a self-hosted Claude Code plugin marketplace. From inside Claude&nbsp;Code:</p>
+                <div class="cmd">
+                  <pre id="cmd-claude"><span class="p">/</span>plugin marketplace add tiagomoraes/sintr
+<span class="p">/</span>plugin install sintr@sintr</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-claude" aria-label="Copy Claude Code commands"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+                </div>
+                <p class="agents__lead">Claude Code discovers <code>skills/sintr/SKILL.md</code> on its own. To copy the skill to <code>~/.claude/skills/sintr</code> and create the ledger yourself:</p>
+                <div class="cmd">
+                  <pre id="cmd-claude-manual"><span class="p">$ </span>git clone https://github.com/tiagomoraes/sintr.git
+<span class="p">$ </span>cd sintr
+<span class="p">$ </span>./installers/install.sh claude-code ~/sintr</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-claude-manual" aria-label="Copy manual Claude Code install commands"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+                </div>
+              </div>
+              <div class="agents__panel agents__panel--hermes">
+                <div class="cmd">
+                  <pre id="cmd-hermes"><span class="p">$ </span>git clone https://github.com/tiagomoraes/sintr.git
+<span class="p">$ </span>cd sintr
+<span class="p">$ </span>make install-hermes   <span class="k"># or: ./installers/install.sh hermes [ledger-path]</span></pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-hermes" aria-label="Copy Hermes install commands"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+                </div>
+                <ul class="ticks">
+                  <li>copies <code>skills/sintr/</code> into <code>${HERMES_HOME:-~/.hermes}/skills/sintr</code>;</li>
+                  <li>creates the ledger (default <code>~/sintr</code>) from <code>templates/sintr/</code>, skipping files that already exist;</li>
+                  <li>sets <code>700</code> on the ledger directories and <code>600</code> on its files.</li>
+                </ul>
+                <p class="agents__lead">Verify: load the skill (<code>hermes --skills sintr</code>, or just ask) and send a check-in such as &ldquo;Mood 4/5, slept 7h.&rdquo; You should get one short confirmation and a new <code>## checkin-…</code> block at the end of <code>~/sintr/checkins/YYYY-MM.md</code>.</p>
+              </div>
+              <div class="agents__panel agents__panel--generic">
+                <p class="agents__lead">OpenCode, OpenClaw, Cowork or your own setup:</p>
+                <div class="cmd">
+                  <pre id="cmd-generic"><span class="p">$ </span>git clone https://github.com/tiagomoraes/sintr.git
+<span class="p">$ </span>cd sintr
+<span class="p">$ </span>./installers/install.sh generic ~/sintr</pre>
+                  <button class="copy copy--icon" type="button" data-copy="#cmd-generic" aria-label="Copy generic install commands"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+                </div>
+                <p class="agents__lead">The skill lands in <code>~/.sintr/skill/</code>. Then, depending on the agent:</p>
+                <ul class="ticks">
+                  <li><b>Skill-aware agents:</b> point the agent at <code>~/.sintr/skill/</code>, or copy it into the agent's skills directory. It's a standard <code>SKILL.md</code> pack.</li>
+                  <li><b>Instruction-file agents</b> (<code>AGENTS.md</code>, <code>CLAUDE.md</code>, a custom system prompt): include <code>~/.sintr/sintr.md</code> or the skill's <code>SKILL.md</code>.</li>
+                  <li><b>GUI agents such as Cowork:</b> zip <code>~/.sintr/skill/</code> and upload it as a skill.</li>
+                </ul>
+                <p class="agents__lead">Per-agent notes live in <a class="link" href="https://github.com/tiagomoraes/sintr/tree/main/installers/snippets">installers/snippets/</a>.</p>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="doc-h3">Or let the agent install itself</h3>
+          <figure class="ask doc-block">
+            <figcaption class="ask__head">
+              <span class="h-small">The setup message from the home page</span>
+              <button class="copy" type="button" data-copy="#setup-text"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg><span data-label>Copy</span></button>
+            </figcaption>
+            <blockquote id="setup-text" class="ask__text">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer. Clone https://github.com/tiagomoraes/sintr.git, read docs/INSTALL.md, and run the installer that matches you (./installers/install.sh with hermes, claude-code or generic), using ~/sintr as my journal folder. Explain each step to me in plain words before you do it. Then open ~/sintr/config.md and fill it in with me: ask for my language, time zone and therapy details one at a time, and leave empty anything I don't give you. Keep require_approval: true, and never send anything to anyone without asking me first.</blockquote>
+            <p class="ask__foot">It only runs the repository's own installer. Agents that can't execute commands (browser chats) can't use it.</p>
+          </figure>
+
+          <h3 class="doc-h3">Make targets</h3>
+          <div class="table-wrap doc-block">
+            <table class="ttable">
+              <thead><tr><th scope="col">Target</th><th scope="col">What it does</th></tr></thead>
+              <tbody>
+                <tr><td><code>make install-hermes</code></td><td><code>./installers/install.sh hermes</code> with the ledger at <code>${SINTR_LEDGER:-~/sintr}</code></td></tr>
+                <tr><td><code>make install-claude</code></td><td>The same for <code>claude-code</code></td></tr>
+                <tr><td><code>make install-generic</code></td><td>The same for <code>generic</code></td></tr>
+                <tr><td><code>make test</code></td><td>Unit tests for the collector (<code>scripts/test_week_collect.py</code>)</td></tr>
+                <tr><td><code>make validate</code></td><td>Tests plus repository structure checks</td></tr>
+                <tr><td><code>make package</code></td><td><code>git archive</code> into <code>dist/sintr-agent-pack.tar.gz</code></td></tr>
+                <tr><td><code>make preview-site</code></td><td>Serves this website from <code>site/</code> on port 8089</td></tr>
+                <tr><td><code>make site-deploy</code></td><td>Copies <code>site/</code> to the publish directory (<code>SITE_DEST</code>)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="doc-h3">First run</h3>
+          <ol class="pipeline doc-block">
+            <li><span class="pipeline__step">Configure</span> Fill <code>~/sintr/config.md</code>: <code>name</code>, <code>language</code>, <code>timezone</code>, therapist name and contact, session day and time, <code>report_day</code> and <code>report_time</code>. Keep <code>require_approval: true</code> unless you deliberately decide otherwise.</li>
+            <li><span class="pipeline__step">Capture</span> Describe a situation and confirm the structured entry appears in <code>entries/YYYY-MM.md</code>.</li>
+            <li><span class="pipeline__step">Report</span> Ask for the weekly report, or run the collector directly, and review the draft in <code>reports/YYYY-Www.md</code> before you wire any schedule.</li>
+          </ol>
+          <p class="prose prose--quiet doc-block">To update: <code>git pull</code> and re-run the same install command; skill files are replaced and the ledger is never overwritten. To uninstall: delete the installed skill folder and, if you want, the ledger. Nothing else is touched.</p>
+        </section>
+
+        <!-- Privacy -->
+        <section id="privacy" class="doc-section" aria-labelledby="privacy-title">
+          <h2 id="privacy-title" class="doc-h2">Privacy architecture</h2>
+          <p class="prose">The ledger is some of the most sensitive data a person can produce about themselves. These rules are part of the skill, and agents using it are instructed to treat them as non-negotiable.</p>
+          <dl class="specs doc-block">
+            <div class="specs__row"><dt>Storage</dt><dd>A local folder. The installer sets <code>700</code> on directories and <code>600</code> on files and never relaxes them. No sintr cloud, no sync, no telemetry.</dd></div>
+            <div class="specs__row"><dt>Default deny</dt><dd>Content leaves the ledger only with the owner's explicit approval for that specific share. The therapist is a third party too. <code>require_approval: false</code> pre-authorizes scheduled sends, which are still recorded.</dd></div>
+            <div class="specs__row"><dt>Audit trail</dt><dd>Sends are file-based where possible, so the exact artifact is traceable. <code>sent_to</code> and <code>sent_at</code> go into the report's front matter.</dd></div>
+            <div class="specs__row"><dt>Containment</dt><dd>Ledger content is never copied into group chats, team channels, public notes, shared agent memory or third-party services. Memory, summary or embedding tools must exclude psychological content by default. Screenshots and exports happen only on explicit request.</dd></div>
+            <div class="specs__row"><dt>Deletion</dt><dd>Confirm the scope, delete from the live files, add a dated tombstone only if the owner wants one. No secret copies.</dd></div>
+            <div class="specs__row"><dt>The model boundary</dt><dd>What you say to your agent, and every file it reads to answer you (for example the week's entries when it drafts a report), is sent to the agent's model provider as context, under that provider's data policy. sintr adds no other network path: the installer and the collector run locally. If that boundary matters to you, run your agent on a model you host yourself.</dd></div>
+            <div class="specs__row"><dt>Git and backups</dt><dd>Optional, and only as a private repository or not at all. Backups are the owner's call; encrypted ones are recommended. An encrypted-at-rest option is on the roadmap.</dd></div>
+            <div class="specs__row"><dt>Clinical limits</dt><dd>No diagnoses, no labels, no treatment or medication advice. On signs of acute risk the agent stops the journaling flow and points to human help: CVV 188 in Brazil, 988 in the US and Canada, 116 123 in the UK and Ireland, or the local emergency number.</dd></div>
+            <div class="specs__row"><dt>Compliance</dt><dd>sintr makes no LGPD, HIPAA or GDPR claims. The architecture simply minimizes exposure: data leaves the owner's machine only through approved shares and the agent's own model calls.</dd></div>
+          </dl>
+          <p class="prose prose--quiet doc-block">Full rules: <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/references/privacy-and-safety.md">references/privacy-and-safety.md</a>.</p>
+        </section>
+
+        <!-- Scheduling -->
+        <section id="scheduling" class="doc-section" aria-labelledby="scheduling-title">
+          <h2 id="scheduling-title" class="doc-h2">Scheduling</h2>
+          <p class="prose">sintr has no daemon. Run the weekly flow with whatever scheduler your environment already&nbsp;has.</p>
+          <dl class="specs doc-block">
+            <div class="specs__row"><dt>Hermes</dt><dd>An agent-driven cron job scheduled before your session, so it can write the report. For example, Sundays at 20:00 with the prompt: &ldquo;sintr: generate this week's report from the ledger, save it to reports/, and send me a summary for review. Do not send anything to the therapist without my approval.&rdquo;</dd></div>
+            <div class="specs__row"><dt>cron, launchd, systemd</dt><dd>Schedule the collector for the digest and let your agent pick it up at your next interaction. Keep the output inside the ledger so it inherits its permissions.</dd></div>
+          </dl>
+          <div class="cmd doc-block">
+            <pre id="cmd-cron"><span class="k"># crontab example: Sundays at 20:00</span>
+0 20 * * 0  python3 ~/.sintr/bin/week_collect.py --ledger ~/sintr --week this --out ~/sintr/reports/digest-latest.md</pre>
+            <button class="copy copy--icon" type="button" data-copy="#cmd-cron" aria-label="Copy the crontab example"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg></button>
+          </div>
+        </section>
+
+        <!-- Repository -->
+        <section id="repo" class="doc-section" aria-labelledby="repo-title">
+          <h2 id="repo-title" class="doc-h2">Repository</h2>
+          <figure class="file file--wide doc-block">
+            <figcaption class="file__path"><a class="link" href="https://github.com/tiagomoraes/sintr">github.com/tiagomoraes/sintr</a> <span class="file__note">MIT</span></figcaption>
+            <pre class="file__body"><span class="h">sintr/</span>
+  skills/sintr/           <span class="k"># the skill: SKILL.md, references/, templates/</span>
+  templates/sintr/        <span class="k"># the starter ledger</span>
+  scripts/                <span class="k"># week_collect.py and its tests (stdlib)</span>
+  installers/             <span class="k"># install.sh and per-agent snippets</span>
+  docs/                   <span class="k"># INSTALL.md, DESIGN.md (product and data model), example report</span>
+  site/                   <span class="k"># this website: static HTML, CSS and JS</span>
+  .claude-plugin/         <span class="k"># Claude Code plugin and marketplace manifests</span>
+  PRODUCT.md              <span class="k"># purpose, users, principles</span>
+  DESIGN.md               <span class="k"># the website's visual system</span>
+  Makefile</pre>
+          </figure>
+          <dl class="specs doc-block">
+            <div class="specs__row"><dt>Contributing</dt><dd>Issues and pull requests are welcome on GitHub. Run <code>make validate</code> before opening a pull request.</dd></div>
+            <div class="specs__row"><dt>New agents</dt><dd>Any agent with file tools works today. To add first-class support, add a snippet in <code>installers/snippets/</code> and, if the agent has a skills directory, a target in <code>installers/install.sh</code>.</dd></div>
+            <div class="specs__row"><dt>The schema</dt><dd>Starter files live in <code>templates/sintr/</code>; the entry framework in <code>skills/sintr/references/entry-framework.md</code>. Add keys rather than renaming them: the collector keeps unknown keys as extras and passes the raw blocks through, but renamed keys stop being parsed.</dd></div>
+            <div class="specs__row"><dt>Roadmap</dt><dd>An encrypted-at-rest option (age or gpg), a print layout for report handoff, wearable and sleep import into check-ins, a multi-week trend view in <code>insights/</code>, and a local read-only view for browsing entries.</dd></div>
+            <div class="specs__row"><dt>Further reading</dt><dd><a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/INSTALL.md">docs/INSTALL.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/docs/DESIGN.md">docs/DESIGN.md</a>, <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/skills/sintr/SKILL.md">SKILL.md</a>, and the website's <a class="link" href="https://github.com/tiagomoraes/sintr/blob/main/DESIGN.md">DESIGN.md</a>.</dd></div>
+          </dl>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap foot__grid">
+      <div class="foot__brand">
+        <p class="mark mark--foot"><span class="mark__word">sintr</span></p>
+        <p class="foot__line">A private notebook for the week between therapy&nbsp;sessions.</p>
+      </div>
+      <nav class="foot__links" aria-label="More">
+        <a href="../">Home</a>
+        <a href="../#start">Get started</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/tiagomoraes/sintr">GitHub</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/LICENSE">MIT License</a>
+      </nav>
+      <p class="foot__fine">Version 0.1.0 · Built by Tiago Moraes · This site sets no cookies and loads nothing from third&nbsp;parties.</p>
+    </div>
+  </footer>
+
+  <p class="toast" role="status" aria-live="polite"></p>
+  <script src="../main.js" defer></script>
+</body>
+</html>

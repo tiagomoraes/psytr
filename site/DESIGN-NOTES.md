@@ -86,6 +86,53 @@ among its anti-references. The two are reconciled this way:
 - The crisis lines come from `skills/sintr/references/privacy-and-safety.md`.
 - One claim is new to this page and should be reviewed by the owner: the caveat that sintr adds no servers, but the agent's model provider still sees the conversation.
 
+## Revision 2: two pages, two audiences
+
+The owner approved the look but found the language too technical. The site is now split by
+reader, with the same visual world on both pages:
+
+- **`/` (home)** is for someone in therapy who isn't technical. It starts from the person and
+  not the tool: the week fades before the session, and here is how you keep it. It shows what
+  living with sintr feels like (talk to your assistant like a friend, one line a day is enough,
+  a summary on Sunday, walk into Monday with the week), then privacy in plain words, then
+  three steps to get started.
+- **`/tech/` (Under the hood)** is for builders and the curious. It covers the model, the
+  ledger, the raw entry and check-in formats, the real collector digest, the report front
+  matter lifecycle, installation per agent, Make targets, privacy architecture, scheduling
+  and the repository.
+
+**Language rules on the home.** These words don't appear on the home: skill, agent pack,
+ledger, Markdown, file-native, field keys, installer, repo, plugin marketplace, cron. Raw
+code doesn't appear either. Technical evidence becomes something you can read as a person:
+
+- The `entry-*.md` mock becomes a **notebook card**: ruled hairlines tinted like school paper,
+  a peach margin rule, human labels (What happened · What went through your mind · How you
+  felt · In your body · What you did) in the sans, and the person's words in the serif. The
+  quoted thought keeps the peach highlighter. It still "writes itself" line by line.
+- The check-in becomes three readable values (Mood 2 of 5 · Anxiety 4 of 5 · Sleep 5½ hours).
+  The therapy file becomes homework with drawn checkboxes. The insights file becomes "Something
+  that keeps coming up", written as an observation with dates.
+- The `ls -l` permissions block becomes a "Your sintr folder" card that lists what it holds,
+  with a small lock and "Only you can open it".
+- The report keeps its PT/EN toggle and loses the YAML front matter (which moved to `/tech/`).
+  A small "Draft, waiting for you" status sits above it.
+- The setup message for the assistant is the only technical text left on the home. The card
+  says plainly that it's a message for your assistant, not for you. The full text sits in a
+  closed "Read the message before you copy it" disclosure, so it can be read before pasting
+  without putting paths in the home's default reading. The copy buttons work whether the
+  disclosure is open or closed.
+
+**`/tech/` layout.** It is a reading page: a contents list that stays in view (with the current
+section marked by script, as an enhancement only), a 9-column text column, specification
+tables with a hairline above each, and the original file cards in Fragment Mono. The window
+light stays in the header and fades out, so it never sits behind long reading. Nothing in the
+visual system changed: same tokens, faces, buttons, hairlines and motion grammar.
+
+**Accuracy.** The digest excerpt on `/tech/` is real output of `scripts/week_collect.py` run on
+a fictional demo ledger. Only the scratch ledger path was replaced with `~/sintr`, and sections
+in between are marked with an ellipsis. Install paths come from `installers/install.sh`, and
+targets from the `Makefile`.
+
 ## Privacy of the site itself
 
 The page loads nothing from third parties: no analytics, no cookies, no font CDN. The fonts,
@@ -96,9 +143,10 @@ future edit.
 
 ```text
 site/
-  index.html        the page
+  index.html        the home: purpose, the week, privacy, three steps to start
+  tech/index.html   Under the hood: formats, pipeline, install, privacy architecture, repo
   styles.css        tokens, layout, light, motion
-  main.js           copy, time-of-day observer, reveals, parallax (progressive enhancement)
+  main.js           copy, time-of-day observer, reveals, parallax, contents highlight (progressive enhancement)
   favicon.svg       the window glyph
   og.png            1200×630 social image, rendered from the live page in headless Chrome
   fonts/            self-hosted woff2 (Latin subset) + OFL.txt
