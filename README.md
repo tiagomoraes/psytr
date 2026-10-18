@@ -1,5 +1,7 @@
 # sintr
 
+> **Legacy.** sintr is now a database-backed app: see **[tiagomoraes/sintr](https://github.com/tiagomoraes/sintr)**. This repository is the original file-native version (skill + Markdown ledger), kept for reference and for setups that already run it locally. New work goes to the app repository.
+
 **sintr is a private mood diary you keep with your AI assistant** — a file-native, psychological self-tracking ledger on your own filesystem, with a weekly report you review and share with your therapist only if you want.
 
 It gives AI agents a portable skill, a Markdown-based psychological ledger, templates, and documentation so tools like Hermes, Claude Code, OpenCode, OpenClaw, Claude Cowork, and other personal assistants can help you document how you feel, structure difficult situations the way cognitive-behavioral therapy taught us (thought records), keep therapy context, and produce a weekly report you can hand to your therapist — without running a database, an app, or a service.
