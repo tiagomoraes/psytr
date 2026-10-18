@@ -177,7 +177,9 @@ def read_config(ledger: Path) -> dict:
     for line in strip_comments(path.read_text(encoding="utf-8")).splitlines():
         m = FIELD_RE.match(line)
         if m:
-            cfg.setdefault(m.group(1).strip(), m.group(2).strip())
+            # the template's notes follow the value (`- session_time: 18:00   # e.g. …`),
+            # or stand alone on an empty field (`- report_day:   # only without …`)
+            cfg.setdefault(m.group(1).strip(), re.sub(r"(^|\s+)#.*$", "", m.group(2)).strip())
     return cfg
 
 
