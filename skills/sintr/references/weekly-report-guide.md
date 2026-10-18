@@ -4,14 +4,23 @@ The weekly report is sintr's flagship artifact: a short, warm account of **how t
 
 It gives the therapist what a 50-minute session cannot reconstruct from memory: what happened during the week, how it felt at the time, and what the person wants to work on — in the person's own words. It is not a data export and not a clinical note. Why it is shaped this way (DBT diary card, CBT mood check and thought records, pre-session summaries, Cogni), with sources: `report-framework.md`.
 
+## When, and which days
+
+**An hour before the session.** The report is prepared `report_lead` (default `1h`) before each therapy session (`session_day`, `session_time` in `config.md`), so it is as fresh as it can be when the person walks in: the days just before a session are the ones memory blurs least and recall distorts most (`report-framework.md`). It covers **the 7 days that end at that moment** — the morning of the session day included — so each report starts exactly where the previous one ended: what the person wrote after last week's session is in, nothing is counted twice.
+
+- `python3 scripts/week_collect.py --ledger <path> --schedule` prints the weekly moment and a cron line; the agent creates the job once (Hermes cron, crontab, launchd). If the session day or time is not in `config.md`, ask the person and write it there.
+- A rescheduled session: `--session YYYY-MM-DDTHH:MM`, and the same `session:` in the front matter.
+- Without a fixed session, a calendar week (`--week`, Monday to Sunday, `reports/YYYY-Www.md`) on `report_day`/`report_time`.
+- The person reviews and approves before the session. No approval in time means nothing is sent; the PDF stays in the ledger and can be shown in the session.
+
 ## Pipeline
 
-1. **Collect.** `python3 scripts/week_collect.py --ledger <path> --week <this|last|YYYY-Www>` → digest (entries, check-ins, aggregates).
-2. **Draft.** Write `reports/YYYY-Www.md` (`status: draft`) following this guide.
-3. **Preview.** `python3 scripts/report_pdf.py --ledger <path> --week YYYY-Www --draft` → `reports/YYYY-Www.draft.pdf`, marked as a draft. Resolve every `warning:` it prints before showing it.
+1. **Collect.** `python3 scripts/week_collect.py --ledger <path>` (the next session by default; or `--session <next|last|YYYY-MM-DD>`, `--week <this|last|YYYY-Www>`) → digest (entries, check-ins, aggregates). Its header names the report file, e.g. `reports/2026-10-19.md`, and the `session:` and `range:` lines for its front matter.
+2. **Draft.** Write that file (`status: draft`) following this guide.
+3. **Preview.** `python3 scripts/report_pdf.py --ledger <path> --session 2026-10-19 --draft` → `reports/2026-10-19.draft.pdf`, marked as a draft. Use the same date in every command for this report. Resolve every `warning:` it prints before showing it.
 4. **Review.** The owner reads the preview; apply their edits to the Markdown and re-render. Content approved → `status: reviewed`.
-5. **Render.** The same command without `--draft` → `reports/YYYY-Www.pdf` (+ `.html`). Or `make report-pdf WEEK=YYYY-Www`.
-6. **Approve and send.** Only an explicit "manda / send it" from the owner enables sending, and **the PDF is what is sent** (default example: `hermes send --to whatsapp:<number> --file reports/YYYY-Www.pdf`). The Markdown stays in the ledger as the auditable source.
+5. **Render.** The same command without `--draft` → `reports/2026-10-19.pdf` (+ `.html`). Or `make report-pdf SESSION=2026-10-19`.
+6. **Approve and send.** Only an explicit "manda / send it" from the owner enables sending, and **the PDF is what is sent** (default example: `hermes send --to whatsapp:<number> --file reports/2026-10-19.pdf`). The Markdown stays in the ledger as the auditable source.
 7. **Record.** Update the front matter — `status: sent`, `sent_to`, `sent_at` — and nothing more.
 
 If `require_approval: false` in `config.md`, the owner has pre-authorized the send on the configured schedule; still render the PDF from a reviewed report and record what was sent.
@@ -20,7 +29,7 @@ If `require_approval: false` in `config.md`, the owner has pre-authorized the se
 
 | | Written by the agent (Markdown, reviewed by the owner) | Added by `report_pdf.py` (computed from the ledger) |
 |---|---|---|
-| Header | — | the week's dates as title; check-in coverage ("6 of 7 days · none on Wed"); moments recorded; next session (`config.md`); confidential, for the therapist |
+| Header | — | the period's dates as title; the session it is for; check-in coverage ("6 of 7 days · none on Wed"); moments recorded; confidential, for the therapist |
 | 1. How the week went | 3–6 warm lines | — |
 | 2. For the session | 2–4 topics | the open checkboxes; the *suggested by sintr* label |
 | 3. Mood, energy and sleep | 2–4 lines reading the numbers; the day's check-in notes, verbatim | averages with their number of days and the week before; the sentiment chart (last 4 weeks, smoothed, dotted across days without a check-in); the day-by-day grid |
@@ -36,15 +45,15 @@ Page 1 is a letter (the summary, the agenda, how to read it); page 2 the numbers
 
 ```md
 ---
-week: 2026-W42
-range: 2026-10-12 → 2026-10-18
+session: 2026-10-19T18:00                     # the session it is for (week: YYYY-Www for a calendar week)
+range: 2026-10-12 17:00 → 2026-10-19 17:00    # as the collector prints it
 status: draft            # draft → reviewed → sent
-generated_at: 2026-10-18T22:40:00Z
+generated_at: 2026-10-19T20:05:00Z
 sent_to:                 # filled when sent
 sent_at:                 # filled when sent
 ---
 
-# Relatório semanal — Demo Person — 2026-W42
+# Relatório para a sessão de 19/10 — Demo Person
 
 ## Como foi a semana <!-- week -->
 ## Para conversar na sessão <!-- session -->

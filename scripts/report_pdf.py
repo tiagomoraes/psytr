@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """sintr — weekly report PDF.
 
-Turns a reviewed weekly report (`reports/YYYY-Www.md`) into the document the
+Turns a reviewed weekly report (`reports/YYYY-MM-DD.md`, named by the session it
+is for; `YYYY-Www.md` for a calendar week) into the document the
 therapist receives: an HTML page set in the sintr design system, rendered to a
 PDF by headless Chromium. Why the report is shaped this way:
 `skills/sintr/references/report-framework.md`.
@@ -115,7 +116,8 @@ STRINGS = {
         "facts_checkins": "Check-ins",
         "facts_moments": "Momentos registrados",
         "facts_session": "Próxima sessão",
-        "coverage": "{n} de 7 dias",
+        "facts_this_session": "Sessão",
+        "coverage": "{n} de {total} dias",
         "coverage_missing": "sem check-in: {days}",
         "draft": "Rascunho — ainda não revisado. Não enviar.",
         "sec_week": "Como foi a semana",
@@ -190,7 +192,8 @@ STRINGS = {
         "facts_checkins": "Check-ins",
         "facts_moments": "Moments recorded",
         "facts_session": "Next session",
-        "coverage": "{n} of 7 days",
+        "facts_this_session": "Session",
+        "coverage": "{n} of {total} days",
         "coverage_missing": "none on {days}",
         "draft": "Draft — not reviewed yet. Do not send.",
         "sec_week": "How the week went",
@@ -349,6 +352,14 @@ def fmt_weekdays(days, lang: str) -> str:
     return ", ".join(STRINGS[lang]["wd_short"][d.weekday()] for d in days)
 
 
+def fmt_session(when: datetime, lang: str) -> str:
+    s = STRINGS[lang]
+    text = f"{s['weekdays'][when.weekday()]}, {fmt_day_month(when.date(), lang)}"
+    if lang == "pt":
+        return text + (f", {when.hour}h{when.minute:02d}" if when.minute else f", {when.hour}h")
+    return text + f", {when.hour:02d}:{when.minute:02d}"
+
+
 def next_session(week_end: date, cfg: dict, lang: str):
     """The first configured session day after the reported week, or None."""
     raw = (cfg.get("session_day") or "").strip().lower()
@@ -468,7 +479,8 @@ def parse_report(text: str) -> dict:
         m = H2_RE.match(line)
         if not m:
             h1 = H1_RE.match(line)
-            if h1 and (title or section_key(h1.group(1), h1.group(2))):
+            # the first H1 is the title (it may well say "session"); later ones are sections
+            if h1 and (title or h1.group(2) in SECTION_KEYS) and section_key(h1.group(1), h1.group(2)):
                 m = h1
             elif h1 and current is None:
                 title = h1.group(1).strip()
@@ -868,13 +880,14 @@ def sentiment_chart(days, week_start: date, lang: str):
             b.append(f'<text class="chart__tick" x="{_f(left - 10)}" y="{_f(yb(v) + 3.5)}" text-anchor="end">{v}h</text>')
     for _, x, y in _draw_series(b, sleep, xs, yb, in_week, SLEEP_COLOR):
         b.append(f'<circle class="chart__dot" cx="{_f(x)}" cy="{_f(y)}" r="2.6" fill="{SLEEP_COLOR}"/>')
-    # x axis: every day of the highlighted week, the first day of earlier weeks
+    # x axis: every day of the highlighted week; earlier weeks by their first
+    # day, counted back from it in sevens, so labels never crowd the band
     for i, d in enumerate(days):
         x = xs[i]
         if in_week[i]:
             b.append(f'<text class="chart__day" x="{_f(x)}" y="{_f(base + 15)}" text-anchor="middle">{html.escape(s["wd_short"][d["date"].weekday()])}</text>')
             b.append(f'<text class="chart__date" x="{_f(x)}" y="{_f(base + 26)}" text-anchor="middle">{d["date"].day}</text>')
-        elif d["date"].weekday() == 0 or i == 0:
+        elif (w0 - i) % 7 == 0:
             b.append(f'<text class="chart__date" x="{_f(x)}" y="{_f(base + 15)}" text-anchor="middle">{fmt_day_month(d["date"], lang)}</text>')
     b.append("</svg>")
     return "\n".join(a), "\n".join(b)
@@ -1134,8 +1147,26 @@ def font_faces() -> str:
 # assembly
 # --------------------------------------------------------------------------
 
-def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4, draft: bool = False):
-    """Return (html, meta, warnings) for one week's report."""
+def period_days(start: datetime, end: datetime, tz, has_data) -> list:
+    """The local days a report shows: every day the period touches, except a
+    partial day at either end that the period covers for less than 12 hours
+    and holds no record (a session report starts and ends at the report
+    hour, so its first and last days are partial)."""
+    first, last = start.astimezone(tz).date(), (end - timedelta(microseconds=1)).astimezone(tz).date()
+    days, d = [], first
+    while d <= last:
+        day_start = datetime(d.year, d.month, d.day, tzinfo=tz)
+        covered = min(end, day_start + timedelta(days=1)) - max(start, day_start)
+        if covered >= timedelta(hours=12) or d in has_data:
+            days.append(d)
+        d += timedelta(days=1)
+    return days
+
+
+def build(ledger: Path, week_spec=None, tz_override=None, history_weeks: int = 4, draft: bool = False,
+          session_spec=None, now=None):
+    """Return (html, meta, warnings) for one report: the session's (the 7 days
+    that end report_lead before it) or a calendar week's."""
     cfg = wc.read_config(ledger)
     lang = lang_of(cfg.get("language", ""))
     s = STRINGS[lang]
@@ -1144,13 +1175,21 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
         tz = wc.ZoneInfo(tzname)
     except Exception:
         raise ReportError(f"unknown timezone {tzname!r}")
-    start, end, label = wc.resolve_week(week_spec, tz)
-    week_start, week_end = start.date(), end.date() - timedelta(days=1)
+    try:
+        period = wc.resolve_period(cfg, tz, week=week_spec, session=session_spec, now=now)
+    except SystemExit as exc:
+        raise ReportError(str(exc).removeprefix("sintr: "))
+    label = period["label"]
 
     report_path = ledger / "reports" / f"{label}.md"
     if not report_path.exists():
         raise ReportError(f"no report for {label}: write {report_path} first (see references/weekly-report-guide.md)")
     report = parse_report(report_path.read_text(encoding="utf-8"))
+    # A rescheduled session pins its own time in the front matter.
+    pinned = wc.SESSION_RE.match((report["meta"].get("session") or "").strip())
+    if period["kind"] == "session" and pinned and pinned.group(2) and pinned.group(1) == label:
+        period = wc.resolve_period(cfg, tz, session=pinned.group(0), now=now)
+    start, end = period["start"], period["end"]
     status = report_status(report["meta"])
     if status not in ("draft", "reviewed", "sent"):
         report["notes"].append(f"status {status!r} is not draft/reviewed/sent: treated as a draft")
@@ -1164,15 +1203,21 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
     week_entries = [e for e in entries if shareable(e) and start <= e["ts"] < end]
     entries_by_id = {e["id"]: e for e in entries}
 
-    stamps = [c["ts"].astimezone(tz).date() for c in checkins]
+    in_period = [c for c in checkins if start <= c["ts"] < end]
+    has_data = {r["ts"].astimezone(tz).date() for r in in_period + week_entries}
+    days = period_days(start, end, tz, has_data)
+    week_start, week_end = days[0], days[-1]
+    week_days = daily_series(in_period, tz, week_start, week_end)
+    prev_days = daily_series([c for c in checkins if start - timedelta(days=7) <= c["ts"] < start], tz,
+                             start.astimezone(tz).date() - timedelta(days=7), week_start - timedelta(days=1))
+    days_logged = [d for d in week_days if logged(d)]
+    # the chart: this period lit, earlier weeks before it, nothing after the report hour
+    past = [c for c in checkins if c["ts"] < start]
+    stamps = [c["ts"].astimezone(tz).date() for c in past]
     first = week_start - timedelta(days=7 * (max(history_weeks, 1) - 1))
     if stamps:
         first = max(first, min(min(stamps), week_start))
-        first -= timedelta(days=first.weekday())
-    series = daily_series(checkins, tz, first, week_end)
-    week_days = [d for d in series if d["date"] >= week_start]
-    prev_days = daily_series(checkins, tz, week_start - timedelta(days=7), week_start - timedelta(days=1))
-    days_logged = [d for d in week_days if logged(d)]
+    series = daily_series(past, tz, first, week_start - timedelta(days=1)) + week_days if first < week_start else week_days
 
     warnings = ([f"normalized: {n}" for n in report["notes"]]
                 + verbatim_warnings(report, entries_by_id, *ledger_corpus(ledger, entries))
@@ -1191,12 +1236,16 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
     title_b = s["title_b"].format(name=html.escape(name)) if name else s["title_b_anon"]
     parts.append(f'<h1 class="title"><span class="title__a">{html.escape(date_range[:1].upper() + date_range[1:])}.</span> '
                  f'<span class="title__b">{title_b}</span></h1>')
-    coverage = s["coverage"].format(n=len(days_logged))
+    coverage = s["coverage"].format(n=len(days_logged), total=len(week_days))
     missing_days = [d["date"] for d in week_days if not logged(d)]
     if missing_days and days_logged:
         coverage += f'<span class="facts__sub">{s["coverage_missing"].format(days=fmt_weekdays(missing_days, lang))}</span>'
-    facts = [(s["facts_week"], label), (s["facts_checkins"], coverage), (s["facts_moments"], str(len(week_entries)))]
-    session = next_session(week_end, cfg, lang)
+    if period["kind"] == "session":
+        facts = [(s["facts_this_session"], html.escape(fmt_session(period["session"], lang)))]
+    else:
+        facts = [(s["facts_week"], label)]
+    facts += [(s["facts_checkins"], coverage), (s["facts_moments"], str(len(week_entries)))]
+    session = next_session(week_end, cfg, lang) if period["kind"] == "week" else None
     if session:
         facts.append((s["facts_session"], html.escape(session)))
     parts.append('<dl class="facts">' + "".join(f"<div><dt>{k}</dt><dd>{v}</dd></div>" for k, v in facts) + "</dl>")
@@ -1298,8 +1347,8 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
         light="data:image/jpeg;base64," + base64.b64encode((ASSETS / "light.jpg").read_bytes()).decode("ascii"),
         body="\n".join(parts),
     )
-    meta = {"week": label, "status": status, "lang": lang, "report": report_path,
-            "sent_at": report["meta"].get("sent_at", "")}
+    meta = {"week": label, "status": status, "lang": lang, "report": report_path, "kind": period["kind"],
+            "start": start, "end": end, "session": period["session"], "sent_at": report["meta"].get("sent_at", "")}
     return page, meta, warnings
 
 
@@ -1405,7 +1454,11 @@ def _private(path: Path):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="sintr weekly report → PDF")
     ap.add_argument("--ledger", default="~/sintr", help="ledger path (default: ~/sintr)")
-    ap.add_argument("--week", default="this", help="this | last | YYYY-Www (default: this)")
+    which = ap.add_mutually_exclusive_group()
+    which.add_argument("--session", default=None,
+                       help="next | last | YYYY-MM-DD | YYYY-MM-DDTHH:MM: the report for that session, "
+                            "reports/YYYY-MM-DD.md (default when config.md has session_day and session_time)")
+    which.add_argument("--week", default=None, help="this | last | YYYY-Www: a calendar week's report, reports/YYYY-Www.md")
     ap.add_argument("--tz", default=None, help="IANA timezone (default: config.md timezone, else UTC)")
     ap.add_argument("--out", default=None, help="PDF path (default: <ledger>/reports/<week>.pdf)")
     ap.add_argument("--history-weeks", type=int, default=4, help="weeks shown in the sentiment chart (default: 4)")
@@ -1421,7 +1474,7 @@ def main(argv=None):
         print(f"sintr: ledger not found: {ledger}", file=sys.stderr)
         return 2
     try:
-        page, meta, warnings = build(ledger, args.week, args.tz, args.history_weeks, args.draft)
+        page, meta, warnings = build(ledger, args.week, args.tz, args.history_weeks, args.draft, session_spec=args.session)
     except ReportError as exc:
         print(f"sintr: {exc}", file=sys.stderr)
         return exc.code

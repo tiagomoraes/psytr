@@ -18,6 +18,12 @@ Notes:
   and interpreted as 12:00 UTC (noon, so it never lands on a day boundary).
 - Week ranges are computed in the ledger's timezone (config.md `timezone:`,
   overridable with --tz).
+- A report is for a therapy session by default (config.md `session_day` and
+  `session_time`): it covers the 7 days that end `report_lead` (default 1h)
+  before the session, so it is fresh for the session and consecutive weekly
+  reports meet with no gap and no overlap. `--week` keeps the calendar week
+  (Monday to Sunday) for people without a fixed session. `--schedule` prints
+  when to prepare the report and a cron line for it.
 - Exit codes: 0 = digest produced (even for an empty week); 2 = usage error.
 """
 
@@ -40,6 +46,15 @@ COMMENT_RE = re.compile(r"<!--.*?-->", flags=re.S)
 EMOTION_COLON_RE = re.compile(r"^(.+?):\s*(\d{1,3})\s*$")
 EMOTION_SPACE_RE = re.compile(r"^(.+?)\s+(\d{1,3})\s*$")
 WEEK_RE = re.compile(r"^(\d{4})-W(\d{1,2})$")
+SESSION_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})(?:[T ](\d{1,2}):(\d{2}))?$")
+CLOCK_RE = re.compile(r"^(\d{1,2})(?::(\d{2})|h(\d{2})?)$")
+WEEKDAYS = {
+    "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3, "friday": 4, "saturday": 5, "sunday": 6,
+    "segunda": 0, "terça": 1, "terca": 1, "quarta": 2, "quinta": 3, "sexta": 4, "sábado": 5, "sabado": 5,
+    "domingo": 6,
+}
+WEEKDAY_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+DEFAULT_LEAD = timedelta(hours=1)
 
 ENTRY_KNOWN = {
     "ts", "title", "situation", "thoughts", "emotions", "body", "behavior",
@@ -267,6 +282,107 @@ def resolve_week(spec: str, tz):
     return start, end, f"{iso[0]}-W{iso[1]:02d}"
 
 
+def parse_lead(raw: str) -> timedelta:
+    """How long before the session the report is prepared: `1h`, `90min`,
+    `1h30`, `45m`, `2 h`. Empty or unreadable -> 1 hour."""
+    raw = (raw or "").strip().lower().replace(" ", "")
+    m = re.fullmatch(r"(?:(\d+)h)?(?:(\d+)(?:m|min)?)?", raw)
+    if not raw or not m or not (m.group(1) or m.group(2)):
+        return DEFAULT_LEAD
+    return timedelta(hours=int(m.group(1) or 0), minutes=int(m.group(2) or 0))
+
+
+def session_weekday(cfg: dict):
+    raw = (cfg.get("session_day") or "").strip().lower()
+    return WEEKDAYS.get(raw.split()[0].rstrip(",")) if raw else None
+
+
+def parse_clock(raw: str):
+    """`18:00`, `18h`, `18h30` -> (18, 0) / (18, 30); None if unreadable."""
+    m = CLOCK_RE.match((raw or "").strip().lower())
+    if not m:
+        return None
+    h, mm = int(m.group(1)), int(m.group(2) or m.group(3) or 0)
+    return (h, mm) if h < 24 and mm < 60 else None
+
+
+def resolve_session(spec: str, tz, cfg: dict, now=None) -> datetime:
+    """The session a report is for, as an aware datetime in tz.
+    spec: 'next' (the first session that has not started), 'last' (the most
+    recent one that has), 'YYYY-MM-DD' (that day, at session_time) or
+    'YYYY-MM-DDTHH:MM' (a rescheduled session)."""
+    now = (now or datetime.now(tz)).astimezone(tz)
+    clock = parse_clock(cfg.get("session_time", ""))
+    m = SESSION_RE.match(str(spec).strip())
+    if m:
+        try:
+            day = date.fromisoformat(m.group(1))
+        except ValueError:
+            raise SystemExit(f"sintr: invalid session date {spec!r}")
+        if m.group(2):
+            clock = (int(m.group(2)), int(m.group(3)))
+        if clock is None:
+            raise SystemExit("sintr: no session time: set session_time in config.md or pass YYYY-MM-DDTHH:MM")
+        return datetime(day.year, day.month, day.day, clock[0], clock[1], tzinfo=tz)
+    if spec not in ("next", "last"):
+        raise SystemExit(f"sintr: invalid --session value {spec!r} (use next, last, YYYY-MM-DD or YYYY-MM-DDTHH:MM)")
+    weekday = session_weekday(cfg)
+    if weekday is None or clock is None:
+        raise SystemExit("sintr: session_day and session_time are not set in config.md "
+                         "(ask the person when their session usually is), or pass --week")
+    day = now.date() + timedelta(days=(weekday - now.weekday()) % 7)
+    session = datetime(day.year, day.month, day.day, clock[0], clock[1], tzinfo=tz)
+    if spec == "next" and session <= now:
+        session += timedelta(days=7)
+    if spec == "last" and session > now:
+        session -= timedelta(days=7)
+    return session
+
+
+def resolve_period(cfg: dict, tz, week=None, session=None, now=None) -> dict:
+    """The span a report covers. With a session (the default when config.md
+    has session_day and session_time): the 7 days that end report_lead before
+    it, labeled by the session's date. Otherwise the ISO week."""
+    if week is None and session is None:
+        configured = session_weekday(cfg) is not None and parse_clock(cfg.get("session_time", ""))
+        session, week = ("next", None) if configured else (None, "this")
+    if session is not None:
+        when = resolve_session(session, tz, cfg, now)
+        end = when - parse_lead(cfg.get("report_lead", ""))
+        return {"kind": "session", "label": when.date().isoformat(), "start": end - timedelta(days=7),
+                "end": end, "session": when}
+    start, end, label = resolve_week(week, tz)
+    return {"kind": "week", "label": label, "start": start, "end": end, "session": None}
+
+
+def schedule(cfg: dict, tz, now=None):
+    """When to prepare the weekly report, from config.md. Returns (text, ok)."""
+    weekday, clock = session_weekday(cfg), parse_clock(cfg.get("session_time", ""))
+    if weekday is None or clock is None:
+        return ("session_day and session_time are not set in config.md. Ask the person when their\n"
+                "therapy session usually is (e.g. Wednesday, 18:00) and write both there; the report is\n"
+                "then prepared report_lead (default 1h) before it. Without a fixed session, use\n"
+                "report_day/report_time and --week instead.", False)
+    period = resolve_period(cfg, tz, session="next", now=now)
+    lead = parse_lead(cfg.get("report_lead", ""))
+    when, start, end = period["session"], period["start"], period["end"]
+    local = end.astimezone()  # this machine's timezone, for a plain crontab
+    lead_txt = f"{lead.seconds // 3600}h{(lead.seconds % 3600) // 60:02d}".replace("h00", "h")
+    text = "\n".join([
+        f"session:  {WEEKDAY_EN[when.weekday()]}s at {when:%H:%M} ({tz})",
+        f"report:   {WEEKDAY_EN[end.weekday()]}s at {end:%H:%M} ({tz}), report_lead {lead_txt} before the session",
+        f"next:     {end:%Y-%m-%d %H:%M} for the session of {when:%Y-%m-%d %H:%M}",
+        f"covers:   {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M}, file reports/{period['label']}.md",
+        "",
+        "cron, in the ledger's timezone (cronie, systemd timers):",
+        f"  CRON_TZ={tz}",
+        f"  {end.minute} {end.hour} * * {(end.weekday() + 1) % 7}",
+        f"cron, in this machine's timezone ({local.tzname()}):",
+        f"  {local.minute} {local.hour} * * {(local.weekday() + 1) % 7}",
+    ])
+    return text, True
+
+
 # --------------------------------------------------------------------------
 # rendering
 # --------------------------------------------------------------------------
@@ -293,13 +409,21 @@ def _range_str(values):
     return f"{min(values):g}–{max(values):g}"
 
 
-def render_digest(ledger, week_label, start, end, tz, entries, checkins, warnings):
+def render_digest(ledger, week_label, start, end, tz, entries, checkins, warnings, session=None):
     generated = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     tzname = str(tz)
     lines = []
-    lines.append(f"# sintr weekly digest — {week_label}")
-    lines.append("")
-    lines.append(f"- range: {start.date()} → {end.date() - timedelta(days=1)} ({tzname})")
+    if session is not None:
+        lines.append(f"# sintr weekly digest — session of {week_label}")
+        lines.append("")
+        lines.append(f"- session: {WEEKDAY_EN[session.weekday()]} {session:%Y-%m-%d %H:%M} ({tzname})")
+        lines.append(f"- range: {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M} ({tzname}) — the 7 days before the report")
+        lines.append(f"- report: reports/{week_label}.md, front matter `week: {week_label}`, "
+                     f"`session: {session:%Y-%m-%dT%H:%M}`, `range: {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M}`")
+    else:
+        lines.append(f"# sintr weekly digest — {week_label}")
+        lines.append("")
+        lines.append(f"- range: {start.date()} → {end.date() - timedelta(days=1)} ({tzname})")
     lines.append(f"- entries: {len(entries)} · check-ins: {len(checkins)}")
     lines.append(f"- generated: {generated}")
     lines.append(f"- ledger: {ledger}")
@@ -411,7 +535,7 @@ def render_digest(ledger, week_label, start, end, tz, entries, checkins, warning
 # entry point
 # --------------------------------------------------------------------------
 
-def build_digest(ledger: Path, week_spec: str, tz_override: str | None):
+def build_digest(ledger: Path, week_spec, tz_override: str | None, session=None, now=None):
     cfg = read_config(ledger)
     tzname = tz_override or cfg.get("timezone") or "UTC"
     if ZoneInfo is None:
@@ -421,19 +545,34 @@ def build_digest(ledger: Path, week_spec: str, tz_override: str | None):
     except Exception:
         raise SystemExit(f"sintr: unknown timezone {tzname!r}")
 
-    start, end, label = resolve_week(week_spec, tz)
+    period = resolve_period(cfg, tz, week=week_spec, session=session, now=now)
+    start, end, label = period["start"], period["end"], period["label"]
     entries, e_warn = parse_entries(ledger)
     checkins, c_warn = parse_checkins(ledger)
     entries = [e for e in entries if start <= e["ts"] < end]
     checkins = [c for c in checkins if start <= c["ts"] < end]
     warnings = e_warn + c_warn
-    return render_digest(ledger, label, start, end, tz, entries, checkins, warnings)
+    return render_digest(ledger, label, start, end, tz, entries, checkins, warnings, period["session"])
+
+
+def ledger_tz(cfg: dict, tz_override=None):
+    tzname = tz_override or cfg.get("timezone") or "UTC"
+    try:
+        return ZoneInfo(tzname)
+    except Exception:
+        raise SystemExit(f"sintr: unknown timezone {tzname!r}")
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="sintr weekly digest collector")
     ap.add_argument("--ledger", default="~/sintr", help="ledger path (default: ~/sintr)")
-    ap.add_argument("--week", default="this", help="this | last | YYYY-Www (default: this)")
+    period = ap.add_mutually_exclusive_group()
+    period.add_argument("--session", default=None,
+                        help="next | last | YYYY-MM-DD | YYYY-MM-DDTHH:MM: the 7 days before that session's report "
+                             "(default when config.md has session_day and session_time)")
+    period.add_argument("--week", default=None, help="this | last | YYYY-Www: a calendar week, Monday to Sunday")
+    period.add_argument("--schedule", action="store_true",
+                        help="print when to prepare the report (from config.md) and a cron line, then exit")
     ap.add_argument("--tz", default=None, help="IANA timezone (default: config.md timezone, else UTC)")
     ap.add_argument("--out", default="-", help="output path, or - for stdout (default)")
     args = ap.parse_args(argv)
@@ -443,7 +582,13 @@ def main(argv=None):
         print(f"sintr: ledger not found: {ledger}", file=sys.stderr)
         return 2
 
-    digest = build_digest(ledger, args.week, args.tz)
+    if args.schedule:
+        cfg = read_config(ledger)
+        text, ok = schedule(cfg, ledger_tz(cfg, args.tz))
+        print(text)
+        return 0 if ok else 2
+
+    digest = build_digest(ledger, args.week, args.tz, session=args.session)
 
     if args.out in ("-", ""):
         print(digest)

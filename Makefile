@@ -1,7 +1,8 @@
-.PHONY: test validate report-pdf example-pdf report-light install-hermes install-claude install-generic package site-i18n site-deploy preview-site
+.PHONY: test validate report-pdf report-schedule example-pdf report-light install-hermes install-claude install-generic package site-i18n site-deploy preview-site
 
 LEDGER ?= $(HOME)/sintr
-WEEK ?= this
+SESSION ?=
+WEEK ?=
 
 test:
 	python3 -m unittest discover -s scripts -p 'test_*.py' -v
@@ -20,10 +21,16 @@ validate: test
 	@diff -r templates/sintr skills/sintr/templates/sintr
 	@echo "repo checks: OK"
 
-# The weekly report as a PDF, next to its Markdown: $(LEDGER)/reports/$(WEEK).pdf
-#   make report-pdf WEEK=2026-W42 [LEDGER=~/sintr]
+# The weekly report as a PDF, next to its Markdown: $(LEDGER)/reports/<session date>.pdf
+#   make report-pdf                      the next session's (or this week's, without a session in config.md)
+#   make report-pdf SESSION=2026-10-19   a given session's
+#   make report-pdf WEEK=2026-W42        a calendar week's
 report-pdf:
-	python3 scripts/report_pdf.py --ledger "$(LEDGER)" --week "$(WEEK)"
+	python3 scripts/report_pdf.py --ledger "$(LEDGER)" $(if $(SESSION),--session "$(SESSION)") $(if $(WEEK),--week "$(WEEK)")
+
+# When to prepare the report (report_lead before the session) and a cron line for it.
+report-schedule:
+	python3 scripts/week_collect.py --ledger "$(LEDGER)" --schedule
 
 # Re-render the header light (report_assets/light-source.html -> light.jpg).
 # Development only: needs uv and a Chromium for Playwright.
@@ -32,7 +39,7 @@ report-light:
 
 # Rebuild the example PDF from the fictional fixture ledger.
 example-pdf:
-	python3 scripts/report_pdf.py --ledger scripts/fixtures/demo-ledger --week 2026-W42 --out docs/example-report.pdf --no-html
+	python3 scripts/report_pdf.py --ledger scripts/fixtures/demo-ledger --session 2026-10-19 --out docs/example-report.pdf --no-html
 
 install-hermes:
 	./installers/install.sh hermes "$${SINTR_LEDGER:-$$HOME/sintr}"

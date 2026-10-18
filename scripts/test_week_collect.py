@@ -240,6 +240,83 @@ class TestFilteringAndRender(unittest.TestCase):
             self.assertIn("no parseable ts", digest)
 
 
+SESSION_CFG = {"timezone": "America/Recife", "session_day": "Monday", "session_time": "18:00", "report_lead": "1h"}
+
+
+class TestSessionPeriod(unittest.TestCase):
+    def at(self, *args):
+        return datetime(*args, tzinfo=TZ)
+
+    def test_parse_lead(self):
+        self.assertEqual(wc.parse_lead("1h"), wc.timedelta(hours=1))
+        self.assertEqual(wc.parse_lead("90min"), wc.timedelta(minutes=90))
+        self.assertEqual(wc.parse_lead("1h30"), wc.timedelta(minutes=90))
+        self.assertEqual(wc.parse_lead("45m"), wc.timedelta(minutes=45))
+        self.assertEqual(wc.parse_lead(""), wc.timedelta(hours=1))
+        self.assertEqual(wc.parse_lead("soon"), wc.timedelta(hours=1))
+
+    def test_parse_clock(self):
+        self.assertEqual(wc.parse_clock("18:00"), (18, 0))
+        self.assertEqual(wc.parse_clock("18h"), (18, 0))
+        self.assertEqual(wc.parse_clock("9h30"), (9, 30))
+        self.assertIsNone(wc.parse_clock("evening"))
+
+    def test_next_and_last(self):
+        before = self.at(2026, 10, 19, 17, 5)  # Monday, 55 minutes before the session
+        self.assertEqual(wc.resolve_session("next", TZ, SESSION_CFG, before), self.at(2026, 10, 19, 18, 0))
+        self.assertEqual(wc.resolve_session("last", TZ, SESSION_CFG, before), self.at(2026, 10, 12, 18, 0))
+        after = self.at(2026, 10, 19, 18, 30)
+        self.assertEqual(wc.resolve_session("next", TZ, SESSION_CFG, after), self.at(2026, 10, 26, 18, 0))
+        self.assertEqual(wc.resolve_session("last", TZ, SESSION_CFG, after), self.at(2026, 10, 19, 18, 0))
+
+    def test_explicit_and_rescheduled(self):
+        self.assertEqual(wc.resolve_session("2026-10-21", TZ, SESSION_CFG), self.at(2026, 10, 21, 18, 0))
+        self.assertEqual(wc.resolve_session("2026-10-22T19:30", TZ, SESSION_CFG), self.at(2026, 10, 22, 19, 30))
+        with self.assertRaises(SystemExit):
+            wc.resolve_session("next", TZ, {"timezone": "UTC"})
+        with self.assertRaises(SystemExit):
+            wc.resolve_session("2026-10-21", TZ, {"session_day": "Monday"})  # no time anywhere
+
+    def test_period_ends_lead_before_the_session(self):
+        p = wc.resolve_period(SESSION_CFG, TZ, session="2026-10-19")
+        self.assertEqual((p["kind"], p["label"]), ("session", "2026-10-19"))
+        self.assertEqual(p["end"], self.at(2026, 10, 19, 17, 0))
+        self.assertEqual(p["start"], self.at(2026, 10, 12, 17, 0))
+
+    def test_consecutive_reports_meet(self):
+        a = wc.resolve_period(SESSION_CFG, TZ, session="2026-10-12")
+        b = wc.resolve_period(SESSION_CFG, TZ, session="2026-10-19")
+        self.assertEqual(a["end"], b["start"])  # no gap, no overlap
+
+    def test_lead_across_midnight(self):
+        cfg = dict(SESSION_CFG, session_time="00:30")
+        p = wc.resolve_period(cfg, TZ, session="2026-10-19")
+        self.assertEqual(p["end"], self.at(2026, 10, 18, 23, 30))
+
+    def test_default_follows_the_config(self):
+        self.assertEqual(wc.resolve_period(SESSION_CFG, TZ, now=self.at(2026, 10, 19, 17, 5))["label"], "2026-10-19")
+        self.assertEqual(wc.resolve_period({"timezone": "UTC"}, TZ)["kind"], "week")
+
+    def test_schedule(self):
+        text, ok = wc.schedule(SESSION_CFG, TZ, now=self.at(2026, 10, 14, 9, 0))
+        self.assertTrue(ok)
+        self.assertIn("Mondays at 17:00", text)
+        self.assertIn("CRON_TZ=America/Recife", text)
+        self.assertIn("0 17 * * 1", text)
+        self.assertIn("reports/2026-10-19.md", text)
+        self.assertFalse(wc.schedule({"timezone": "UTC"}, TZ)[1])
+
+    def test_session_digest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = make_ledger(tmp)
+            (ledger / "config.md").write_text(CONFIG_MD + "- session_day: Monday\n- session_time: 18:00\n", encoding="utf-8")
+            digest = wc.build_digest(ledger, None, None, session="2026-10-19")
+            self.assertIn("session of 2026-10-19", digest)
+            # the period runs Mon 12 17:00 -> Mon 19 17:00: Tuesday 13th is in
+            self.assertIn("| 2026-10-13 |", digest)
+            self.assertIn("| 2026-10-19 | 1/5 |", digest)  # the morning of the session day counts
+
+
 class TestConfigDefault(unittest.TestCase):
     def test_tz_from_config(self):
         with tempfile.TemporaryDirectory() as tmp:

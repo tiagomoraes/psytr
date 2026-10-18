@@ -47,7 +47,7 @@ sintr/
   therapy/current.md
   therapy/sessions/YYYY-MM.md
   insights/current.md
-  reports/YYYY-Www.md
+  reports/YYYY-MM-DD.md        # one per session, named by its date
 ```
 
 Read `config.md` first: it holds the language to write in, the timezone, therapy schedule, therapist delivery channel, and whether reports require approval before sending.
@@ -55,7 +55,7 @@ Read `config.md` first: it holds the language to write in, the timezone, therapy
 ## File roles
 
 ### `config.md`
-Owner preferences: display name, language, timezone, therapist name and contact (e.g. WhatsApp number), session day/time, report day/time, `require_approval` flag. Never invent values; leave unknown fields empty.
+Owner preferences: display name, language, timezone, therapist name and contact (e.g. WhatsApp number), session day and time, `report_lead` (how long before the session the report is prepared, default `1h`), `require_approval` flag. `report_day`/`report_time` are only for people without a fixed session. Never invent values; leave unknown fields empty — and if the session day or time is missing, ask the person when their session usually is.
 
 ### `entries/YYYY-MM.md`
 Append-only monthly log of **structured situation entries** — the heart of the ledger. One entry per event, following the cognitive-therapy thought-record structure (see below). The person describes what happened in their own words; the assistant helps complete the structure through a short, supportive conversation, then writes the entry.
@@ -72,8 +72,8 @@ Append-only notes after each therapy session: topics covered, agreements, homewo
 ### `insights/current.md`
 Distilled, careful observations from the evidence: recurring triggers, situations that reliably help, open questions. Update only when there is enough signal (roughly 3+ dated data points). Label as observations, never diagnoses.
 
-### `reports/YYYY-Www.md` (+ `YYYY-Www.pdf`)
-Weekly reports and their lifecycle: `status: draft` → `reviewed` → `sent`, with recipient and time recorded when sent. The Markdown is the auditable source the person reviews; the PDF rendered from it is what the therapist receives.
+### `reports/YYYY-MM-DD.md` (+ `.pdf`)
+One report per session, named by the session's date (`YYYY-Www.md` for a calendar week, without a fixed session), and its lifecycle: `status: draft` → `reviewed` → `sent`, with recipient and time recorded when sent. The Markdown is the auditable source the person reviews; the PDF rendered from it is what the therapist receives.
 
 ## The structured entry
 
@@ -154,14 +154,25 @@ From a message like "mood 4/5, slept 6h" (the owner writes in their own language
 
 The report is a short, warm document about how the person's week felt, written for their therapist and sent as a **PDF**. Six sections, in this order: how the week went; the person's topics for the session; mood, energy and sleep; the moments that stood out; what repeated; what helped. The reasons for each (DBT diary card, CBT mood check and thought records, pre-session summaries, Cogni) are in `references/report-framework.md`; how to write each one is in `references/weekly-report-guide.md`.
 
+### When: an hour before the session
+
+The report is prepared **`report_lead` (default 1 hour) before each therapy session**, so it is as fresh as possible: it covers the 7 days that end at that moment, including the morning of the session day, and each report starts exactly where the previous one ended (nothing is lost, nothing is repeated).
+
+- **Set the schedule once.** Read `session_day`, `session_time` and `timezone` from `config.md` — if the session day or time is missing, ask the person when their session usually is and write both there. Then `python3 scripts/week_collect.py --ledger ~/sintr --schedule` prints the weekly moment to prepare the report and a cron line for it; create the job in whatever scheduler you have (a Hermes cron job, crontab, launchd), with a prompt like "sintr: prepare the report for today's session and send me the draft PDF for review; send nothing to the therapist without my approval".
+- **When a session moves**, prepare the report for that session: `--session 2026-10-22T19:00`, and keep `session: 2026-10-22T19:00` in the report's front matter.
+- **No fixed session?** Use `report_day`/`report_time` and calendar weeks (`--week this`, `reports/YYYY-Www.md`).
+- The person has until the session to review and approve. Nothing is sent without that yes; if it doesn't come in time, the PDF stays in the ledger and the person can bring it to the session themselves.
+
+### Steps
+
 1. Read `config.md` for language, therapist, schedule, and `require_approval`.
-2. Run the collector (it reads the ledger and produces a digest with the week's entries, check-ins, and mechanical aggregates):
-   `python3 scripts/week_collect.py --ledger ~/sintr --week this` (or `last`, or `2026-W42`; installed copy: `~/.sintr/bin/week_collect.py`).
-3. Write `reports/YYYY-Www.md` (`status: draft`) following `references/weekly-report-guide.md`: plain, warm language; the person's own topics first; the person's own words in quotes, exactly as recorded; the hard moments and the best one; dated observations, labeled as observations. Never a diagnosis; never clinical advice. Do not type the check-in numbers into tables — the PDF computes them.
+2. Run the collector (it reads the ledger and produces a digest with the period's entries, check-ins, and mechanical aggregates):
+   `python3 scripts/week_collect.py --ledger ~/sintr` (installed copy: `~/.sintr/bin/week_collect.py`). With a session in `config.md` it takes the next session by default (`--session next`; `last` or a date work too); its header prints the session, the exact range, and the report file to write, e.g. `reports/2026-10-19.md`. Use that date in every later command for this report.
+3. Write that file (`status: draft`, with the `session:` and `range:` lines the digest prints) following `references/weekly-report-guide.md`: plain, warm language; the person's own topics first; the person's own words in quotes, exactly as recorded; the hard moments and the best one; dated observations, labeled as observations. Never a diagnosis; never clinical advice. Do not type the check-in numbers into tables — the PDF computes them.
 4. Render a preview and give it to the person for review:
-   `python3 scripts/report_pdf.py --ledger ~/sintr --week 2026-W42 --draft` → `reports/2026-W42.draft.pdf`, marked as a draft on its first page. Fix every `warning:` the script prints (a quote that is not in the ledger word for word, an intensity that differs from the entry) — or confirm with the person that the change was theirs. Apply their edits to the Markdown and re-render until they are happy.
-5. When the person approves the content, set `status: reviewed` and render the final PDF (same command without `--draft`; `make report-pdf WEEK=2026-W42` from the repo; installed copy: `~/.sintr/bin/report_pdf.py`). It writes `reports/2026-W42.pdf` (+ `.html`), private to the owner (`600`).
-6. **Only after explicit approval to send**, send **the PDF** to the therapist through the configured channel — e.g. `hermes send --to whatsapp:<number> --file ~/sintr/reports/2026-W42.pdf`. The Markdown is never what gets sent; it stays in the ledger as the auditable source. Then set `status: sent`, `sent_to`, and `sent_at` in the report front matter. If `require_approval: false`, the person pre-authorized automatic sending on the configured schedule; still record what was sent and to whom.
+   `python3 scripts/report_pdf.py --ledger ~/sintr --session 2026-10-19 --draft` → `reports/2026-10-19.draft.pdf`, marked as a draft on its first page. Fix every `warning:` the script prints (a quote that is not in the ledger word for word, an intensity that differs from the entry) — or confirm with the person that the change was theirs. Apply their edits to the Markdown and re-render until they are happy.
+5. When the person approves the content, set `status: reviewed` and render the final PDF (same command without `--draft`; `make report-pdf SESSION=2026-10-19` from the repo; installed copy: `~/.sintr/bin/report_pdf.py`). It writes `reports/2026-10-19.pdf` (+ `.html`), private to the owner (`600`).
+6. **Only after explicit approval to send**, send **the PDF** to the therapist through the configured channel — e.g. `hermes send --to whatsapp:<number> --file ~/sintr/reports/2026-10-19.pdf`. The Markdown is never what gets sent; it stays in the ledger as the auditable source. Then set `status: sent`, `sent_to`, and `sent_at` in the report front matter. If `require_approval: false`, the person pre-authorized automatic sending on the configured schedule; still record what was sent and to whom.
 7. If no PDF can be rendered (exit code 4: no Chrome/Chromium or Playwright), say so and point the person to the `.html` written next to it (open it in a browser, print to PDF). Do not fall back to sending the Markdown unless the person explicitly asks for that.
 8. If the week was quiet, say so — a short "quiet week" report is valid. Never fabricate content.
 
@@ -176,7 +187,7 @@ The report is a short, warm document about how the person's week felt, written f
 ## File editing rules
 
 - Append-only logs stay append-only: new events go at end of file.
-- Timestamps in UTC ISO 8601; dates as `YYYY-MM-DD`; weeks as ISO `YYYY-Www`.
+- Timestamps in UTC ISO 8601; dates as `YYYY-MM-DD`; reports by session date `YYYY-MM-DD` (ISO week `YYYY-Www` without a fixed session).
 - Stable IDs: `entry-YYYY-MM-DD-NNN`, `checkin-YYYY-MM-DD`. Never reuse an ID.
 - Corrections: fix the live entry and add a dated correction note in the same month file; never rewrite history silently.
 - Unknown fields stay `unknown` or are omitted — never invented. Never guess an emotion intensity or a sleep number.
@@ -212,6 +223,6 @@ Before replying after any sintr edit:
 
 - "I need to talk about something that bothered me today: ..."
 - "Mood 3/5, slept 6h30, heavy day." (check-in)
-- "Generate my weekly report for therapy."
+- "Generate my weekly report for therapy." (the schedule also prepares it an hour before each session)
 - "Send the report to my therapist."
 - "What patterns showed up in the last few weeks?"
