@@ -275,10 +275,13 @@ components:
     backgroundColor: "{colors.wash}"
     rounded: "{rounded.inline}"
     padding: "0.08em 0.38em"
-  help-panel:
-    backgroundColor: "{colors.paper}"
-    rounded: "{rounded.panel}"
-    padding: "24px 26px"
+  support-line:
+    textColor: "{colors.ink}"
+    padding: "14px 0"
+  support-call:
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    padding: "0 16px 0 13px"
 ---
 
 # Design System: sintr website
@@ -398,7 +401,7 @@ Hybrid and low. Surfaces are white on white and separate primarily by a 1px hair
 
 ## Shapes
 
-Soft rectangles and full pills. Controls are pills (999px) without exception: buttons, copy buttons, the segmented toggle and its options, the skip link, the small "of 100" scale chip in a notebook card. Containers soften by role: chat bubbles 20px with one 6px tail corner on the speaker's side, the setup card 20px, the help panel 18px, notebook and file cards and the home's setup message 14px, command blocks 12px, inline code and focus rings 6px, drawn checkboxes 4px. The report paper is nearly square (6px, 4px on mobile) because it is a sheet of paper, not a card. Lines are 1px throughout (1.5px on checkbox outlines and the disclosure chevron); markers are 7px to 13px circles and 7px chevrons built from borders. The recurring silhouettes are the skewed window grid, in the light and in the brand glyph, and the notebook's ruled page with its margin line.
+Soft rectangles and full pills. Controls are pills (999px) without exception: buttons, copy buttons, the outlined call buttons of the support lines, the segmented toggle and its options, the skip link, the small "of 100" scale chip in a notebook card. Containers soften by role: chat bubbles 20px with one 6px tail corner on the speaker's side, the setup card 20px, notebook and file cards and the home's setup message 14px, command blocks 12px, inline code and focus rings 6px, drawn checkboxes 4px. The report paper is nearly square (6px, 4px on mobile) because it is a sheet of paper, not a card. Lines are 1px throughout (1.5px on checkbox outlines and the disclosure chevron); markers are 7px to 13px circles and 7px chevrons built from borders. The recurring silhouettes are the skewed window grid, in the light and in the brand glyph, and the notebook's ruled page with its margin line.
 
 ## Components
 

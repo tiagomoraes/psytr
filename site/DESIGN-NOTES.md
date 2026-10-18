@@ -179,6 +179,21 @@ editorial, not visual: the world, the tokens and the motion are unchanged.
   | Sections | 9 | 7 | |
   | Mock pieces (cards, bubbles, papers) | 21 | 9 | |
 
+## After launch: cache and the support lines
+
+- **Stale stylesheet.** The CDN caches `styles.css` and `main.js` for four hours
+  (`max-age=14400`) but not the HTML. After a deploy, some visitors got the new page with the
+  old stylesheet, which caused overlapping text and unstyled sections. The home now links
+  `styles.css?v=dev` and `main.js?v=dev`. `make site-deploy` stamps each file's content hash
+  into those URLs in the published copy, so a changed file always gets a new URL. `/tech/`
+  still links them without a version; it can opt in by adding `?v=dev` the same way.
+- **Support lines, not a card.** The crisis box was a bordered panel with label and value pairs
+  ("CVV 188"), which read like credit card fields. It is now a ruled list of phone lines. Each
+  line has the country, the service's full name (CVV, Centro de Valorização da Vida; 988
+  crisis line; Samaritans; SNS 24), how it works ("Free, 24 hours"), and an outlined call
+  button with a phone icon. The note about calling the local emergency number and about the
+  assistant stopping to help sits under the list.
+
 ## Privacy of the site itself
 
 The page loads nothing from third parties: no analytics, no cookies, no font CDN. The fonts,
