@@ -53,10 +53,14 @@ install_skill() {
 }
 
 install_scripts() {
-  # The weekly digest collector, installed for schedulers (cron, systemd, etc.).
+  # The weekly digest collector, installed for schedulers (cron, systemd, etc.),
+  # and the report PDF generator with its template and fonts.
   mkdir -p "$SINTR_HOME/bin"
   cp "$REPO_DIR/scripts/week_collect.py" "$SINTR_HOME/bin/week_collect.py"
-  chmod 700 "$SINTR_HOME/bin/week_collect.py" 2>/dev/null || true
+  cp "$REPO_DIR/scripts/report_pdf.py" "$SINTR_HOME/bin/report_pdf.py"
+  rm -rf "$SINTR_HOME/bin/report_assets"
+  cp -R "$REPO_DIR/scripts/report_assets" "$SINTR_HOME/bin/report_assets"
+  chmod 700 "$SINTR_HOME/bin/week_collect.py" "$SINTR_HOME/bin/report_pdf.py" 2>/dev/null || true
 }
 
 case "$AGENT" in
@@ -90,4 +94,5 @@ echo "sintr installed for $AGENT."
 echo "  ledger:    $LEDGER_PATH"
 echo "  home:      $SINTR_HOME (config + canonical instruction copy)"
 echo "  collector: $SINTR_HOME/bin/week_collect.py"
+echo "  report:    $SINTR_HOME/bin/report_pdf.py (needs Chrome/Chromium or Playwright for the PDF)"
 echo "Next: fill $(printf '%s' "$LEDGER_PATH")/config.md, then ask your agent for the sintr skill."

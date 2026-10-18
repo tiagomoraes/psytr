@@ -1,4 +1,7 @@
-.PHONY: test validate install-hermes install-claude install-generic package site-deploy preview-site
+.PHONY: test validate report-pdf example-pdf install-hermes install-claude install-generic package site-deploy preview-site
+
+LEDGER ?= $(HOME)/sintr
+WEEK ?= this
 
 test:
 	python3 -m unittest discover -s scripts -p 'test_*.py' -v
@@ -8,7 +11,22 @@ validate: test
 	@test -f templates/sintr/README.md
 	@test -f docs/INSTALL.md
 	@test -f scripts/week_collect.py
+	@test -f scripts/report_pdf.py
+	@test -f scripts/report_assets/report.html
+	@test -f scripts/report_assets/report.css
+	@test -f scripts/report_assets/fonts/OFL.txt
+	@test -f skills/sintr/references/report-framework.md
+	@diff -r templates/sintr skills/sintr/templates/sintr
 	@echo "repo checks: OK"
+
+# The weekly report as a PDF, next to its Markdown: $(LEDGER)/reports/$(WEEK).pdf
+#   make report-pdf WEEK=2026-W42 [LEDGER=~/sintr]
+report-pdf:
+	python3 scripts/report_pdf.py --ledger "$(LEDGER)" --week "$(WEEK)"
+
+# Rebuild the example PDF from the fictional fixture ledger.
+example-pdf:
+	python3 scripts/report_pdf.py --ledger scripts/fixtures/demo-ledger --week 2026-W42 --out docs/example-report.pdf --no-html
 
 install-hermes:
 	./installers/install.sh hermes "$${SINTR_LEDGER:-$$HOME/sintr}"
