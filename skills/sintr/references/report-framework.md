@@ -78,6 +78,7 @@ The owner found the first chart hard to read: straight segments that stopped at 
 
 - **A PDF, not Markdown.** The therapist reads a document, not a file format; the owner previews exactly what will be sent. The Markdown stays in the ledger as the auditable source.
 - **About four pages, five minutes.** Page 1 is a letter (summary, agenda, how to read it); page 2 the numbers; then the moments, what repeated, what helped. No study sets a page limit; the target follows from visit-time findings (Chung) and the request for highlights (Wang).
+- **The same page in every viewer.** The PDF carries no transparency: the window light is a pre-rendered image, every color is opaque. (The first version drew the light with soft masks and a blend mode; macOS Preview cut it into a grey band.)
 - **Set in the sintr design system** (`DESIGN.md`): serif for the person's words, sans for labels, hairlines instead of boxes, and the peach highlighter reserved for verbatim quotes — so the therapist can always tell the person's words from the assistant's.
 
 ## 3. Rules that do not change

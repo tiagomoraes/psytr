@@ -1,4 +1,4 @@
-.PHONY: test validate report-pdf example-pdf install-hermes install-claude install-generic package site-deploy preview-site
+.PHONY: test validate report-pdf example-pdf report-light install-hermes install-claude install-generic package site-deploy preview-site
 
 LEDGER ?= $(HOME)/sintr
 WEEK ?= this
@@ -15,6 +15,7 @@ validate: test
 	@test -f scripts/report_assets/report.html
 	@test -f scripts/report_assets/report.css
 	@test -f scripts/report_assets/fonts/OFL.txt
+	@test -f scripts/report_assets/light.jpg
 	@test -f skills/sintr/references/report-framework.md
 	@diff -r templates/sintr skills/sintr/templates/sintr
 	@echo "repo checks: OK"
@@ -23,6 +24,11 @@ validate: test
 #   make report-pdf WEEK=2026-W42 [LEDGER=~/sintr]
 report-pdf:
 	python3 scripts/report_pdf.py --ledger "$(LEDGER)" --week "$(WEEK)"
+
+# Re-render the header light (report_assets/light-source.html -> light.jpg).
+# Development only: needs uv and a Chromium for Playwright.
+report-light:
+	uv run --with playwright python scripts/render_light.py
 
 # Rebuild the example PDF from the fictional fixture ledger.
 example-pdf:

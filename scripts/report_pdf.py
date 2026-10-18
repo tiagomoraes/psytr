@@ -270,7 +270,17 @@ MOOD_COLOR = "#3a6ea5"
 ANXIETY_COLOR = "#c4744a"
 SLEEP_COLOR = "#5c616b"       # graphite: sleep has its own panel and title, no categorical hue needed
 LIGHT_STOPS = ("#d4e6f4", "#f1e8df", "#f8dcc8")  # morning window light
-LEAF = "#a9b9a3"
+
+
+def on_paper(color: str, strength: float) -> str:
+    """`color` at `strength` over white, as an opaque color. The PDF carries
+    no transparency (opacity, soft masks, blend modes): viewers render those
+    differently, flat colors look the same everywhere."""
+    rgb = [int(color[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#" + "".join(f"{round(255 - (255 - c) * strength):02x}" for c in rgb)
+
+
+BAND_STOPS = tuple(on_paper(c, .78) for c in LIGHT_STOPS)  # this week's band in the chart
 
 
 class ReportError(Exception):
@@ -788,13 +798,14 @@ def _series(values, xs, y_of, in_week):
 
 def _draw_series(out, values, xs, y_of, in_week, color):
     paths, pts = _series(values, xs, y_of, in_week)
+    strength = {"past": .45, "past-gap": .4, "now-gap": .7, "now": 1}
     for style in ("past", "past-gap", "now-gap", "now"):
         for d in paths.get(style, []):
             cls = " ".join(["chart__line"] + [f"chart__line--{part}" for part in style.split("-")])
-            out.append(f'<path class="{cls}" d="{d}" stroke="{color}"/>')
+            out.append(f'<path class="{cls}" d="{d}" stroke="{on_paper(color, strength[style])}"/>')
     if len(pts) == 1 and not in_week[pts[0][0]]:
         _, x, y = pts[0]
-        out.append(f'<circle class="chart__dot chart__dot--past" cx="{_f(x)}" cy="{_f(y)}" r="2.4" fill="{color}"/>')
+        out.append(f'<circle class="chart__dot chart__dot--past" cx="{_f(x)}" cy="{_f(y)}" r="2.4" fill="{on_paper(color, .45)}"/>')
     return [(i, x, y) for i, x, y in pts if in_week[i]]
 
 
@@ -819,8 +830,8 @@ def sentiment_chart(days, week_start: date, lang: str):
     alt = s["chart_alt"].format(start=fmt_day_month(days[0]["date"], lang), end=fmt_day_month(days[-1]["date"], lang))
     a = [f'<svg class="chart__svg" viewBox="0 0 {_f(W)} {_f(top + h + 12)}" role="img" aria-label="{html.escape(alt)}">']
     a.append('<defs><linearGradient id="wk-light" x1="0" y1="0" x2="1" y2="1">'
-             f'<stop offset="0" stop-color="{LIGHT_STOPS[0]}"/><stop offset=".55" stop-color="{LIGHT_STOPS[1]}"/>'
-             f'<stop offset="1" stop-color="{LIGHT_STOPS[2]}"/></linearGradient></defs>')
+             f'<stop offset="0" stop-color="{BAND_STOPS[0]}"/><stop offset=".55" stop-color="{BAND_STOPS[1]}"/>'
+             f'<stop offset="1" stop-color="{BAND_STOPS[2]}"/></linearGradient></defs>')
     if w0 < n:
         a.append(f'<rect class="chart__band" x="{_f(band_x)}" y="0" width="{_f(band_w)}" height="{_f(top + h + 12)}" rx="8" fill="url(#wk-light)"/>')
         a.append(f'<text class="chart__band-label" x="{_f(band_x + 8)}" y="13">{html.escape(s["this_week"])}</text>')
@@ -880,37 +891,6 @@ GLYPH = ('<svg class="mark__glyph" viewBox="0 0 32 32" aria-hidden="true"><defs>
          '<rect x="0" y="0" width="6" height="8.8" rx="1"/><rect x="7.2" y="0" width="6" height="8.8" rx="1"/>'
          '<rect x="0" y="10.2" width="6" height="8.8" rx="1"/><rect x="7.2" y="10.2" width="6" height="8.8" rx="1"/></g></svg>')
 
-# The window light of the site, held in the header of the first page: a tall
-# window projected obliquely onto the paper, with sage leaf shadows. Shapes
-# from site/index.html; static (no time of day, no motion).
-LIGHT = f"""<svg class="light__svg" viewBox="0 0 1000 1000" aria-hidden="true">
-<defs>
-<linearGradient id="light-grad" x1="0" y1="0" x2="1" y2="1">
-<stop offset=".18" stop-color="{LIGHT_STOPS[0]}"/><stop offset=".5" stop-color="{LIGHT_STOPS[1]}"/><stop offset=".82" stop-color="{LIGHT_STOPS[2]}"/>
-</linearGradient>
-<filter id="light-edge" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="11"/></filter>
-<filter id="light-leaf" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.4"/></filter>
-<mask id="light-window" maskUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
-<g filter="url(#light-edge)" fill="#fff" transform="translate(430 110) skewX(-15) skewY(8)">
-<rect x="0" y="0" width="150" height="188" rx="3"/><rect x="166" y="0" width="150" height="188" rx="3"/>
-<rect x="0" y="204" width="150" height="188" rx="3"/><rect x="166" y="204" width="150" height="188" rx="3"/>
-<rect x="0" y="408" width="150" height="188" rx="3"/><rect x="166" y="408" width="150" height="188" rx="3"/>
-</g>
-</mask>
-</defs>
-<g mask="url(#light-window)">
-<rect x="200" y="60" width="600" height="840" fill="url(#light-grad)"/>
-<g filter="url(#light-leaf)" fill="{LEAF}" opacity=".62">
-<path fill="none" stroke="{LEAF}" stroke-width="3.5" stroke-linecap="round" d="M960 60 C 870 120, 800 170, 700 250 S 560 380, 500 470"/>
-<path d="M900 104c-26-30-68-34-92-16 25 27 62 34 92 16z"/><path d="M866 128c9-39-10-76-39-87-7 36 9 71 39 87z"/>
-<path d="M816 164c-32-23-74-20-94 4 28 19 67 21 94-4z"/><path d="M786 186c14-37 2-78-25-92-12 34-2 73 25 92z"/>
-<path d="M733 225c-35-16-76-5-90 21 32 12 71 5 90-21z"/><path d="M701 250c19-34 16-76-7-94-18 30-16 69 7 94z"/>
-<path d="M651 291c-35-11-74 5-85 34 34 7 69-5 85-34z"/><path d="M618 321c25-30 28-73 7-94-21 27-25 66-7 94z"/>
-<path d="M575 362c-37-5-73 16-80 46 34 2 67-16 80-46z"/><path d="M545 398c27-27 35-67 18-92-23 23-32 62-18 92z"/>
-<path d="M515 442c-35 2-65 28-67 58 34-5 62-28 67-58z"/>
-</g>
-</g>
-</svg>"""
 
 
 ARROW = ('<svg class="arrow" viewBox="0 0 12 8" aria-hidden="true">'
@@ -1315,7 +1295,7 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
         fonts=font_faces(),
         css=(ASSETS / "report.css").read_text(encoding="utf-8"),
         page_css=page_css,
-        light=LIGHT,
+        light="data:image/jpeg;base64," + base64.b64encode((ASSETS / "light.jpg").read_bytes()).decode("ascii"),
         body="\n".join(parts),
     )
     meta = {"week": label, "status": status, "lang": lang, "report": report_path,

@@ -300,6 +300,9 @@ class TestBuild(unittest.TestCase):
         self.assertIsNone(re.search(r'(src|href)="https?:', page))
         self.assertIsNone(re.search(r"url\(['\"]?https?:", page))
         self.assertEqual(page.count("@font-face"), 3)
+        self.assertIn('<img class="light" src="data:image/jpeg;base64,', page)
+        self.assertNotIn("mix-blend-mode", page)
+        self.assertNotIn("feGaussianBlur", page)
 
     def test_draft_is_refused_then_marked(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -443,6 +446,10 @@ class TestCli(unittest.TestCase):
             data = pdf.read_bytes()
             self.assertTrue(data.startswith(b"%PDF-"))
             self.assertGreaterEqual(len(re.findall(rb"/Type\s*/Page[^s]", data)), 2)
+            # no transparency for viewers to disagree on (macOS Preview broke the soft-masked light)
+            self.assertNotIn(b"/SMask", data)
+            self.assertNotIn(b"/Multiply", data)
+            self.assertEqual(set(re.findall(rb"/(?:ca|CA) ([0-9.]+)", data)), {b"1"})
             self.assertEqual(pdf.stat().st_mode & 0o777, 0o600)
 
 

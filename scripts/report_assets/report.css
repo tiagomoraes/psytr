@@ -57,30 +57,22 @@ ul { list-style: none; }
 h1, h2, h3 { margin: 0; font-weight: 300; }
 strong { font-weight: 600; }
 
-/* ───────── Window light: the first page's header only ───────── */
+/* ───────── Window light: the first page's header only ─────────
+   An opaque image (light.jpg, rendered from light-source.html) laid on the
+   white paper behind the text: no blend mode, mask or filter in the PDF. */
 .light {
   position: absolute;
-  top: -16mm;
-  right: -18mm;
-  width: 128mm;
-  height: 112mm;
-  overflow: hidden;
-  pointer-events: none;
-  mix-blend-mode: multiply;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 52%, transparent 100%);
-          mask-image: linear-gradient(to bottom, #000 0, #000 52%, transparent 100%);
-}
-.light__svg {
-  position: absolute;
-  top: -40mm;
-  right: -34mm;
-  width: 170mm;
-  height: 170mm;
-  transform: rotate(-4deg);
-  opacity: .92;
+  top: 0;
+  right: 0;
+  width: 110mm;
+  height: auto;  /* 1040 x 920 px */
+  display: block;
 }
 
-.doc { position: relative; }
+/* The type scale was set and approved at 0.906: the first version's light
+   overflowed the text area and Chrome shrank every page to fit. That scale is
+   now explicit, and lengths inside .doc are in its zoomed units. */
+.doc { position: relative; zoom: .906; }
 
 /* ───────── Masthead ───────── */
 .masthead {
@@ -165,7 +157,7 @@ strong { font-weight: 600; }
 .cover {
   display: flex;
   flex-direction: column;
-  min-height: 263mm;
+  min-height: 290mm;  /* the 263mm text area, in .doc's zoomed units */
   break-after: page;
 }
 .cover + .sec { margin-top: 0; }
@@ -240,7 +232,6 @@ strong { font-weight: 600; }
 .legend li { display: inline-flex; align-items: center; gap: 1.6mm; }
 .legend svg { width: 17px; height: 8px; overflow: visible; }
 .chart__svg { display: block; width: 100%; height: auto; overflow: visible; }
-.chart__band { opacity: .78; }
 .chart__band-label { font-family: var(--serif); font-style: italic; font-size: 9.5px; fill: var(--ink-3); }
 .chart__grid { stroke: var(--rule); stroke-width: 1; }
 .chart__tick, .chart__date { font-family: var(--sans); font-size: 8.5px; fill: var(--ink-3); font-variant-numeric: tabular-nums; }
@@ -248,11 +239,9 @@ strong { font-weight: 600; }
 /* One continuous smoothed line per measure: full strength this week, softer
    before it, dotted where it crosses days without a check-in. */
 .chart__line { fill: none; stroke-width: 2.1; stroke-linecap: round; stroke-linejoin: round; }
-.chart__line--past { stroke-width: 1.6; opacity: .45; }
-.chart__line--gap { stroke-width: 1.5; stroke-dasharray: .1 4.2; opacity: .7; }
-.chart__line--past.chart__line--gap { opacity: .4; }
+.chart__line--past { stroke-width: 1.6; }
+.chart__line--gap { stroke-width: 1.5; stroke-dasharray: .1 4.2; }
 .chart__dot { stroke: var(--paper); stroke-width: 1.5; }
-.chart__dot--past { opacity: .45; }
 .chart__ring { fill: var(--paper); stroke-width: 1.8; }
 .chart figcaption { margin-top: 1.5mm; font-family: var(--sans); font-size: 7pt; line-height: 1.45; color: var(--ink-3); }
 
