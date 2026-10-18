@@ -1,0 +1,28 @@
+{
+  "base_url": "https://sintr.tiagomoraes.cloud/",
+  "source": "site/index.html",
+  "locales": [
+    { "code": "en",      "path": "",      "lang": "en",      "name": "English",            "short": "EN", "og": "en_US", "detect": "en" },
+    { "code": "pt-BR",   "path": "pt-br", "lang": "pt-BR",   "name": "Português (Brasil)", "short": "PT", "og": "pt_BR", "detect": "pt", "report": "original-only" },
+    { "code": "es",      "path": "es",    "lang": "es",      "name": "Español",            "short": "ES", "og": "es_ES", "detect": "es" },
+    { "code": "fr",      "path": "fr",    "lang": "fr",      "name": "Français",           "short": "FR", "og": "fr_FR", "detect": "fr" },
+    { "code": "de",      "path": "de",    "lang": "de",      "name": "Deutsch",            "short": "DE", "og": "de_DE", "detect": "de" },
+    { "code": "it",      "path": "it",    "lang": "it",      "name": "Italiano",           "short": "IT", "og": "it_IT", "detect": "it" },
+    { "code": "ja",      "path": "ja",    "lang": "ja",      "name": "日本語",              "short": "日本語", "og": "ja_JP", "detect": "ja" },
+    { "code": "zh-Hans", "path": "zh",    "lang": "zh-Hans", "name": "简体中文",            "short": "中文", "og": "zh_CN", "detect": "zh" }
+  ],
+  "keep_tokens": {
+    "start.message": [
+      "sintr", "https://github.com/tiagomoraes/sintr.git", "docs/INSTALL.md", "./installers/install.sh",
+      "hermes", "claude-code", "generic", "~/sintr", "~/sintr/config.md", "require_approval: true"
+    ],
+    "start.intro": ["Claude Code", "Hermes", "OpenCode", "OpenClaw", "Claude Cowork"],
+    "lines.l1_who": ["CVV", "Centro de Valorização da Vida"],
+    "lines.l1_call": ["CVV", "188"],
+    "lines.l2_call": ["988"],
+    "lines.l3_who": ["Samaritans"],
+    "lines.l3_call": ["Samaritans", "116 123"],
+    "lines.l4_who": ["SNS 24"],
+    "lines.l4_call": ["SNS 24", "808 24 24 24"]
+  }
+}

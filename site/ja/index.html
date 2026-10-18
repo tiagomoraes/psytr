@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ja" data-time="morning">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="meta.title">sintr — セラピーのセッションの間の一週間のための、非公開の気分日記</title>
+  <meta name="description" content="sintr は、AIアシスタントに話しかけながらつける非公開の気分日記です。セラピーの各セッションの前には、あなたの一週間が、あなた自身の言葉で1枚のページにまとまっています。あなたが同意した場合にだけ、セラピストと共有されます。内容はあなたのパソコンの中に残ります。" data-i18n-attr="content:meta.description">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+  <link rel="canonical" href="https://sintr.tiagomoraes.cloud/ja/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sintr.tiagomoraes.cloud/ja/">
+  <meta property="og:title" content="sintr — セッションの間の一週間を、あなた自身の言葉で" data-i18n-attr="content:meta.og_title">
+  <meta property="og:description" content="AIアシスタントに話しかけながらつける、非公開の気分日記です。各セッションの前には、あなたの一週間が1枚のページにまとまります。あなたが同意した場合だけ共有されます。" data-i18n-attr="content:meta.og_description">
+  <meta property="og:image" content="https://sintr.tiagomoraes.cloud/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="../fonts/source-serif-4-roman.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../fonts/hanken-grotesk.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    /* Motion is opt-in: content renders fully without JS, and only browsers that
+       welcome motion and can observe scroll get the light and reveal behavior. */
+    (function (d) {
+      d.classList.add('js');
+      try {
+        if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('motion');
+        }
+      } catch (e) {}
+    })(document.documentElement);
+  </script>
+  <!-- i18n:head -->
+  <link rel="alternate" hreflang="en" href="https://sintr.tiagomoraes.cloud/">
+  <link rel="alternate" hreflang="pt-BR" href="https://sintr.tiagomoraes.cloud/pt-br/">
+  <link rel="alternate" hreflang="es" href="https://sintr.tiagomoraes.cloud/es/">
+  <link rel="alternate" hreflang="fr" href="https://sintr.tiagomoraes.cloud/fr/">
+  <link rel="alternate" hreflang="de" href="https://sintr.tiagomoraes.cloud/de/">
+  <link rel="alternate" hreflang="it" href="https://sintr.tiagomoraes.cloud/it/">
+  <link rel="alternate" hreflang="ja" href="https://sintr.tiagomoraes.cloud/ja/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://sintr.tiagomoraes.cloud/zh/">
+  <link rel="alternate" hreflang="x-default" href="https://sintr.tiagomoraes.cloud/">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+  <meta property="og:locale:alternate" content="es_ES">
+  <meta property="og:locale:alternate" content="fr_FR">
+  <meta property="og:locale:alternate" content="de_DE">
+  <meta property="og:locale:alternate" content="it_IT">
+  <meta property="og:locale:alternate" content="zh_CN">
+  <!-- /i18n:head -->
+  <link rel="stylesheet" href="../styles.css?v=dev">
+</head>
+<body data-i18n-attr="data-copy-failed:ui.copy_failed" data-copy-failed="コピーできませんでした。文字を選択してから、コピーしてください。">
+  <a class="skip" href="#main" data-i18n="nav.skip">本文へスキップ</a>
+
+  <!-- Window light: the page's only color. Purely decorative. -->
+  <div class="sun" aria-hidden="true">
+    <svg class="sun__svg" viewBox="0 0 1000 1000" focusable="false">
+      <defs>
+        <linearGradient id="sun-grad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset=".18" class="sun__s1"/>
+          <stop offset=".5" class="sun__s2"/>
+          <stop offset=".82" class="sun__s3"/>
+        </linearGradient>
+        <filter id="sun-edge" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="11"/>
+        </filter>
+        <filter id="sun-leaf" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="3.4"/>
+        </filter>
+        <filter id="sun-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch"/>
+          <feColorMatrix values="0 0 0 0 .42  0 0 0 0 .42  0 0 0 0 .44  0 0 0 .11 0"/>
+        </filter>
+        <!-- a tall two-by-three window, projected obliquely onto the wall -->
+        <mask id="sun-window" maskUnits="userSpaceOnUse" x="-500" y="-500" width="2000" height="2000">
+          <g filter="url(#sun-edge)" fill="#fff" transform="translate(430 110) skewX(-15) skewY(8)">
+            <rect x="0" y="0" width="150" height="188" rx="3"/>
+            <rect x="166" y="0" width="150" height="188" rx="3"/>
+            <rect x="0" y="204" width="150" height="188" rx="3"/>
+            <rect x="166" y="204" width="150" height="188" rx="3"/>
+            <rect x="0" y="408" width="150" height="188" rx="3"/>
+            <rect x="166" y="408" width="150" height="188" rx="3"/>
+          </g>
+        </mask>
+      </defs>
+      <g mask="url(#sun-window)">
+        <rect x="200" y="60" width="600" height="840" fill="url(#sun-grad)"/>
+        <rect x="200" y="60" width="600" height="840" filter="url(#sun-grain)"/>
+        <g class="sun__leaves" filter="url(#sun-leaf)">
+          <g class="sun__branch sun__branch--a">
+            <path class="sun__stem" d="M960 60 C 870 120, 800 170, 700 250 S 560 380, 500 470"/>
+            <path d="M900 104c-26-30-68-34-92-16 25 27 62 34 92 16z"/>
+            <path d="M866 128c9-39-10-76-39-87-7 36 9 71 39 87z"/>
+            <path d="M816 164c-32-23-74-20-94 4 28 19 67 21 94-4z"/>
+            <path d="M786 186c14-37 2-78-25-92-12 34-2 73 25 92z"/>
+            <path d="M733 225c-35-16-76-5-90 21 32 12 71 5 90-21z"/>
+            <path d="M701 250c19-34 16-76-7-94-18 30-16 69 7 94z"/>
+            <path d="M651 291c-35-11-74 5-85 34 34 7 69-5 85-34z"/>
+            <path d="M618 321c25-30 28-73 7-94-21 27-25 66-7 94z"/>
+            <path d="M575 362c-37-5-73 16-80 46 34 2 67-16 80-46z"/>
+            <path d="M545 398c27-27 35-67 18-92-23 23-32 62-18 92z"/>
+            <path d="M515 442c-35 2-65 28-67 58 34-5 62-28 67-58z"/>
+          </g>
+          <g class="sun__branch sun__branch--b">
+            <path class="sun__stem" d="M960 560 C 890 600, 830 650, 780 720 S 700 840, 690 920"/>
+            <path d="M902 590c-21-32-62-43-89-30 20 30 57 43 89 30z"/>
+            <path d="M865 615c16-35 7-76-18-92-12 34-5 71 18 92z"/>
+            <path d="M821 657c-30-25-73-27-94-5 27 23 66 27 94 5z"/>
+            <path d="M796 686c19-34 18-74-4-94-18 30-18 69 4 94z"/>
+            <path d="M757 739c-34-18-74-9-90 16 32 14 71 9 90-16z"/>
+            <path d="M732 776c25-28 30-69 11-92-21 25-27 64-11 92z"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <header class="top">
+    <div class="wrap top__inner">
+      <a class="mark" href="#main" aria-label="sintr、ページの先頭へ戻る" data-i18n-attr="aria-label:nav.home_label">
+        <svg class="mark__glyph" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="mark-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#cfe3f3"/>
+              <stop offset=".55" stop-color="#f6e1d3"/>
+              <stop offset="1" stop-color="#f7cfb5"/>
+            </linearGradient>
+          </defs>
+          <rect width="32" height="32" rx="8" fill="#16171a"/>
+          <g fill="url(#mark-grad)" transform="translate(10.4 6.2) skewX(-14)">
+            <rect x="0" y="0" width="6" height="8.8" rx="1"/>
+            <rect x="7.2" y="0" width="6" height="8.8" rx="1"/>
+            <rect x="0" y="10.2" width="6" height="8.8" rx="1"/>
+            <rect x="7.2" y="10.2" width="6" height="8.8" rx="1"/>
+          </g>
+        </svg>
+        <span class="mark__word">sintr</span>
+      </a>
+      <nav class="top__nav" aria-label="メインメニュー" data-i18n-attr="aria-label:nav.primary_label">
+        <a class="top__link" href="#week" data-i18n="nav.how">仕組み</a>
+        <a class="top__link" href="#privacy" data-i18n="nav.privacy">プライバシー</a>
+        <a class="top__link" href="../tech/" data-i18n="nav.tech">技術的な仕組み</a>
+        <!-- i18n:switcher -->
+        <details class="langs">
+          <summary class="langs__toggle" aria-label="言語: 日本語"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5M12 3.5C9.7 5.8 8.5 8.7 8.5 12s1.2 6.2 3.5 8.5"/></svg><span>日本語</span></summary>
+          <ul class="langs__menu" aria-label="言語">
+            <li><a href="../?lang=en" hreflang="en" lang="en" data-lang="en">English</a></li>
+            <li><a href="../pt-br/" hreflang="pt-BR" lang="pt-BR" data-lang="pt">Português (Brasil)</a></li>
+            <li><a href="../es/" hreflang="es" lang="es" data-lang="es">Español</a></li>
+            <li><a href="../fr/" hreflang="fr" lang="fr" data-lang="fr">Français</a></li>
+            <li><a href="../de/" hreflang="de" lang="de" data-lang="de">Deutsch</a></li>
+            <li><a href="../it/" hreflang="it" lang="it" data-lang="it">Italiano</a></li>
+            <li><a href="../ja/" hreflang="ja" lang="ja" data-lang="ja" aria-current="true">日本語</a></li>
+            <li><a href="../zh/" hreflang="zh-Hans" lang="zh-Hans" data-lang="zh">简体中文</a></li>
+          </ul>
+        </details>
+        <!-- /i18n:switcher -->
+        <a class="btn btn--ink btn--sm" href="#start" data-i18n="nav.start">はじめる</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ───────────────────────── Hero ───────────────────────── -->
+    <section class="hero" data-time="morning" aria-labelledby="hero-title">
+      <div class="wrap hero__grid">
+        <div class="hero__copy">
+          <h1 id="hero-title" class="display" data-i18n="hero.title">セッションの間の一週間を、<span class="hl">あなた自身の言葉</span>で残します。</h1>
+          <p class="lede" data-i18n="hero.lede">sintr は、AIアシスタントに話しかけながらつける、非公開の気分日記です。セラピーの各セッションの前には、あなたの一週間が1枚のページにまとまり、あなたもセラピストも読める状態で待っています。</p>
+          <div class="hero__actions">
+            <a class="btn btn--ink" href="#start" data-i18n="hero.cta">はじめる</a>
+            <a class="link" href="#week" data-i18n="hero.cta_more">仕組みを見る</a>
+          </div>
+        </div>
+
+        <div class="hero__art" data-depth="-0.06">
+          <figure class="note note--hero" data-write aria-label="書き留めた一場面（架空の例）" data-i18n-attr="aria-label:card.label">
+            <figcaption class="note__head"><span class="note__when" data-i18n="card.when">火曜日 19:40</span><span class="note__tag" data-i18n="card.tag">保存済みの場面</span></figcaption>
+            <dl class="note__rows">
+              <div class="note__row ln"><dt data-i18n="card.happened_label">何があったか</dt><dd data-i18n="card.happened">1つのスプリントに新しい作業が3つ入りました。すべて「はい」と答えました。</dd></div>
+              <div class="note__row ln"><dt data-i18n="card.mind_label">頭に浮かんだこと</dt><dd data-i18n="card.mind"><q class="said">もう絶対にこなせない</q></dd></div>
+              <div class="note__row ln"><dt data-i18n="card.felt_label">そのときの気持ち</dt><dd data-i18n="card.felt">不安 <span class="note__scale">100点中85</span></dd></div>
+              <div class="note__row ln"><dt data-i18n="card.body_label">体の感覚</dt><dd data-i18n="card.body">胸が詰まる感じ、奥歯に力が入る</dd></div>
+            </dl>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── Why ───────────────────────── -->
+    <section class="idea idea--lean" data-time="noon" aria-labelledby="idea-title">
+      <div class="wrap idea__grid">
+        <h2 id="idea-title" class="statement" data-reveal>
+          <span class="statement__a" data-i18n="why.a">セラピーに使えるのは、週に50分です。</span>
+          <span class="statement__b" data-i18n="why.b">あなたの一週間は、残りの時間の中で過ぎていきます。</span>
+        </h2>
+        <p class="prose idea__why" data-reveal data-i18n="why.body">セッションまでには、火曜日はぼやけてしまっています。覚えているのは今日の気分だけで、週の半ばに心を揺さぶられたことは、なかなか話されないまま残ります。</p>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── How it feels ───────────────────────── -->
+    <div id="week" class="week">
+      <!-- Tuesday -->
+      <section class="day day--capture" data-time="dusk" aria-labelledby="capture-title">
+        <div class="wrap day__grid">
+          <div class="day__copy">
+            <h3 id="capture-title" class="h-day" data-reveal data-i18n="capture.title"><span class="when">火曜日 19:40。</span> 記憶が新しいうちに話しましょう。</h3>
+            <p class="prose" data-reveal data-i18n="capture.body">友人に話すように、アシスタントに何があったかを話します。アシスタントが1つか2つ質問してから、保存します。</p>
+            <p class="prose prose--quiet" data-reveal data-i18n="capture.quiet">ふだんの日は、一行で十分です。</p>
+          </div>
+
+          <div class="day__art" data-depth="-0.05">
+            <div class="chat" aria-label="AIアシスタントとの会話の例" data-i18n-attr="aria-label:capture.chat_label">
+              <p class="chat__msg chat__msg--you" data-reveal data-i18n="capture.msg1">計画会議で何があったか、書き留めてもらえますか。まだ気持ちが張りつめています。</p>
+              <p class="chat__msg chat__msg--agent" data-reveal data-i18n="capture.msg2">もちろんです。そのとき頭に浮かんだことと、不安の強さを0から100で教えてください。</p>
+              <p class="chat__msg chat__msg--you" data-reveal data-i18n="capture.msg3">「もう絶対にこなせない。」 85くらいです。</p>
+              <p class="chat__msg chat__msg--agent" data-reveal data-i18n="capture.msg4">保存しました。この考えを今いっしょに見ていくこともできますし、セッションまでとっておくこともできます。</p>
+              <p class="chat__when" data-reveal data-i18n="capture.thursday">木曜日 8:50</p>
+              <p class="chat__msg chat__msg--you" data-reveal data-i18n="capture.msg5">気分は5段階の2、睡眠は5時間半。</p>
+              <p class="chat__msg chat__msg--agent" data-reveal data-i18n="capture.msg6">木曜日の分として記録しました。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sunday -->
+      <section class="day day--report" data-time="evening" aria-labelledby="report-title">
+        <div class="wrap">
+          <div class="report__head">
+            <h3 id="report-title" class="h-day h-day--wide" data-reveal data-i18n="report.title"><span class="when">日曜日 20:00。</span> 一週間がまとまります。</h3>
+            <p class="prose" data-reveal data-i18n="report.body">アシスタントがレポートにまとめます。何があったか、どう感じたか、何が助けになったか、セッションで話したいことは何か。傾向は観察として記され、診断として書かれることは決してありません。</p>
+          </div>
+
+          <div class="report__grid">
+            <div class="report__doc" data-depth="-0.03">
+              <!-- i18n:report-toggle -->
+              <input class="sr-only" type="radio" name="report-lang" id="rl-pt" checked>
+              <input class="sr-only" type="radio" name="report-lang" id="rl-en">
+              <div class="seg" role="presentation">
+                <span class="seg__label" data-i18n="report.read_in">表示言語</span>
+                <label class="seg__opt seg__opt--pt" for="rl-pt">Português <span class="seg__hint" data-i18n="report.original">原文</span></label>
+                <label class="seg__opt seg__opt--en" for="rl-en" data-i18n-local="name">日本語</label>
+              </div>
+              <!-- /i18n:report-toggle -->
+              <p class="paper__status" data-i18n="report.status"><span class="paper__dot" aria-hidden="true"></span> 下書き、あなたの確認待ち</p>
+
+              <article class="paper paper--pt" lang="pt-BR" aria-label="週間レポートの例（ポルトガル語の原文、一部抜粋）" data-i18n-attr="aria-label:report.original_label">
+                <h4 class="paper__title">Relatório semanal — Demo Person — 2026-W42</h4>
+                <h5>Resumo</h5>
+                <p>Semana de carga alta no trabalho, com dois picos de ansiedade no início (pressão de prazos em 13/10 e um feedback recebido como crítica em 15/10) e uma recuperação clara no fim de semana, incluindo uma pausa no meio do dia pela primeira vez em semanas e um jantar em família tranquilo.</p>
+                <h5>Situações marcantes</h5>
+                <ul>
+                  <li><b>13/10</b> — Reunião de planning com três demandas na mesma sprint: <mark>“eu não vou dar conta disso”</mark>; ansiedade 85. Aceitou tudo na hora e continuou trabalhando à noite.</li>
+                  <li><b>15/10</b> — Feedback individual do gestor sobre ritmo de entrega: <mark>“ele acha que eu sou lento”</mark>; ansiedade 70, vergonha 55. Pediu desculpas repetidamente durante a conversa.</li>
+                </ul>
+                <h5>Temas e padrões recorrentes</h5>
+                <ul>
+                  <li>Observação: as duas situações de maior sofrimento (13 e 15/10) foram no trabalho e envolvendo avaliação/expectativa externa.</li>
+                </ul>
+                <h5>Temas para a sessão</h5>
+                <ul>
+                  <li>Padrão de aceitar demanda em excesso na hora e trabalhar à noite — o que acontece antes de dizer “sim”?</li>
+                  <li>Feedback recebido como avaliação de valor pessoal (vergonha, pedir desculpas repetidamente).</li>
+                </ul>
+                <p class="paper__foot">Resumo preparado a partir de auto-registros (check-ins e entradas estruturadas) com auxílio do assistente pessoal. Não é avaliação clínica.</p>
+              </article>
+
+              <!-- i18n:report-local -->
+              <article class="paper paper--en" lang="ja" aria-label="週間レポートの例（日本語訳、一部抜粋）" data-i18n-attr="aria-label:report.local_label" data-i18n-local="lang">
+                <h4 class="paper__title" data-i18n="report.doc_title">週間レポート — Demo Person — 2026-W42</h4>
+                <h5 data-i18n="report.doc_summary_h">概要</h5>
+                <p data-i18n="report.doc_summary">業務量の多い一週間でした。前半に不安のピークが2回ありました（10月13日は締め切りのプレッシャー、10月15日はフィードバックを批判と受け取ったこと）。週末には、はっきりと回復が見られました。何週間かぶりに昼休みを取り、家族と穏やかな夕食をとりました。</p>
+                <h5 data-i18n="report.doc_situations_h">主な出来事</h5>
+                <ul>
+                  <li data-i18n="report.doc_situation1"><b>10月13日</b> — 計画会議で、同じスプリントに要求が3つ入りました。<mark>「もう絶対にこなせない」</mark>。不安 85。その場で全部引き受け、夜遅くまで作業していました。</li>
+                  <li data-i18n="report.doc_situation2"><b>10月15日</b> — 上司との1対1の面談で、仕事のペースについてフィードバックを受けました。<mark>「上司は私が遅いと思っている」</mark>。不安 70、恥ずかしさ 55。話している間、何度も謝っていました。</li>
+                </ul>
+                <h5 data-i18n="report.doc_patterns_h">繰り返し見られるテーマとパターン</h5>
+                <ul>
+                  <li data-i18n="report.doc_pattern1">観察として、特につらかった2つの出来事（10月13日と15日）は、どちらも職場で起きており、他人からの評価や期待が関わっていました。</li>
+                </ul>
+                <h5 data-i18n="report.doc_topics_h">セッションで話したいこと</h5>
+                <ul>
+                  <li data-i18n="report.doc_topic1">その場で引き受けすぎて、夜まで働いてしまうパターン。「はい」と言う直前に何が起きているのか。</li>
+                  <li data-i18n="report.doc_topic2">フィードバックを、自分の価値への判断として受け取ってしまうこと（恥ずかしさ、何度も謝ってしまうこと）。</li>
+                </ul>
+                <p class="paper__foot" data-i18n="report.doc_foot">本人の記録（一行の簡単な記録と構造化された記入）をもとに、個人アシスタントの助けを借りて作成した要約です。臨床的な評価ではありません。</p>
+              </article>
+              <!-- /i18n:report-local -->
+              <p class="report__src" data-i18n="report.source">架空の例から一部抜粋しています。この人はポルトガル語で書いているため、要約もポルトガル語です。あなたの要約は日本語で作られます。</p>
+            </div>
+
+            <aside class="report__flow" aria-labelledby="lifecycle-title">
+              <h4 id="lifecycle-title" class="h-small" data-reveal data-i18n="report.lifecycle">あなたの許可なしに、何かが外へ出ることはありません。</h4>
+              <ol class="stations">
+                <li class="stations__item" data-reveal>
+                  <span class="stations__state" data-i18n="report.step1">あなたのための下書き</span>
+                  <p data-i18n="report.step1_text">読んで、好きなように書き直せます。あなたの一週間ですから。</p>
+                </li>
+                <li class="stations__item stations__item--gate" data-reveal>
+                  <span class="stations__state" data-i18n="report.step2">あなたの「はい」</span>
+                  <p data-i18n="report.step2_text">はっきり「送って」と言ったときだけ送信されます。自動で送られることは決してありません。</p>
+                </li>
+                <li class="stations__item" data-reveal>
+                  <span class="stations__state" data-i18n="report.step3">送信済み</span>
+                  <p data-i18n="report.step3_text">セラピストへ、あなたが選んだ方法で届きます。誰に、いつ届いたかも記録されます。</p>
+                </li>
+              </ol>
+            </aside>
+          </div>
+
+          <p class="payoff" data-reveal data-i18n="report.payoff"><span class="when">月曜日 18:00。</span> セッションの1時間は、今日の気分からではなく、火曜日の出来事から始まります。</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- ───────────────────────── Privacy ───────────────────────── -->
+    <section id="privacy" class="privacy privacy--lean" data-time="night" aria-labelledby="privacy-title">
+      <div class="wrap">
+        <h2 id="privacy-title" class="h-section h-section--xl" data-reveal data-i18n="privacy.title">あなたの考えは、あなたのものです。</h2>
+        <dl class="promises promises--three">
+          <div class="promises__row" data-reveal><dt data-i18n="privacy.p1">あなたのパソコンの中</dt><dd data-i18n="privacy.p1_text">引き出しにしまった手帳のような、ひとつのフォルダです。アプリも、アカウントも、クラウドもありません。</dd></div>
+          <div class="promises__row" data-reveal><dt data-i18n="privacy.p2">あなたしか開けない</dt><dd data-i18n="privacy.p2_text">同じパソコンを使う他の人も、開くことはできません。</dd></div>
+          <div class="promises__row" data-reveal><dt data-i18n="privacy.p3">外へ渡ることはない</dt><dd data-i18n="privacy.p3_text">チャットや他のサービスにコピーされることはありません。削除すれば、本当に消えます。</dd></div>
+        </dl>
+        <p class="privacy__note" data-reveal data-i18n="privacy.note">知っておいてほしいことが1つあります。話しかけているAIアシスタントは、通常、入力した内容を提供元の企業へ送信します。安心して使えるものを選んでください。<a class="link" href="../tech/#privacy">技術的な詳細</a></p>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── Get started ───────────────────────── -->
+    <section id="start" class="start" data-time="late" aria-labelledby="start-title">
+      <div class="wrap">
+        <div class="start__head">
+          <h2 id="start-title" class="h-section" data-reveal data-i18n="start.title">3つのステップで始めます。</h2>
+          <p class="prose start__intro" data-reveal data-i18n="start.intro">パソコン上で動き、ファイルを保存できるAIアシスタントが必要です。例えば Claude Code、Hermes、OpenCode、OpenClaw などです。ブラウザだけで使うチャットでは動きません。Claude Cowork は、手作業が1つ余分に必要です。その方法は<a class="link" href="../tech/#install-generic">技術的な説明のページ</a>に書いてあります。</p>
+        </div>
+
+        <ol class="steps">
+          <li class="step" data-reveal>
+            <h3 class="step__title" data-i18n="start.step1">セットアップ用メッセージをコピーする</h3>
+            <p class="step__text" data-i18n="start.step1_text">アシスタント向けに書かれています。sintr の入手先と設定の方法が書いてあります。</p>
+            <div class="step__art">
+              <a class="btn btn--ink" href="#setup-message" data-copy="#setup-text" data-copied="コピーしました。次に貼り付けてください。" data-i18n-attr="data-copied:start.copied">
+                <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
+                <span data-label data-i18n="start.copy">セットアップ用メッセージをコピー</span>
+              </a>
+            </div>
+          </li>
+          <li class="step" data-reveal>
+            <h3 class="step__title" data-i18n="start.step2">アシスタントに貼り付ける</h3>
+            <p class="step__text" data-i18n="start.step2_text">アシスタントがすべてを設定し、それぞれの手順を説明します。先に許可を求めてくることがありますが、それは普通のことです。</p>
+          </li>
+          <li class="step" data-reveal>
+            <h3 class="step__title" data-i18n="start.step3">いくつか質問に答える</h3>
+            <p class="step__text" data-i18n="start.step3_text">使う言語、タイムゾーン、セラピストの情報、セッションの曜日などです。そのあとは、必要なときに話しかけるだけで大丈夫です。</p>
+          </li>
+        </ol>
+
+        <details id="setup-message" class="setup ask__details" data-reveal>
+          <summary data-i18n="start.summary">コピーする前に、セットアップ用メッセージを読む</summary>
+          <div class="setup__body">
+            <blockquote id="setup-text" class="ask__text" data-i18n="start.message">sintr のセットアップをお願いします。セラピーのための非公開の日記で、このパソコン上のファイルとして私のために保存されます。https://github.com/tiagomoraes/sintr.git をクローンし、docs/INSTALL.md を読んで、私に合ったインストーラーを実行してください（hermes、claude-code、generic のいずれかを使い、./installers/install.sh を実行）。私の日記のフォルダとして ~/sintr を使ってください。各ステップは、実行する前にわかりやすい言葉で説明してください。そのあと ~/sintr/config.md を開いて、私と一緒に記入してください。言語、タイムゾーン、セラピーの情報は、一度に1つずつ聞いてください。私が教えてくれなかった項目は空のままにしてください。require_approval: true はそのままにして、私に先に確認せずに、誰かに何かを送ることは決してしないでください。</blockquote>
+            <p class="ask__foot" data-i18n="start.message_foot">使うのは sintr プロジェクトで公開されている内容だけです。</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ───────────────────────── Honesty ───────────────────────── -->
+    <section class="honest" data-time="dawn" aria-labelledby="honest-title">
+      <div class="wrap honest__grid">
+        <h2 id="honest-title" class="statement statement--close" data-reveal>
+          <span class="statement__a" data-i18n="honest.a">sintr は記録を残します。</span>
+          <span class="statement__b" data-i18n="honest.b">セラピーをするのは、あなたのセラピストです。</span>
+        </h2>
+        <div class="honest__body">
+          <p class="prose" data-reveal data-i18n="honest.body">セラピーでも、診断でも、緊急対応のサービスでもありません。あなたにラベルを貼ったり、何をすべきか指示したりもしません。</p>
+          <div class="lines" data-reveal>
+            <p class="lines__title" id="lines-title" data-i18n="lines.title">危険が迫っている場合や、自分を傷つけることを考えている場合は、今すぐ誰かに電話してください。</p>
+            <ul class="lines__list" aria-labelledby="lines-title">
+              <li class="line">
+                <span class="line__where" data-i18n="lines.l1_where">ブラジル</span>
+                <span class="line__who" data-i18n="lines.l1_who">CVV（Centro de Valorização da Vida）<span class="line__how">無料、24時間</span></span>
+                <a class="line__call" href="tel:188" aria-label="CVV、188に電話" data-i18n-attr="aria-label:lines.l1_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>188</span></a>
+              </li>
+              <li class="line">
+                <span class="line__where" data-i18n="lines.l2_where">アメリカ・カナダ</span>
+                <span class="line__who" data-i18n="lines.l2_who">988 危機相談ライン<span class="line__how">電話またはメッセージ、24時間</span></span>
+                <a class="line__call" href="tel:988" aria-label="988 危機相談ライン、988に電話" data-i18n-attr="aria-label:lines.l2_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>988</span></a>
+              </li>
+              <li class="line">
+                <span class="line__where" data-i18n="lines.l3_where">イギリス・アイルランド</span>
+                <span class="line__who" data-i18n="lines.l3_who">Samaritans<span class="line__how">無料、24時間</span></span>
+                <a class="line__call" href="tel:116123" aria-label="Samaritans、116 123に電話" data-i18n-attr="aria-label:lines.l3_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>116 123</span></a>
+              </li>
+              <li class="line">
+                <span class="line__where" data-i18n="lines.l4_where">ポルトガル</span>
+                <span class="line__who" data-i18n="lines.l4_who">SNS 24<span class="line__how">心のサポートがつく健康相談ライン</span></span>
+                <a class="line__call" href="tel:808242424" aria-label="SNS 24、808 24 24 24に電話" data-i18n-attr="aria-label:lines.l4_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>808 24 24 24</span></a>
+              </li>
+            </ul>
+            <p class="lines__note" data-i18n="lines.note">それ以外の国や地域では、お住まいの地域の緊急通報番号に電話するか、<a class="link" href="https://findahelpline.com">findahelpline.com</a> で、お近くの無料・秘密厳守の相談窓口を探してください。あなたがアシスタントに危険があると伝えた場合、sintr はアシスタントに記録を取るのをやめ、すぐに誰かを見つける手助けをするよう求めます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot" data-time="dawn">
+    <div class="wrap foot__grid">
+      <div class="foot__brand">
+        <p class="mark mark--foot"><span class="mark__word">sintr</span></p>
+        <p class="foot__line" data-i18n="foot.line">セラピーのセッションの間の一週間のための、非公開の気分日記です。</p>
+      </div>
+      <nav class="foot__links" aria-label="その他" data-i18n-attr="aria-label:foot.nav_label">
+        <a href="../tech/" data-i18n="foot.tech">技術的な仕組み</a>
+        <a href="#start" data-i18n="foot.start">はじめる</a>
+        <a href="#privacy" data-i18n="foot.privacy">プライバシー</a>
+        <a href="https://github.com/tiagomoraes/sintr">GitHub</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/LICENSE" data-i18n="foot.license">MITライセンス</a>
+      </nav>
+      <!-- i18n:footer-langs -->
+      <nav class="foot__langs" aria-label="言語"><span>このページの言語：</span> <a href="../?lang=en" hreflang="en" lang="en" data-lang="en">English</a> <a href="../pt-br/" hreflang="pt-BR" lang="pt-BR" data-lang="pt">Português (Brasil)</a> <a href="../es/" hreflang="es" lang="es" data-lang="es">Español</a> <a href="../fr/" hreflang="fr" lang="fr" data-lang="fr">Français</a> <a href="../de/" hreflang="de" lang="de" data-lang="de">Deutsch</a> <a href="../it/" hreflang="it" lang="it" data-lang="it">Italiano</a> <a href="../ja/" hreflang="ja" lang="ja" data-lang="ja" aria-current="true">日本語</a> <a href="../zh/" hreflang="zh-Hans" lang="zh-Hans" data-lang="zh">简体中文</a></nav>
+      <!-- /i18n:footer-langs -->
+      <p class="foot__fine" data-i18n="foot.fine">バージョン 0.1.0 · 作成者 Tiago Moraes · このサイトはCookieを設定せず、第三者のサービスからは何も読み込みません。</p>
+    </div>
+  </footer>
+
+  <p class="toast" role="status" aria-live="polite"></p>
+  <script src="../main.js?v=dev" defer></script>
+</body>
+</html>

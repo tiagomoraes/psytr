@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>sintr — a private mood diary for the week between therapy sessions</title>
-  <meta name="description" content="sintr is a private mood diary you keep by talking to your AI assistant. Before each therapy session, your week is waiting on one page, in your own words, shared with your therapist only if you say so. It stays on your own computer.">
+  <title data-i18n="meta.title">sintr — a private mood diary for the week between therapy sessions</title>
+  <meta name="description" content="sintr is a private mood diary you keep by talking to your AI assistant. Before each therapy session, your week is waiting on one page, in your own words, shared with your therapist only if you say so. It stays on your own computer." data-i18n-attr="content:meta.description">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <link rel="canonical" href="https://sintr.tiagomoraes.cloud/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://sintr.tiagomoraes.cloud/">
-  <meta property="og:title" content="sintr — the week between sessions, kept in your own words">
-  <meta property="og:description" content="A private mood diary you keep by talking to your AI assistant. Before each session, your week on one page, shared only if you say so.">
+  <meta property="og:title" content="sintr — the week between sessions, kept in your own words" data-i18n-attr="content:meta.og_title">
+  <meta property="og:description" content="A private mood diary you keep by talking to your AI assistant. Before each session, your week on one page, shared only if you say so." data-i18n-attr="content:meta.og_description">
   <meta property="og:image" content="https://sintr.tiagomoraes.cloud/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -31,10 +31,48 @@
       } catch (e) {}
     })(document.documentElement);
   </script>
+  <!-- i18n:head -->
+  <script>
+    /* First visit: follow the browser's language list (the same list it sends as
+       Accept-Language). A language picked in the menu always wins. */
+    (function () {
+      var paths = {"pt":"pt-br/","es":"es/","fr":"fr/","de":"de/","it":"it/","ja":"ja/","zh":"zh/"};
+      try {
+        if (/[?&]lang=en\b/.test(location.search)) { localStorage.setItem('sintr-lang', 'en'); return; }
+        var saved = localStorage.getItem('sintr-lang');
+        if (saved) { if (paths[saved]) location.replace(paths[saved] + location.hash); return; }
+        var prefs = navigator.languages || [navigator.language || ''];
+        for (var i = 0; i < prefs.length; i++) {
+          var tag = String(prefs[i]).toLowerCase(), base = tag.split('-')[0];
+          if (base === 'en') return;
+          if (base === 'zh' && /-(tw|hk|mo|hant)\b/.test(tag)) continue;
+          if (paths[base]) { location.replace(paths[base] + location.hash); return; }
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="alternate" hreflang="en" href="https://sintr.tiagomoraes.cloud/">
+  <link rel="alternate" hreflang="pt-BR" href="https://sintr.tiagomoraes.cloud/pt-br/">
+  <link rel="alternate" hreflang="es" href="https://sintr.tiagomoraes.cloud/es/">
+  <link rel="alternate" hreflang="fr" href="https://sintr.tiagomoraes.cloud/fr/">
+  <link rel="alternate" hreflang="de" href="https://sintr.tiagomoraes.cloud/de/">
+  <link rel="alternate" hreflang="it" href="https://sintr.tiagomoraes.cloud/it/">
+  <link rel="alternate" hreflang="ja" href="https://sintr.tiagomoraes.cloud/ja/">
+  <link rel="alternate" hreflang="zh-Hans" href="https://sintr.tiagomoraes.cloud/zh/">
+  <link rel="alternate" hreflang="x-default" href="https://sintr.tiagomoraes.cloud/">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="pt_BR">
+  <meta property="og:locale:alternate" content="es_ES">
+  <meta property="og:locale:alternate" content="fr_FR">
+  <meta property="og:locale:alternate" content="de_DE">
+  <meta property="og:locale:alternate" content="it_IT">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:locale:alternate" content="zh_CN">
+  <!-- /i18n:head -->
   <link rel="stylesheet" href="styles.css?v=dev">
 </head>
-<body>
-  <a class="skip" href="#main">Skip to content</a>
+<body data-i18n-attr="data-copy-failed:ui.copy_failed" data-copy-failed="Copy failed. Select the text to copy it.">
+  <a class="skip" href="#main" data-i18n="nav.skip">Skip to content</a>
 
   <!-- Window light: the page's only color. Purely decorative. -->
   <div class="sun" aria-hidden="true">
@@ -101,7 +139,7 @@
 
   <header class="top">
     <div class="wrap top__inner">
-      <a class="mark" href="#main" aria-label="sintr, back to top">
+      <a class="mark" href="#main" aria-label="sintr, back to top" data-i18n-attr="aria-label:nav.home_label">
         <svg class="mark__glyph" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="mark-grad" x1="0" y1="0" x2="1" y2="1">
@@ -120,11 +158,26 @@
         </svg>
         <span class="mark__word">sintr</span>
       </a>
-      <nav class="top__nav" aria-label="Primary">
-        <a class="top__link" href="#week">How it works</a>
-        <a class="top__link" href="#privacy">Privacy</a>
-        <a class="top__link" href="tech/">Under the hood</a>
-        <a class="btn btn--ink btn--sm" href="#start">Get started</a>
+      <nav class="top__nav" aria-label="Primary" data-i18n-attr="aria-label:nav.primary_label">
+        <a class="top__link" href="#week" data-i18n="nav.how">How it works</a>
+        <a class="top__link" href="#privacy" data-i18n="nav.privacy">Privacy</a>
+        <a class="top__link" href="tech/" data-i18n="nav.tech">Under the hood</a>
+        <!-- i18n:switcher -->
+        <details class="langs">
+          <summary class="langs__toggle" aria-label="Language: English"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.3 3.5 5.2 3.5 8.5s-1.2 6.2-3.5 8.5M12 3.5C9.7 5.8 8.5 8.7 8.5 12s1.2 6.2 3.5 8.5"/></svg><span>EN</span></summary>
+          <ul class="langs__menu" aria-label="Language">
+            <li><a href="./" hreflang="en" lang="en" data-lang="en" aria-current="true">English</a></li>
+            <li><a href="pt-br/" hreflang="pt-BR" lang="pt-BR" data-lang="pt">Português (Brasil)</a></li>
+            <li><a href="es/" hreflang="es" lang="es" data-lang="es">Español</a></li>
+            <li><a href="fr/" hreflang="fr" lang="fr" data-lang="fr">Français</a></li>
+            <li><a href="de/" hreflang="de" lang="de" data-lang="de">Deutsch</a></li>
+            <li><a href="it/" hreflang="it" lang="it" data-lang="it">Italiano</a></li>
+            <li><a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a></li>
+            <li><a href="zh/" hreflang="zh-Hans" lang="zh-Hans" data-lang="zh">简体中文</a></li>
+          </ul>
+        </details>
+        <!-- /i18n:switcher -->
+        <a class="btn btn--ink btn--sm" href="#start" data-i18n="nav.start">Get started</a>
       </nav>
     </div>
   </header>
@@ -134,22 +187,22 @@
     <section class="hero" data-time="morning" aria-labelledby="hero-title">
       <div class="wrap hero__grid">
         <div class="hero__copy">
-          <h1 id="hero-title" class="display">The week between sessions, kept in <span class="hl">your own words.</span></h1>
-          <p class="lede">sintr is a private mood diary you keep by talking to your AI assistant. Before each therapy session, your week is waiting on one page, ready for you and your&nbsp;therapist.</p>
+          <h1 id="hero-title" class="display" data-i18n="hero.title">The week between sessions, kept in <span class="hl">your own words.</span></h1>
+          <p class="lede" data-i18n="hero.lede">sintr is a private mood diary you keep by talking to your AI assistant. Before each therapy session, your week is waiting on one page, ready for you and your&nbsp;therapist.</p>
           <div class="hero__actions">
-            <a class="btn btn--ink" href="#start">Get started</a>
-            <a class="link" href="#week">See how it works</a>
+            <a class="btn btn--ink" href="#start" data-i18n="hero.cta">Get started</a>
+            <a class="link" href="#week" data-i18n="hero.cta_more">See how it works</a>
           </div>
         </div>
 
         <div class="hero__art" data-depth="-0.06">
-          <figure class="note note--hero" data-write aria-label="A moment, written down: fictional example">
-            <figcaption class="note__head"><span class="note__when">Tuesday, 7:40 pm</span><span class="note__tag">Saved moment</span></figcaption>
+          <figure class="note note--hero" data-write aria-label="A moment, written down: fictional example" data-i18n-attr="aria-label:card.label">
+            <figcaption class="note__head"><span class="note__when" data-i18n="card.when">Tuesday, 7:40 pm</span><span class="note__tag" data-i18n="card.tag">Saved moment</span></figcaption>
             <dl class="note__rows">
-              <div class="note__row ln"><dt>What happened</dt><dd>Three new tasks in one sprint. Said yes to all of them.</dd></div>
-              <div class="note__row ln"><dt>What went through your mind</dt><dd><q class="said">there's no way I can handle this</q></dd></div>
-              <div class="note__row ln"><dt>How you felt</dt><dd>Anxious <span class="note__scale">85 of 100</span></dd></div>
-              <div class="note__row ln"><dt>In your body</dt><dd>Tight chest, clenched jaw</dd></div>
+              <div class="note__row ln"><dt data-i18n="card.happened_label">What happened</dt><dd data-i18n="card.happened">Three new tasks in one sprint. Said yes to all of them.</dd></div>
+              <div class="note__row ln"><dt data-i18n="card.mind_label">What went through your mind</dt><dd data-i18n="card.mind"><q class="said">there's no way I can handle this</q></dd></div>
+              <div class="note__row ln"><dt data-i18n="card.felt_label">How you felt</dt><dd data-i18n="card.felt">Anxious <span class="note__scale">85 of 100</span></dd></div>
+              <div class="note__row ln"><dt data-i18n="card.body_label">In your body</dt><dd data-i18n="card.body">Tight chest, clenched jaw</dd></div>
             </dl>
           </figure>
         </div>
@@ -160,10 +213,10 @@
     <section class="idea idea--lean" data-time="noon" aria-labelledby="idea-title">
       <div class="wrap idea__grid">
         <h2 id="idea-title" class="statement" data-reveal>
-          <span class="statement__a">Therapy gets fifty minutes a&nbsp;week.</span>
-          <span class="statement__b">Your week happens in the rest of&nbsp;it.</span>
+          <span class="statement__a" data-i18n="why.a">Therapy gets fifty minutes a&nbsp;week.</span>
+          <span class="statement__b" data-i18n="why.b">Your week happens in the rest of&nbsp;it.</span>
         </h2>
-        <p class="prose idea__why" data-reveal>By the session, Tuesday is a blur. You remember how you feel today, and what shook you midweek never quite gets&nbsp;told.</p>
+        <p class="prose idea__why" data-reveal data-i18n="why.body">By the session, Tuesday is a blur. You remember how you feel today, and what shook you midweek never quite gets&nbsp;told.</p>
       </div>
     </section>
 
@@ -173,20 +226,20 @@
       <section class="day day--capture" data-time="dusk" aria-labelledby="capture-title">
         <div class="wrap day__grid">
           <div class="day__copy">
-            <h3 id="capture-title" class="h-day" data-reveal><span class="when">Tuesday, 7:40&nbsp;pm.</span> Tell it while it's&nbsp;fresh.</h3>
-            <p class="prose" data-reveal>You tell your assistant what happened, the way you'd tell a friend. It asks one or two questions, then saves&nbsp;it.</p>
-            <p class="prose prose--quiet" data-reveal>On ordinary days, one line is&nbsp;enough.</p>
+            <h3 id="capture-title" class="h-day" data-reveal data-i18n="capture.title"><span class="when">Tuesday, 7:40&nbsp;pm.</span> Tell it while it's&nbsp;fresh.</h3>
+            <p class="prose" data-reveal data-i18n="capture.body">You tell your assistant what happened, the way you'd tell a friend. It asks one or two questions, then saves&nbsp;it.</p>
+            <p class="prose prose--quiet" data-reveal data-i18n="capture.quiet">On ordinary days, one line is&nbsp;enough.</p>
           </div>
 
           <div class="day__art" data-depth="-0.05">
-            <div class="chat" aria-label="Example conversation with an AI assistant">
-              <p class="chat__msg chat__msg--you" data-reveal>Can we write down what happened at planning? I'm still wound&nbsp;up.</p>
-              <p class="chat__msg chat__msg--agent" data-reveal>Of course. What went through your mind right then, and how strong was the anxiety, from 0 to&nbsp;100?</p>
-              <p class="chat__msg chat__msg--you" data-reveal>&ldquo;There's no way I can handle this.&rdquo; About&nbsp;85.</p>
-              <p class="chat__msg chat__msg--agent" data-reveal>Saved. We can look at that thought more closely now, or leave it for your&nbsp;session.</p>
-              <p class="chat__when" data-reveal>Thursday, 8:50&nbsp;am</p>
-              <p class="chat__msg chat__msg--you" data-reveal>Mood 2 of 5, slept 5½&nbsp;hours.</p>
-              <p class="chat__msg chat__msg--agent" data-reveal>Noted for Thursday.</p>
+            <div class="chat" aria-label="Example conversation with an AI assistant" data-i18n-attr="aria-label:capture.chat_label">
+              <p class="chat__msg chat__msg--you" data-reveal data-i18n="capture.msg1">Can we write down what happened at planning? I'm still wound&nbsp;up.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal data-i18n="capture.msg2">Of course. What went through your mind right then, and how strong was the anxiety, from 0 to&nbsp;100?</p>
+              <p class="chat__msg chat__msg--you" data-reveal data-i18n="capture.msg3">&ldquo;There's no way I can handle this.&rdquo; About&nbsp;85.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal data-i18n="capture.msg4">Saved. We can look at that thought more closely now, or leave it for your&nbsp;session.</p>
+              <p class="chat__when" data-reveal data-i18n="capture.thursday">Thursday, 8:50&nbsp;am</p>
+              <p class="chat__msg chat__msg--you" data-reveal data-i18n="capture.msg5">Mood 2 of 5, slept 5½&nbsp;hours.</p>
+              <p class="chat__msg chat__msg--agent" data-reveal data-i18n="capture.msg6">Noted for Thursday.</p>
             </div>
           </div>
         </div>
@@ -196,22 +249,24 @@
       <section class="day day--report" data-time="evening" aria-labelledby="report-title">
         <div class="wrap">
           <div class="report__head">
-            <h3 id="report-title" class="h-day h-day--wide" data-reveal><span class="when">Sunday, 8&nbsp;pm.</span> The week comes&nbsp;together.</h3>
-            <p class="prose" data-reveal>Your assistant writes it up: what happened, how you felt, what helped, and what you might want to bring up. Patterns are noted as observations, never as&nbsp;diagnoses.</p>
+            <h3 id="report-title" class="h-day h-day--wide" data-reveal data-i18n="report.title"><span class="when">Sunday, 8&nbsp;pm.</span> The week comes&nbsp;together.</h3>
+            <p class="prose" data-reveal data-i18n="report.body">Your assistant writes it up: what happened, how you felt, what helped, and what you might want to bring up. Patterns are noted as observations, never as&nbsp;diagnoses.</p>
           </div>
 
           <div class="report__grid">
             <div class="report__doc" data-depth="-0.03">
+              <!-- i18n:report-toggle -->
               <input class="sr-only" type="radio" name="report-lang" id="rl-pt" checked>
               <input class="sr-only" type="radio" name="report-lang" id="rl-en">
               <div class="seg" role="presentation">
-                <span class="seg__label">Read it in</span>
-                <label class="seg__opt seg__opt--pt" for="rl-pt">Português <span class="seg__hint">original</span></label>
-                <label class="seg__opt seg__opt--en" for="rl-en">English</label>
+                <span class="seg__label" data-i18n="report.read_in">Read it in</span>
+                <label class="seg__opt seg__opt--pt" for="rl-pt">Português <span class="seg__hint" data-i18n="report.original">original</span></label>
+                <label class="seg__opt seg__opt--en" for="rl-en" data-i18n-local="name">English</label>
               </div>
-              <p class="paper__status"><span class="paper__dot" aria-hidden="true"></span> Draft, waiting for you</p>
+              <!-- /i18n:report-toggle -->
+              <p class="paper__status" data-i18n="report.status"><span class="paper__dot" aria-hidden="true"></span> Draft, waiting for you</p>
 
-              <article class="paper paper--pt" lang="pt-BR" aria-label="Example weekly report, original Portuguese, abridged">
+              <article class="paper paper--pt" lang="pt-BR" aria-label="Example weekly report, original Portuguese, abridged" data-i18n-attr="aria-label:report.original_label">
                 <h4 class="paper__title">Relatório semanal — Demo Person — 2026-W42</h4>
                 <h5>Resumo</h5>
                 <p>Semana de carga alta no trabalho, com dois picos de ansiedade no início (pressão de prazos em 13/10 e um feedback recebido como crítica em 15/10) e uma recuperação clara no fim de semana, incluindo uma pausa no meio do dia pela primeira vez em semanas e um jantar em família tranquilo.</p>
@@ -232,49 +287,51 @@
                 <p class="paper__foot">Resumo preparado a partir de auto-registros (check-ins e entradas estruturadas) com auxílio do assistente pessoal. Não é avaliação clínica.</p>
               </article>
 
-              <article class="paper paper--en" lang="en" aria-label="Example weekly report, English translation, abridged">
-                <h4 class="paper__title">Weekly report — Demo Person — 2026-W42</h4>
-                <h5>Summary</h5>
-                <p>A week of heavy workload, with two anxiety peaks early on (deadline pressure on Oct 13 and feedback taken as criticism on Oct 15) and a clear recovery over the weekend, including a midday break for the first time in weeks and a calm family dinner.</p>
-                <h5>Notable situations</h5>
+              <!-- i18n:report-local -->
+              <article class="paper paper--en" lang="en" aria-label="Example weekly report, English translation, abridged" data-i18n-attr="aria-label:report.local_label" data-i18n-local="lang">
+                <h4 class="paper__title" data-i18n="report.doc_title">Weekly report — Demo Person — 2026-W42</h4>
+                <h5 data-i18n="report.doc_summary_h">Summary</h5>
+                <p data-i18n="report.doc_summary">A week of heavy workload, with two anxiety peaks early on (deadline pressure on Oct 13 and feedback taken as criticism on Oct 15) and a clear recovery over the weekend, including a midday break for the first time in weeks and a calm family dinner.</p>
+                <h5 data-i18n="report.doc_situations_h">Notable situations</h5>
                 <ul>
-                  <li><b>Oct 13</b> — Planning meeting with three demands in the same sprint: <mark>“there's no way I can handle this”</mark>; anxiety 85. Accepted everything on the spot and kept working into the night.</li>
-                  <li><b>Oct 15</b> — One-on-one feedback from the manager about delivery pace: <mark>“he thinks I'm slow”</mark>; anxiety 70, shame 55. Apologized repeatedly during the conversation.</li>
+                  <li data-i18n="report.doc_situation1"><b>Oct 13</b> — Planning meeting with three demands in the same sprint: <mark>“there's no way I can handle this”</mark>; anxiety 85. Accepted everything on the spot and kept working into the night.</li>
+                  <li data-i18n="report.doc_situation2"><b>Oct 15</b> — One-on-one feedback from the manager about delivery pace: <mark>“he thinks I'm slow”</mark>; anxiety 70, shame 55. Apologized repeatedly during the conversation.</li>
                 </ul>
-                <h5>Recurring themes and patterns</h5>
+                <h5 data-i18n="report.doc_patterns_h">Recurring themes and patterns</h5>
                 <ul>
-                  <li>Observation: the two most distressing situations (Oct 13 and 15) were at work and involved external evaluation or expectations.</li>
+                  <li data-i18n="report.doc_pattern1">Observation: the two most distressing situations (Oct 13 and 15) were at work and involved external evaluation or expectations.</li>
                 </ul>
-                <h5>Topics for the session</h5>
+                <h5 data-i18n="report.doc_topics_h">Topics for the session</h5>
                 <ul>
-                  <li>The pattern of taking on too much on the spot and working at night — what happens just before saying “yes”?</li>
-                  <li>Feedback heard as a judgment of personal worth (shame, apologizing repeatedly).</li>
+                  <li data-i18n="report.doc_topic1">The pattern of taking on too much on the spot and working at night — what happens just before saying “yes”?</li>
+                  <li data-i18n="report.doc_topic2">Feedback heard as a judgment of personal worth (shame, apologizing repeatedly).</li>
                 </ul>
-                <p class="paper__foot">Summary prepared from self-reports (check-ins and structured entries) with the help of a personal assistant. Not a clinical assessment.</p>
+                <p class="paper__foot" data-i18n="report.doc_foot">Summary prepared from self-reports (check-ins and structured entries) with the help of a personal assistant. Not a clinical assessment.</p>
               </article>
-              <p class="report__src">Abridged from a fictional example. This person writes in Portuguese, so their summary does too; yours comes out in your&nbsp;language.</p>
+              <!-- /i18n:report-local -->
+              <p class="report__src" data-i18n="report.source">Abridged from a fictional example. This person writes in Portuguese, so their summary does too; yours comes out in your&nbsp;language.</p>
             </div>
 
             <aside class="report__flow" aria-labelledby="lifecycle-title">
-              <h4 id="lifecycle-title" class="h-small" data-reveal>Nothing leaves without&nbsp;you.</h4>
+              <h4 id="lifecycle-title" class="h-small" data-reveal data-i18n="report.lifecycle">Nothing leaves without&nbsp;you.</h4>
               <ol class="stations">
                 <li class="stations__item" data-reveal>
-                  <span class="stations__state">A draft, for you</span>
-                  <p>Read it and change anything. It's your week.</p>
+                  <span class="stations__state" data-i18n="report.step1">A draft, for you</span>
+                  <p data-i18n="report.step1_text">Read it and change anything. It's your week.</p>
                 </li>
                 <li class="stations__item stations__item--gate" data-reveal>
-                  <span class="stations__state">Your yes</span>
-                  <p>Only an explicit &ldquo;send it&rdquo; sends it. It never happens on its own.</p>
+                  <span class="stations__state" data-i18n="report.step2">Your yes</span>
+                  <p data-i18n="report.step2_text">Only an explicit &ldquo;send it&rdquo; sends it. It never happens on its own.</p>
                 </li>
                 <li class="stations__item" data-reveal>
-                  <span class="stations__state">Sent</span>
-                  <p>To your therapist, the way you chose, with a note of who got it and when.</p>
+                  <span class="stations__state" data-i18n="report.step3">Sent</span>
+                  <p data-i18n="report.step3_text">To your therapist, the way you chose, with a note of who got it and when.</p>
                 </li>
               </ol>
             </aside>
           </div>
 
-          <p class="payoff" data-reveal><span class="when">Monday, 6&nbsp;pm.</span> The hour starts with Tuesday, not with&nbsp;today.</p>
+          <p class="payoff" data-reveal data-i18n="report.payoff"><span class="when">Monday, 6&nbsp;pm.</span> The hour starts with Tuesday, not with&nbsp;today.</p>
         </div>
       </section>
     </div>
@@ -282,13 +339,13 @@
     <!-- ───────────────────────── Privacy ───────────────────────── -->
     <section id="privacy" class="privacy privacy--lean" data-time="night" aria-labelledby="privacy-title">
       <div class="wrap">
-        <h2 id="privacy-title" class="h-section h-section--xl" data-reveal>Your thoughts stay&nbsp;yours.</h2>
+        <h2 id="privacy-title" class="h-section h-section--xl" data-reveal data-i18n="privacy.title">Your thoughts stay&nbsp;yours.</h2>
         <dl class="promises promises--three">
-          <div class="promises__row" data-reveal><dt>On your computer</dt><dd>A folder, like a notebook in a drawer. No app, no account, no&nbsp;cloud.</dd></div>
-          <div class="promises__row" data-reveal><dt>Locked to you</dt><dd>Other people using the same computer can't open&nbsp;it.</dd></div>
-          <div class="promises__row" data-reveal><dt>Never passed around</dt><dd>Nothing is copied into chats or other services, and deleting means&nbsp;deleting.</dd></div>
+          <div class="promises__row" data-reveal><dt data-i18n="privacy.p1">On your computer</dt><dd data-i18n="privacy.p1_text">A folder, like a notebook in a drawer. No app, no account, no&nbsp;cloud.</dd></div>
+          <div class="promises__row" data-reveal><dt data-i18n="privacy.p2">Locked to you</dt><dd data-i18n="privacy.p2_text">Other people using the same computer can't open&nbsp;it.</dd></div>
+          <div class="promises__row" data-reveal><dt data-i18n="privacy.p3">Never passed around</dt><dd data-i18n="privacy.p3_text">Nothing is copied into chats or other services, and deleting means&nbsp;deleting.</dd></div>
         </dl>
-        <p class="privacy__note" data-reveal>One thing to know: the AI assistant you talk to usually sends what you type to the company behind it. Choose one you're comfortable with. <a class="link" href="tech/#privacy">Technical&nbsp;details</a></p>
+        <p class="privacy__note" data-reveal data-i18n="privacy.note">One thing to know: the AI assistant you talk to usually sends what you type to the company behind it. Choose one you're comfortable with. <a class="link" href="tech/#privacy">Technical&nbsp;details</a></p>
       </div>
     </section>
 
@@ -296,36 +353,36 @@
     <section id="start" class="start" data-time="late" aria-labelledby="start-title">
       <div class="wrap">
         <div class="start__head">
-          <h2 id="start-title" class="h-section" data-reveal>Start in three&nbsp;steps.</h2>
-          <p class="prose start__intro" data-reveal>You need an AI assistant that runs on your computer and can save files there, like Claude Code, Hermes, OpenCode or OpenClaw. Browser-only chats can't. Claude Cowork needs one extra manual step, <a class="link" href="tech/#install-generic">described on the technical&nbsp;page</a>.</p>
+          <h2 id="start-title" class="h-section" data-reveal data-i18n="start.title">Start in three&nbsp;steps.</h2>
+          <p class="prose start__intro" data-reveal data-i18n="start.intro">You need an AI assistant that runs on your computer and can save files there, like Claude Code, Hermes, OpenCode or OpenClaw. Browser-only chats can't. Claude Cowork needs one extra manual step, <a class="link" href="tech/#install-generic">described on the technical&nbsp;page</a>.</p>
         </div>
 
         <ol class="steps">
           <li class="step" data-reveal>
-            <h3 class="step__title">Copy the setup message</h3>
-            <p class="step__text">It's written for your assistant: where to get sintr and how to set it up.</p>
+            <h3 class="step__title" data-i18n="start.step1">Copy the setup message</h3>
+            <p class="step__text" data-i18n="start.step1_text">It's written for your assistant: where to get sintr and how to set it up.</p>
             <div class="step__art">
-              <a class="btn btn--ink" href="#setup-message" data-copy="#setup-text" data-copied="Copied. Now paste it.">
+              <a class="btn btn--ink" href="#setup-message" data-copy="#setup-text" data-copied="Copied. Now paste it." data-i18n-attr="data-copied:start.copied">
                 <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2A2.5 2.5 0 0 0 13 4H6.5A2.5 2.5 0 0 0 4 6.5V13a2.5 2.5 0 0 0 2.5 2.5h2"/></svg>
-                <span data-label>Copy setup message</span>
+                <span data-label data-i18n="start.copy">Copy setup message</span>
               </a>
             </div>
           </li>
           <li class="step" data-reveal>
-            <h3 class="step__title">Paste it to your assistant</h3>
-            <p class="step__text">It sets everything up and explains each step. It may ask permission first; that's normal.</p>
+            <h3 class="step__title" data-i18n="start.step2">Paste it to your assistant</h3>
+            <p class="step__text" data-i18n="start.step2_text">It sets everything up and explains each step. It may ask permission first; that's normal.</p>
           </li>
           <li class="step" data-reveal>
-            <h3 class="step__title">Answer a few questions</h3>
-            <p class="step__text">Your language, time zone, therapist and session day. Then just talk to it when you need to.</p>
+            <h3 class="step__title" data-i18n="start.step3">Answer a few questions</h3>
+            <p class="step__text" data-i18n="start.step3_text">Your language, time zone, therapist and session day. Then just talk to it when you need to.</p>
           </li>
         </ol>
 
         <details id="setup-message" class="setup ask__details" data-reveal>
-          <summary>Read the setup message before you copy it</summary>
+          <summary data-i18n="start.summary">Read the setup message before you copy it</summary>
           <div class="setup__body">
-            <blockquote id="setup-text" class="ask__text">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer. Clone https://github.com/tiagomoraes/sintr.git, read docs/INSTALL.md, and run the installer that matches you (./installers/install.sh with hermes, claude-code or generic), using ~/sintr as my journal folder. Explain each step to me in plain words before you do it. Then open ~/sintr/config.md and fill it in with me: ask for my language, time zone and therapy details one at a time, and leave empty anything I don't give you. Keep require_approval: true, and never send anything to anyone without asking me first.</blockquote>
-            <p class="ask__foot">It only uses what's published in the sintr project.</p>
+            <blockquote id="setup-text" class="ask__text" data-i18n="start.message">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer. Clone https://github.com/tiagomoraes/sintr.git, read docs/INSTALL.md, and run the installer that matches you (./installers/install.sh with hermes, claude-code or generic), using ~/sintr as my journal folder. Explain each step to me in plain words before you do it. Then open ~/sintr/config.md and fill it in with me: ask for my language, time zone and therapy details one at a time, and leave empty anything I don't give you. Keep require_approval: true, and never send anything to anyone without asking me first.</blockquote>
+            <p class="ask__foot" data-i18n="start.message_foot">It only uses what's published in the sintr project.</p>
           </div>
         </details>
       </div>
@@ -335,36 +392,36 @@
     <section class="honest" data-time="dawn" aria-labelledby="honest-title">
       <div class="wrap honest__grid">
         <h2 id="honest-title" class="statement statement--close" data-reveal>
-          <span class="statement__a">sintr keeps the&nbsp;record.</span>
-          <span class="statement__b">Your therapist does the&nbsp;therapy.</span>
+          <span class="statement__a" data-i18n="honest.a">sintr keeps the&nbsp;record.</span>
+          <span class="statement__b" data-i18n="honest.b">Your therapist does the&nbsp;therapy.</span>
         </h2>
         <div class="honest__body">
-          <p class="prose" data-reveal>It isn't therapy, a diagnosis or an emergency service. It won't label you or tell you what to&nbsp;do.</p>
+          <p class="prose" data-reveal data-i18n="honest.body">It isn't therapy, a diagnosis or an emergency service. It won't label you or tell you what to&nbsp;do.</p>
           <div class="lines" data-reveal>
-            <p class="lines__title" id="lines-title">If you're in danger or thinking about harming yourself, please call someone&nbsp;now.</p>
+            <p class="lines__title" id="lines-title" data-i18n="lines.title">If you're in danger or thinking about harming yourself, please call someone&nbsp;now.</p>
             <ul class="lines__list" aria-labelledby="lines-title">
               <li class="line">
-                <span class="line__where">Brazil</span>
-                <span class="line__who">CVV, Centro de Valorização da Vida<span class="line__how">Free, 24 hours</span></span>
-                <a class="line__call" href="tel:188" aria-label="Call CVV, 188"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>188</span></a>
+                <span class="line__where" data-i18n="lines.l1_where">Brazil</span>
+                <span class="line__who" data-i18n="lines.l1_who">CVV, Centro de Valorização da Vida<span class="line__how">Free, 24 hours</span></span>
+                <a class="line__call" href="tel:188" aria-label="Call CVV, 188" data-i18n-attr="aria-label:lines.l1_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>188</span></a>
               </li>
               <li class="line">
-                <span class="line__where">US &amp; Canada</span>
-                <span class="line__who">988 crisis line<span class="line__how">Call or text, 24 hours</span></span>
-                <a class="line__call" href="tel:988" aria-label="Call the 988 crisis line, 988"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>988</span></a>
+                <span class="line__where" data-i18n="lines.l2_where">US &amp; Canada</span>
+                <span class="line__who" data-i18n="lines.l2_who">988 crisis line<span class="line__how">Call or text, 24 hours</span></span>
+                <a class="line__call" href="tel:988" aria-label="Call the 988 crisis line, 988" data-i18n-attr="aria-label:lines.l2_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>988</span></a>
               </li>
               <li class="line">
-                <span class="line__where">UK &amp; Ireland</span>
-                <span class="line__who">Samaritans<span class="line__how">Free, 24 hours</span></span>
-                <a class="line__call" href="tel:116123" aria-label="Call Samaritans, 116 123"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>116 123</span></a>
+                <span class="line__where" data-i18n="lines.l3_where">UK &amp; Ireland</span>
+                <span class="line__who" data-i18n="lines.l3_who">Samaritans<span class="line__how">Free, 24 hours</span></span>
+                <a class="line__call" href="tel:116123" aria-label="Call Samaritans, 116 123" data-i18n-attr="aria-label:lines.l3_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>116 123</span></a>
               </li>
               <li class="line">
-                <span class="line__where">Portugal</span>
-                <span class="line__who">SNS 24<span class="line__how">Health line with psychological support</span></span>
-                <a class="line__call" href="tel:808242424" aria-label="Call SNS 24, 808 24 24 24"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>808 24 24 24</span></a>
+                <span class="line__where" data-i18n="lines.l4_where">Portugal</span>
+                <span class="line__who" data-i18n="lines.l4_who">SNS 24<span class="line__how">Health line with psychological support</span></span>
+                <a class="line__call" href="tel:808242424" aria-label="Call SNS 24, 808 24 24 24" data-i18n-attr="aria-label:lines.l4_call"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.2 3.5h2.9l1.5 3.9-2 1.4a12 12 0 0 0 6.6 6.6l1.4-2 3.9 1.5v2.9a1.7 1.7 0 0 1-1.8 1.7A16 16 0 0 1 4.5 5.3a1.7 1.7 0 0 1 1.7-1.8z"/></svg><span>808 24 24 24</span></a>
               </li>
             </ul>
-            <p class="lines__note">Anywhere else, call your local emergency number. If you tell your assistant you're at risk, sintr asks it to stop taking notes and help you find someone right&nbsp;away.</p>
+            <p class="lines__note" data-i18n="lines.note">Anywhere else, call your local emergency number or find a free, confidential line near you at <a class="link" href="https://findahelpline.com">findahelpline.com</a>. If you tell your assistant you're at risk, sintr asks it to stop taking notes and help you find someone right&nbsp;away.</p>
           </div>
         </div>
       </div>
@@ -375,16 +432,19 @@
     <div class="wrap foot__grid">
       <div class="foot__brand">
         <p class="mark mark--foot"><span class="mark__word">sintr</span></p>
-        <p class="foot__line">A private mood diary for the week between therapy&nbsp;sessions.</p>
+        <p class="foot__line" data-i18n="foot.line">A private mood diary for the week between therapy&nbsp;sessions.</p>
       </div>
-      <nav class="foot__links" aria-label="More">
-        <a href="tech/">Under the hood</a>
-        <a href="#start">Get started</a>
-        <a href="#privacy">Privacy</a>
+      <nav class="foot__links" aria-label="More" data-i18n-attr="aria-label:foot.nav_label">
+        <a href="tech/" data-i18n="foot.tech">Under the hood</a>
+        <a href="#start" data-i18n="foot.start">Get started</a>
+        <a href="#privacy" data-i18n="foot.privacy">Privacy</a>
         <a href="https://github.com/tiagomoraes/sintr">GitHub</a>
-        <a href="https://github.com/tiagomoraes/sintr/blob/main/LICENSE">MIT License</a>
+        <a href="https://github.com/tiagomoraes/sintr/blob/main/LICENSE" data-i18n="foot.license">MIT License</a>
       </nav>
-      <p class="foot__fine">Version 0.1.0 · Built by Tiago Moraes · This site sets no cookies and loads nothing from third&nbsp;parties.</p>
+      <!-- i18n:footer-langs -->
+      <nav class="foot__langs" aria-label="Language"><span>This page in</span> <a href="./" hreflang="en" lang="en" data-lang="en" aria-current="true">English</a> <a href="pt-br/" hreflang="pt-BR" lang="pt-BR" data-lang="pt">Português (Brasil)</a> <a href="es/" hreflang="es" lang="es" data-lang="es">Español</a> <a href="fr/" hreflang="fr" lang="fr" data-lang="fr">Français</a> <a href="de/" hreflang="de" lang="de" data-lang="de">Deutsch</a> <a href="it/" hreflang="it" lang="it" data-lang="it">Italiano</a> <a href="ja/" hreflang="ja" lang="ja" data-lang="ja">日本語</a> <a href="zh/" hreflang="zh-Hans" lang="zh-Hans" data-lang="zh">简体中文</a></nav>
+      <!-- /i18n:footer-langs -->
+      <p class="foot__fine" data-i18n="foot.fine">Version 0.1.0 · Built by Tiago Moraes · This site sets no cookies and loads nothing from third&nbsp;parties.</p>
     </div>
   </footer>
 

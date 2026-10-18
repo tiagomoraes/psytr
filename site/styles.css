@@ -1572,6 +1572,97 @@ body:not(.page-tech) { --section: clamp(88px, 10vw, 148px); }
   .flow--doc .flow__edge--gate::before { left: -5px; bottom: auto; top: 50%; margin: -4.5px 0 0; }
 }
 
+/* ───────────── Languages ───────────── */
+.langs { position: relative; }
+/* an open menu sits above the window light, like anything held up off the wall */
+.top:has(.langs[open]) { z-index: 35; }
+.langs__toggle {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 13px 0 11px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink-2);
+  font-size: .875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color .3s var(--ease), border-color .3s var(--ease);
+}
+.langs__toggle::-webkit-details-marker { display: none; }
+.langs__toggle:hover, .langs[open] .langs__toggle { color: var(--ink); border-color: var(--rule-strong); }
+.langs__toggle .ico { width: 16px; height: 16px; }
+.langs__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 40;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lift);
+}
+.langs__menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  font-size: .9375rem;
+  text-decoration: none;
+}
+.langs__menu a:hover { background: var(--wash); color: var(--ink); }
+.langs__menu a[aria-current="true"] { color: var(--ink); font-weight: 600; }
+.langs__menu a[aria-current="true"]::after { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+.foot__langs {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+  font-size: .875rem;
+}
+.foot__langs span { color: var(--ink-3); }
+.foot__langs a { color: var(--ink-2); text-decoration: none; }
+.foot__langs a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: .28em; }
+.foot__langs a[aria-current="true"] { color: var(--ink); font-weight: 600; }
+
+/* Each language quotes the person's words its own way. */
+html[lang="de"] .said { quotes: "\201E" "\201C"; }
+html[lang="fr"] .said { quotes: "\00AB\00A0" "\00A0\00BB"; }
+html[lang="ja"] .said { quotes: "\300C" "\300D"; }
+
+/* Japanese and Chinese: Latin stays in the site's faces, the rest falls back to the reader's own
+   system fonts. No tightened tracking and no synthetic italics in these scripts. */
+html[lang="ja"] {
+  --serif: "Source Serif 4", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", "Noto Serif CJK JP", serif;
+  --sans: "Hanken Grotesk", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+}
+html[lang="zh-Hans"] {
+  --serif: "Source Serif 4", "Songti SC", "STSong", "Noto Serif SC", "Noto Serif CJK SC", serif;
+  --sans: "Hanken Grotesk", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", sans-serif;
+}
+html[lang="ja"] :is(.display, .statement, .h-section, .h-day, .payoff, .lines__title, .h-small, .step__title),
+html[lang="zh-Hans"] :is(.display, .statement, .h-section, .h-day, .payoff, .lines__title, .h-small, .step__title) {
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+html[lang="ja"] :is(.when, .note__when, .chat__when, .paper__foot),
+html[lang="zh-Hans"] :is(.when, .note__when, .chat__when, .paper__foot) { font-style: normal; }
+html[lang="ja"] :is(h1, h2, h3, h4, .payoff) { word-break: auto-phrase; }
+html[lang="ja"] body, html[lang="zh-Hans"] body { line-height: 1.8; }
+/* Longer or denser scripts get a smaller display size so the hero still opens on the button. */
+html[lang="de"] .display { font-size: clamp(2.5rem, 1.3rem + 4vw, 4.75rem); }
+html[lang="ja"] .display, html[lang="zh-Hans"] .display { font-size: clamp(2.25rem, 1.2rem + 3.3vw, 4.1rem); }
+html[lang="ja"] .statement, html[lang="zh-Hans"] .statement { font-size: clamp(1.875rem, 1.1rem + 2.6vw, 3.5rem); }
+html[lang="de"] :is(p, dd, li) { hyphens: auto; -webkit-hyphens: auto; }
+
 /* ───────────── Responsive ───────────── */
 @media (max-width: 1100px) {
   .hero__copy { grid-column: 1 / span 8; }
