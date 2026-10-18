@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T22:52:11+00:00",
+  "generatedAt": "2026-10-18T01:17:00+00:00",
   "title": "Design System: sintr website",
-  "scope": "Public website only (site/). The product data model is documented in docs/DESIGN.md.",
+  "scope": "Public website only (site/): the home (site/index.html) and Under the hood (site/tech/index.html). The product data model is documented in docs/DESIGN.md.",
   "extensions": {
     "colorMeta": {
       "ink": {
@@ -70,6 +70,56 @@
           "#ffe9d6"
         ],
         "cssVar": "--mark"
+      },
+      "notebook-margin": {
+        "role": "secondary",
+        "displayName": "Notebook Margin",
+        "canonical": "#f2cdb9",
+        "oklch": "oklch(87.5% 0.050 50.1)",
+        "tonalRamp": [
+          "#1b0400",
+          "#371c0c",
+          "#553827",
+          "#755644",
+          "#967563",
+          "#b99683",
+          "#e0bba8",
+          "#ffe6d1"
+        ],
+        "cssVar": "--margin (scoped to .note)"
+      },
+      "notebook-rule": {
+        "role": "secondary",
+        "displayName": "Notebook Rule",
+        "canonical": "#e5edf4",
+        "oklch": "oklch(94.2% 0.013 244.3)",
+        "tonalRamp": [
+          "#070c10",
+          "#1f252a",
+          "#3a4146",
+          "#585f64",
+          "#777e84",
+          "#989fa6",
+          "#bdc5cc",
+          "#e8f0f7"
+        ],
+        "cssVar": "--ruled (scoped to .note)"
+      },
+      "draft-peach": {
+        "role": "secondary",
+        "displayName": "Draft Peach",
+        "canonical": "#e09a76",
+        "oklch": "oklch(74.7% 0.098 48.0)",
+        "tonalRamp": [
+          "#1d0200",
+          "#3b1906",
+          "#593523",
+          "#7a5340",
+          "#9b735e",
+          "#be947e",
+          "#e6b9a3",
+          "#ffe3cc"
+        ]
       },
       "light-morning-sky": {
         "role": "tertiary",
@@ -262,7 +312,11 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Hero headline only."
+        "purpose": "Home hero headline only."
+      },
+      "display-doc": {
+        "displayName": "Display Doc",
+        "purpose": "The /tech/ headline; display voice capped at 5rem."
       },
       "headline-statement": {
         "displayName": "Headline Statement",
@@ -270,15 +324,31 @@
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Section heads; XL variant clamps up to 5rem."
+        "purpose": "Home section heads; XL variant clamps up to 5rem."
       },
       "title": {
         "displayName": "Title",
         "purpose": "Day headings, opened by an italic Ink Three time of day inside the sentence."
       },
+      "doc-heading": {
+        "displayName": "Doc Heading",
+        "purpose": "Section heads on /tech/, one per hairline-topped section."
+      },
+      "step-numeral": {
+        "displayName": "Step Numeral",
+        "purpose": "Light serif counter of the get-started steps, in Soft Ink."
+      },
+      "step-title": {
+        "displayName": "Step Title",
+        "purpose": "Titles of the three get-started steps."
+      },
       "title-small": {
         "displayName": "Title Small",
-        "purpose": "Sub-heads and privacy promise terms."
+        "purpose": "Sub-heads, privacy promise terms, and /tech/ sub-sections."
+      },
+      "note-value-large": {
+        "displayName": "Note Value Large",
+        "purpose": "Inline check-in values in a notebook card; tabular, never wrapped."
       },
       "lede": {
         "displayName": "Lede",
@@ -292,17 +362,25 @@
         "displayName": "Document",
         "purpose": "Serif body of the report paper."
       },
+      "note-value": {
+        "displayName": "Note Value",
+        "purpose": "The person's words, tasks and observations in a notebook card."
+      },
       "label": {
         "displayName": "Label",
         "purpose": "Buttons, nav, tabs, segmented options. Sentence case."
       },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Notebook labels, contents title, fact terms, table headers, flow edges, draft status."
+      },
       "file-body": {
         "displayName": "File Body",
-        "purpose": "Contents of real files and shell commands only."
+        "purpose": "Contents of real files and shell commands, on /tech/ only."
       },
       "file-path": {
         "displayName": "File Path",
-        "purpose": "Path captions of real files only."
+        "purpose": "Path captions of real files, on /tech/ only."
       }
     },
     "lightPalettes": [
@@ -374,12 +452,12 @@
       {
         "name": "shadow-card",
         "value": "0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22)",
-        "purpose": "Default file cards resting in the light."
+        "purpose": "Default notebook cards and file cards resting in the light."
       },
       {
         "name": "shadow-lift",
         "value": "0 2px 4px rgba(22, 23, 26, .05), 0 26px 50px -24px rgba(22, 23, 26, .28)",
-        "purpose": "The hero file and the report paper."
+        "purpose": "The hero notebook card and the report paper."
       },
       {
         "name": "button-ink-rest",
@@ -395,6 +473,11 @@
         "name": "paper-ring",
         "value": "0 0 0 4px #ffffff",
         "purpose": "Knocks gate dots out of the line they sit on (5px on the stations gate)."
+      },
+      {
+        "name": "draft-dot-ring",
+        "value": "0 0 0 3px #fbe6da",
+        "purpose": "Pale peach ring around the 7px draft status dot."
       }
     ],
     "motion": [
@@ -416,7 +499,7 @@
       {
         "name": "light-move",
         "value": "transform 3.4s, opacity 2.6s var(--ease-slow)",
-        "purpose": "The window pane travels to where the section's light falls."
+        "purpose": "The window pane travels to where the section's light falls (home only; /tech/ holds it in the header)."
       },
       {
         "name": "light-enter-breathe",
@@ -435,13 +518,13 @@
       },
       {
         "name": "hero-rise",
-        "value": "rise 1.5s var(--ease), children delayed 0, .18s, .34s, .48s; hero file settle 1.9s at .7s",
+        "value": "rise 1.5s var(--ease), children delayed 0, .18s, .34s, .48s; hero card settle 1.9s at .7s",
         "purpose": "First-viewport entrance."
       },
       {
         "name": "write",
-        "value": "line opacity .9s, delay i*150ms + 200ms; highlighter 1.4s at 1.35s",
-        "purpose": "The capture entry writes itself, then the quoted thought is highlighted."
+        "value": "row opacity .9s, delay i*150ms + 200ms; highlighter 1.4s at 1.35s",
+        "purpose": "The capture notebook card writes itself row by row, then the quoted thought is highlighted."
       },
       {
         "name": "highlight",
@@ -459,6 +542,16 @@
         "purpose": "Selected tab underline grows from the left."
       },
       {
+        "name": "disclosure",
+        "value": "chevron rotate -45deg to 45deg, .4s var(--ease)",
+        "purpose": "The setup message disclosure opens."
+      },
+      {
+        "name": "toc-current",
+        "value": "color .3s var(--ease); aria-current set by IntersectionObserver",
+        "purpose": "The /tech/ contents list marks the section being read (enhancement only)."
+      },
+      {
         "name": "parallax",
         "value": "data-depth -0.04 to -0.06, above 900px only",
         "purpose": "Artifacts drift slightly slower than the words."
@@ -473,24 +566,49 @@
       {
         "name": "wide",
         "value": "1100px",
-        "purpose": "Hero copy to 8 columns; flow may wrap."
+        "purpose": "Hero copy to 8 columns."
       },
       {
         "name": "stack",
         "value": "900px",
-        "purpose": "All splits single-column, sticky released, flow turns vertical; parallax off at or below."
+        "purpose": "All splits single-column, sticky released, steps stack, contents list becomes a static two-column list, front matter pair stacks; parallax off at or below."
       },
       {
         "name": "mobile",
         "value": "720px",
-        "purpose": "Body 1rem, 72px header with GitHub mark and Install pill only, fixed oversized light, lists stack."
+        "purpose": "Body 1rem, 72px header without text links (home: Get started pill; /tech/: GitHub mark and Install pill), fixed oversized light, lists and spec rows stack."
       },
       {
         "name": "narrow",
         "value": "380px",
         "purpose": "Button padding tightens."
+      },
+      {
+        "name": "flow-home",
+        "value": "@container flow (max-width: 1100px)",
+        "purpose": "Home flow line becomes a vertical spine."
+      },
+      {
+        "name": "flow-doc",
+        "value": "@container flow (max-width: 860px)",
+        "purpose": "/tech/ flow line becomes a vertical spine."
+      },
+      {
+        "name": "note-stack",
+        "value": "@container (max-width: 500px)",
+        "purpose": "Notebook card rows stack label over value."
+      },
+      {
+        "name": "note-inline-small",
+        "value": "@container (max-width: 360px)",
+        "purpose": "Inline check-in values step down to 1.1875rem."
       }
-    ]
+    ],
+    "lightTreatment": {
+      "home": "Fixed to the viewport with motion; recolors and moves with each section's data-time.",
+      "tech": "Absolute in the header (inset 0 0 auto 0, height 92vh), mask-image linear-gradient(#000 55%, transparent); held at noon, translate(2vw,-4vh) scale(1.05) rotate(-2deg), opacity .78.",
+      "mobile": "Under 720px one 150vw pane, rotate(-4deg), opacity .62 (.42 at night)."
+    }
   },
   "components": [
     {
@@ -512,8 +630,8 @@
     {
       "name": "Navigation",
       "kind": "nav",
-      "description": "Serif wordmark with window glyph, quiet text links, and a small ink Install pill.",
-      "html": "<header class=\"ds-nav\"><a class=\"ds-nav__mark\" href=\"#\"><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-mark\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#cfe3f3\"/><stop offset=\".55\" stop-color=\"#f6e1d3\"/><stop offset=\"1\" stop-color=\"#f7cfb5\"/></linearGradient></defs><rect width=\"32\" height=\"32\" rx=\"8\" fill=\"#16171a\"/><g fill=\"url(#ds-mark)\" transform=\"translate(10.4 6.2) skewX(-14)\"><rect width=\"6\" height=\"8.8\" rx=\"1\"/><rect x=\"7.2\" width=\"6\" height=\"8.8\" rx=\"1\"/><rect y=\"10.2\" width=\"6\" height=\"8.8\" rx=\"1\"/><rect x=\"7.2\" y=\"10.2\" width=\"6\" height=\"8.8\" rx=\"1\"/></g></svg><span>sintr</span></a><nav class=\"ds-nav__links\"><a href=\"#\">How it works</a><a href=\"#\">Privacy</a><a class=\"ds-nav__pill\" href=\"#\">Install</a></nav></header>",
+      "description": "Serif wordmark with window glyph, quiet text links, and a small ink pill (\"Get started\" on the home, \"Install\" on /tech/).",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-nav__mark\" href=\"#\"><svg viewBox=\"0 0 32 32\" aria-hidden=\"true\"><defs><linearGradient id=\"ds-mark\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\"#cfe3f3\"/><stop offset=\".55\" stop-color=\"#f6e1d3\"/><stop offset=\"1\" stop-color=\"#f7cfb5\"/></linearGradient></defs><rect width=\"32\" height=\"32\" rx=\"8\" fill=\"#16171a\"/><g fill=\"url(#ds-mark)\" transform=\"translate(10.4 6.2) skewX(-14)\"><rect width=\"6\" height=\"8.8\" rx=\"1\"/><rect x=\"7.2\" width=\"6\" height=\"8.8\" rx=\"1\"/><rect y=\"10.2\" width=\"6\" height=\"8.8\" rx=\"1\"/><rect x=\"7.2\" y=\"10.2\" width=\"6\" height=\"8.8\" rx=\"1\"/></g></svg><span>sintr</span></a><nav class=\"ds-nav__links\"><a href=\"#\">How it works</a><a href=\"#\">Privacy</a><a href=\"#\">Under the hood</a><a class=\"ds-nav__pill\" href=\"#\">Get started</a></nav></header>",
       "css": ".ds-nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 88px; padding: 0 24px; background: var(--paper, #fff); } .ds-nav__mark { display: inline-flex; align-items: center; gap: 10px; color: var(--ink, #16171a); text-decoration: none; } .ds-nav__mark svg { width: 28px; height: 28px; } .ds-nav__mark span { font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.625rem; font-weight: 400; letter-spacing: -.02em; line-height: 1; } .ds-nav__links { display: flex; align-items: center; gap: 28px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-nav__links a { color: var(--ink-2, #474a51); text-decoration: none; font-size: .9375rem; font-weight: 500; padding: 6px 0; transition: color .3s cubic-bezier(.16, 1, .3, 1); } .ds-nav__links a:hover { color: var(--ink, #16171a); } .ds-nav__links a:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; border-radius: 6px; } .ds-nav__links .ds-nav__pill { display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px; background: var(--ink, #16171a); color: #fff; } .ds-nav__links .ds-nav__pill:hover { background: #000; color: #fff; }"
     },
     {
@@ -533,12 +651,60 @@
       "css": ".ds-tabs input { position: absolute; opacity: 0; width: 1px; height: 1px; } .ds-tabs__row { display: flex; flex-wrap: wrap; gap: 4px 26px; border-bottom: 1px solid var(--rule, #e8e6e1); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-tabs__row label { position: relative; padding: 10px 0 14px; font-weight: 500; font-size: .9688rem; color: var(--ink-3, #6b6e75); cursor: pointer; transition: color .3s cubic-bezier(.16, 1, .3, 1); } .ds-tabs__row label::after { content: \"\"; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ink, #16171a); transform: scaleX(0); transform-origin: left; transition: transform .6s cubic-bezier(.16, 1, .3, 1); } .ds-tabs__row label:hover { color: var(--ink, #16171a); } #ds-ag1:checked ~ .ds-tabs__row label[for=\"ds-ag1\"], #ds-ag2:checked ~ .ds-tabs__row label[for=\"ds-ag2\"], #ds-ag3:checked ~ .ds-tabs__row label[for=\"ds-ag3\"] { color: var(--ink, #16171a); } #ds-ag1:checked ~ .ds-tabs__row label[for=\"ds-ag1\"]::after, #ds-ag2:checked ~ .ds-tabs__row label[for=\"ds-ag2\"]::after, #ds-ag3:checked ~ .ds-tabs__row label[for=\"ds-ag3\"]::after { transform: scaleX(1); } #ds-ag1:focus-visible ~ .ds-tabs__row label[for=\"ds-ag1\"], #ds-ag2:focus-visible ~ .ds-tabs__row label[for=\"ds-ag2\"], #ds-ag3:focus-visible ~ .ds-tabs__row label[for=\"ds-ag3\"] { outline: 2px solid var(--ink, #16171a); outline-offset: 4px; border-radius: 4px; }"
     },
     {
+      "name": "Notebook Card",
+      "kind": "card",
+      "refersTo": "notebook-card",
+      "description": "Signature artifact on the home: a moment as a person's notebook page. Sky ruled hairlines, a peach margin rule, sans labels, serif words, the quoted thought highlighted.",
+      "html": "<figure class=\"ds-note\"><figcaption class=\"ds-note__head\"><span class=\"ds-note__when\">Tuesday, 7:40 pm</span><span class=\"ds-note__tag\">A moment, in your words</span></figcaption><dl class=\"ds-note__rows\"><div class=\"ds-note__row\"><dt>What went through your mind</dt><dd><q class=\"ds-said\">there's no way I can handle this</q></dd></div><div class=\"ds-note__row\"><dt>How you felt</dt><dd>Anxious <span class=\"ds-note__scale\">85 of 100</span></dd></div><div class=\"ds-note__row\"><dt>In your body</dt><dd>Tight chest, clenched jaw</dd></div><div class=\"ds-note__row\"><dt>What you did</dt><dd>Said yes to all of it</dd></div></dl></figure>",
+      "css": ".ds-note { position: relative; max-width: 460px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 14px; box-shadow: 0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22); overflow: hidden; container-type: inline-size; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-note::before { content: \"\"; position: absolute; top: 0; bottom: 0; left: 26px; width: 1px; background: #f2cdb9; } .ds-note__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 14px 20px 12px 44px; border-bottom: 1px solid var(--rule, #e8e6e1); } .ds-note__when { font-family: \"Source Serif 4\", Georgia, serif; font-style: italic; font-size: 1rem; color: var(--ink-2, #474a51); } .ds-note__tag { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--ink-3, #6b6e75); } .ds-note__rows { margin: 0; padding: 2px 20px 6px 44px; } .ds-note__row { display: grid; grid-template-columns: minmax(7rem, 9.5rem) 1fr; gap: 2px 18px; padding: 11px 0 10px; border-bottom: 1px solid #e5edf4; } .ds-note__row:last-child { border-bottom: 0; } .ds-note__row dt { font-size: .8125rem; line-height: 1.45; color: var(--ink-3, #6b6e75); padding-top: 3px; } .ds-note__row dd { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; color: var(--ink, #16171a); } @container (max-width: 500px) { .ds-note__row { grid-template-columns: 1fr; padding: 9px 0 8px; } .ds-note__row dt { padding-top: 0; } } .ds-said { quotes: \"\\201C\" \"\\201D\"; background: linear-gradient(to top, transparent 0 8%, var(--mark, #fbe0cd) 8% 42%, transparent 42%) no-repeat; padding-inline: .06em; } .ds-note__scale { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--rule, #e8e6e1); border-radius: 999px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .75rem; color: var(--ink-3, #6b6e75); font-variant-numeric: tabular-nums; vertical-align: 2px; }"
+    },
+    {
       "name": "File Card",
       "kind": "card",
       "refersTo": "file-card",
-      "description": "Signature artifact: a real sintr file as selectable text, captioned by its path, with the person's own words highlighted.",
+      "description": "Signature artifact on /tech/: a real sintr file as selectable mono text, captioned by its path, with the person's own words highlighted.",
       "html": "<figure class=\"ds-file\"><figcaption class=\"ds-file__path\">~/sintr/entries/2026-10.md <span class=\"ds-file__note\">fictional example</span></figcaption><pre class=\"ds-file__body\"><span class=\"ds-h\">## entry-2026-10-13-001</span>\n<span class=\"ds-k\">- title:</span> Planning, three demands in one sprint\n<span class=\"ds-k\">- thoughts:</span> <mark>\"there's no way I can handle this\"</mark>\n<span class=\"ds-k\">- emotions:</span> anxiety: 85</pre></figure>",
       "css": ".ds-file { margin: 0; max-width: 470px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 14px; box-shadow: 0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22); overflow: hidden; } .ds-file__path { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 12px 18px 11px; border-bottom: 1px solid var(--rule, #e8e6e1); font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: .75rem; line-height: 1.4; color: var(--ink-3, #6b6e75); } .ds-file__note { font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .75rem; } .ds-file__body { margin: 0; padding: 16px 18px 18px; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: .8125rem; line-height: 1.8; color: var(--ink, #16171a); white-space: pre-wrap; overflow-wrap: anywhere; } .ds-k { color: var(--ink-3, #6b6e75); } .ds-file mark { color: inherit; background: linear-gradient(to top, var(--mark, #fbe0cd) 0 46%, transparent 46%) no-repeat; padding-inline: .1em; }"
+    },
+    {
+      "name": "Notebook Check-in and Tasks",
+      "kind": "card",
+      "refersTo": "notebook-card-value-inline",
+      "description": "Notebook variants: three inline check-in values that never wrap, and homework rows with drawn checkboxes; the folder variant drops its shadow and carries a small lock.",
+      "html": "<div class=\"ds-stack\"><figure class=\"ds-note\"><figcaption class=\"ds-note__head\"><span class=\"ds-note__when\">Thursday, Oct 15 · morning</span><span class=\"ds-note__tag\">Check-in</span></figcaption><dl class=\"ds-note__rows ds-note__rows--inline\"><div class=\"ds-note__row\"><dt>Mood</dt><dd>2 of 5</dd></div><div class=\"ds-note__row\"><dt>Anxiety</dt><dd>4 of 5</dd></div><div class=\"ds-note__row\"><dt>Sleep</dt><dd>5½ hours</dd></div></dl><p class=\"ds-note__line\"><span class=\"ds-note__label\">Note</span> worked late again; 1:1 with my manager today</p></figure><figure class=\"ds-note ds-note--folder\"><figcaption class=\"ds-note__head\"><span class=\"ds-note__when\">From your sessions</span><span class=\"ds-note__tag\"><svg class=\"ds-lock\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><rect x=\"3\" y=\"7\" width=\"10\" height=\"7\" rx=\"1.5\"/><path d=\"M5.5 7V5a2.5 2.5 0 0 1 5 0v2\"/></svg>Only you can open it</span></figcaption><ul class=\"ds-tasks\"><li class=\"is-done\"><span class=\"ds-tick\"></span><span>Notice what happens right before saying “yes”</span></li><li><span class=\"ds-tick\"></span><span>Keep one midday pause, even in heavy weeks</span></li></ul></figure></div>",
+      "css": ".ds-note { position: relative; max-width: 460px; background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-radius: 14px; box-shadow: 0 1px 2px rgba(22, 23, 26, .04), 0 18px 40px -22px rgba(22, 23, 26, .22); overflow: hidden; container-type: inline-size; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-note::before { content: \"\"; position: absolute; top: 0; bottom: 0; left: 26px; width: 1px; background: #f2cdb9; } .ds-note__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; padding: 14px 20px 12px 44px; border-bottom: 1px solid var(--rule, #e8e6e1); } .ds-note__when { font-family: \"Source Serif 4\", Georgia, serif; font-style: italic; font-size: 1rem; color: var(--ink-2, #474a51); } .ds-note__tag { display: inline-flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--ink-3, #6b6e75); } .ds-note__rows { margin: 0; padding: 2px 20px 6px 44px; } .ds-note__row { display: grid; grid-template-columns: minmax(7rem, 9.5rem) 1fr; gap: 2px 18px; padding: 11px 0 10px; border-bottom: 1px solid #e5edf4; } .ds-note__row:last-child { border-bottom: 0; } .ds-note__row dt { font-size: .8125rem; line-height: 1.45; color: var(--ink-3, #6b6e75); padding-top: 3px; } .ds-note__row dd { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; color: var(--ink, #16171a); } @container (max-width: 500px) { .ds-note__row { grid-template-columns: 1fr; padding: 9px 0 8px; } .ds-note__row dt { padding-top: 0; } } .ds-said { quotes: \"\\201C\" \"\\201D\"; background: linear-gradient(to top, transparent 0 8%, var(--mark, #fbe0cd) 8% 42%, transparent 42%) no-repeat; padding-inline: .06em; } .ds-note__scale { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--rule, #e8e6e1); border-radius: 999px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .75rem; color: var(--ink-3, #6b6e75); font-variant-numeric: tabular-nums; vertical-align: 2px; } .ds-stack { display: grid; gap: 24px; } .ds-note__rows--inline { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0 clamp(18px, 7cqi, 40px); padding-bottom: 0; } .ds-note__rows--inline .ds-note__row { grid-template-columns: 1fr; border-bottom: 0; padding: 14px 0 12px; } .ds-note__rows--inline .ds-note__row dd { font-size: 1.375rem; font-variant-numeric: tabular-nums; white-space: nowrap; } .ds-note__line { margin: 0; padding: 12px 20px 16px 44px; border-top: 1px solid #e5edf4; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; } .ds-note__label { display: block; margin-bottom: 2px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; font-size: .8125rem; color: var(--ink-3, #6b6e75); } .ds-tasks { margin: 0; padding: 4px 20px 4px 44px; list-style: none; } .ds-tasks li { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0 10px; border-bottom: 1px solid #e5edf4; font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.0625rem; line-height: 1.45; } .ds-tasks li:last-child { border-bottom: 0; } .ds-tick { position: relative; flex: none; width: 16px; height: 16px; margin-top: 4px; border: 1.5px solid var(--ink-soft, #82858c); border-radius: 4px; } .is-done .ds-tick { background: var(--ink, #16171a); border-color: var(--ink, #16171a); } .is-done .ds-tick::after { content: \"\"; position: absolute; left: 4.5px; top: 1.5px; width: 4px; height: 8px; border: solid #fff; border-width: 0 1.6px 1.6px 0; transform: rotate(42deg); } .ds-note--folder { box-shadow: none; } .ds-lock { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; }"
+    },
+    {
+      "name": "Get-started Steps",
+      "kind": "custom",
+      "refersTo": "step",
+      "description": "Three steps under ink rules: a light serif numeral, a serif title, quiet text, and an illustration made of the step's real action.",
+      "html": "<ol class=\"ds-steps\"><li class=\"ds-step\"><h3 class=\"ds-step__title\">Copy the setup message</h3><p class=\"ds-step__text\">It's a message for your assistant, not for you.</p></li><li class=\"ds-step\"><h3 class=\"ds-step__title\">Paste it to your assistant</h3><p class=\"ds-step__text\">Start a conversation and paste it in.</p><div class=\"ds-step__art\"><p class=\"ds-mini ds-mini--you\">Please set up sintr for me…</p></div></li><li class=\"ds-step\"><h3 class=\"ds-step__title\">Answer a few questions</h3><p class=\"ds-step__text\">Skip anything you'd rather not share.</p><div class=\"ds-step__art\"><p class=\"ds-mini ds-mini--agent\">Which language should I write your notes in?</p><p class=\"ds-mini ds-mini--you\">Portuguese, please.</p></div></li></ol>",
+      "css": ".ds-steps { counter-reset: step; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 24px; margin: 0; padding: 0; list-style: none; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-step { counter-increment: step; display: flex; flex-direction: column; padding-top: 26px; border-top: 1px solid var(--ink, #16171a); } .ds-step::before { content: counter(step); font-family: \"Source Serif 4\", Georgia, serif; font-size: 2.75rem; font-weight: 300; line-height: 1; color: var(--ink-soft, #82858c); margin-bottom: 18px; } .ds-step__title { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-weight: 400; font-size: 1.5rem; line-height: 1.2; letter-spacing: -.012em; } .ds-step__text { margin: 10px 0 0; color: var(--ink-3, #6b6e75); font-size: .9688rem; line-height: 1.55; } .ds-step__art { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 24px; } .ds-mini { margin: 0; padding: 9px 14px; border-radius: 20px; font-size: .875rem; line-height: 1.5; } .ds-mini--you { align-self: flex-end; background: var(--wash, #f5f4f1); border-bottom-right-radius: 6px; color: var(--ink, #16171a); } .ds-mini--agent { background: var(--paper, #fff); border: 1px solid var(--rule, #e8e6e1); border-bottom-left-radius: 6px; color: var(--ink-2, #474a51); } @media (max-width: 900px) { .ds-steps { grid-template-columns: 1fr; } }"
+    },
+    {
+      "name": "Setup Card",
+      "kind": "card",
+      "refersTo": "ask-card",
+      "description": "The one call to act per page: morning-wash card with a heading, an ink Copy pill, a lead, and the message inside a disclosure that starts closed.",
+      "html": "<div class=\"ds-ask\"><div class=\"ds-ask__head\"><h3 class=\"ds-ask__title\">The setup message</h3><button class=\"ds-ask__copy\" type=\"button\">Copy</button></div><p class=\"ds-ask__lead\">A message for your assistant, not for you.</p><details class=\"ds-ask__details\"><summary>Read the message before you copy it</summary><blockquote class=\"ds-ask__text\">Please set up sintr for me. It's a private journal for therapy that you'll keep for me as files on this computer.</blockquote></details></div>",
+      "css": ".ds-ask { max-width: 620px; padding: 28px 28px 26px; border-radius: 20px; background: linear-gradient(162deg, #e9f2f8 0%, #f3f2ee 48%, #f9ebe1 100%); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; color: var(--ink, #16171a); } .ds-ask__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; } .ds-ask__title { margin: 0; font-family: \"Source Serif 4\", Georgia, serif; font-weight: 400; font-size: 1.375rem; line-height: 1.25; letter-spacing: -.01em; } .ds-ask__copy { min-height: 40px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--ink, #16171a); color: #fff; font: inherit; font-size: .9375rem; font-weight: 500; cursor: pointer; transition: background-color .4s cubic-bezier(.16, 1, .3, 1), transform .5s cubic-bezier(.16, 1, .3, 1); } .ds-ask__copy:hover { background: #000; transform: translateY(-1px); } .ds-ask__copy:focus-visible, .ds-ask__details summary:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; border-radius: 6px; } .ds-ask__lead { margin: 14px 0 0; color: var(--ink-2, #474a51); } .ds-ask__details { margin-top: 18px; border-top: 1px solid rgba(22, 23, 26, .1); } .ds-ask__details summary { display: inline-flex; align-items: center; gap: 10px; padding: 14px 0 4px; font-weight: 500; cursor: pointer; list-style: none; } .ds-ask__details summary::-webkit-details-marker { display: none; } .ds-ask__details summary::before { content: \"\"; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .4s cubic-bezier(.16, 1, .3, 1); } .ds-ask__details[open] summary::before { transform: rotate(45deg); } .ds-ask__text { margin: 12px 0 0; font-size: 1.0625rem; line-height: 1.66; }"
+    },
+    {
+      "name": "Contents List",
+      "kind": "nav",
+      "refersTo": "toc-link",
+      "description": "The /tech/ contents list on a single left hairline; the current section turns ink with a 7px dot on the line.",
+      "html": "<nav class=\"ds-toc\"><p class=\"ds-toc__title\">On this page</p><ol class=\"ds-toc__list\"><li><a href=\"#\">The model</a></li><li><a href=\"#\" aria-current=\"true\">The ledger</a></li><li><a href=\"#\">Entries and check-ins</a></li><li><a href=\"#\">The weekly pipeline</a></li></ol></nav>",
+      "css": ".ds-toc { max-width: 260px; font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-toc__title { margin: 0 0 12px; font-size: .8125rem; color: var(--ink-3, #6b6e75); } .ds-toc__list { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; border-left: 1px solid var(--rule, #e8e6e1); } .ds-toc__list a { position: relative; display: block; padding: 6px 0 6px 16px; color: var(--ink-3, #6b6e75); text-decoration: none; font-size: .9375rem; transition: color .3s cubic-bezier(.16, 1, .3, 1); } .ds-toc__list a:hover { color: var(--ink, #16171a); } .ds-toc__list a:focus-visible { outline: 2px solid var(--ink, #16171a); outline-offset: 3px; border-radius: 6px; } .ds-toc__list a[aria-current=\"true\"] { color: var(--ink, #16171a); font-weight: 500; } .ds-toc__list a[aria-current=\"true\"]::before { content: \"\"; position: absolute; left: -4px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--ink, #16171a); }"
+    },
+    {
+      "name": "Specification Table",
+      "kind": "custom",
+      "refersTo": "specs-row",
+      "description": "/tech/ specification rows: serif term beside sans description, one ink hairline on top, pale hairlines between.",
+      "html": "<dl class=\"ds-specs\"><div class=\"ds-specs__row\"><dt>entries/</dt><dd>One file per month. Each situation is a heading with its fields below.</dd></div><div class=\"ds-specs__row\"><dt>checkins/</dt><dd>One line a day, when the owner feels like it.</dd></div></dl>",
+      "css": ".ds-specs { margin: 0; max-width: 720px; border-top: 1px solid var(--ink, #16171a); font-family: \"Hanken Grotesk\", ui-sans-serif, system-ui, sans-serif; } .ds-specs__row { display: grid; grid-template-columns: minmax(9rem, 12rem) 1fr; gap: 6px 24px; padding: 16px 0 17px; border-bottom: 1px solid var(--rule, #e8e6e1); } .ds-specs dt { font-family: \"Source Serif 4\", Georgia, serif; font-size: 1.125rem; line-height: 1.35; color: var(--ink, #16171a); } .ds-specs dd { margin: 0; color: var(--ink-2, #474a51); line-height: 1.6; padding-top: 1px; } @media (max-width: 720px) { .ds-specs__row { grid-template-columns: 1fr; gap: 4px; } }"
     },
     {
       "name": "Report Paper",
@@ -567,23 +733,23 @@
   ],
   "narrative": {
     "northStar": "The Consulting-Room Wall",
-    "overview": "**Creative North Star: \"The Consulting-Room Wall\"**\n\nThe page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. As the reader moves through the week, the light changes time of day (morning, noon, dusk, early morning, evening, golden hour, night, late morning, dawn) and cross-fades rather than jumps.\n\nHierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading; a mono appears only where a real file is being shown. The product is demonstrated, not illustrated: every artifact on the page is a real sintr file format, set as selectable text in a white paper card labelled by its path, resting in the light.\n\nDensity is low and the pace is slow. Sections are separated by large vertical rests and single hairlines, not by fills or boxes. Motion is opt-in and unhurried: the light moves over about three seconds, leaves sway on 13 and 17 second cycles, and content settles in with a short blur-to-sharp fade. With JavaScript off or reduced motion requested, the light rests at the top of the page and everything reads. The wellness-app default (pastel blob hero, phone mockup, feature-card trio) and the dev-tool default (dark terminal page) are both rejected.",
+    "overview": "**Creative North Star: \"The Consulting-Room Wall\"**\n\nThe page is the white wall of a quiet consulting room, and window light crosses it while the week between two sessions goes by. The ground is plaster white, everything structural is graphite ink and hairline, and the only color in the world is light: a tall, obliquely projected window of soft gradient with blurred sage leaf shadows, multiplied onto the page. On the home, as the reader moves through the week, the light changes time of day (morning, noon, dusk, early morning, evening, golden hour, night, late morning, dawn) and cross-fades rather than jumps. On `/tech/` the same light is held at noon in the header and fades out before the reading starts.\n\nHierarchy is carried by type size and line breaks alone. A light, optically sized serif speaks at display size in two tones; a quiet grotesk does the reading. The two pages share every token and face but show the product in two registers. The home demonstrates it as a person lives it: every artifact is a **notebook card**, white paper with faint school-paper rules and a peach margin line, human labels in the sans and the person's own words in the serif. `/tech/` demonstrates it as it is built: real sintr file formats set as selectable Fragment Mono text in white cards captioned by their path, beside specification tables and numbered pipeline steps. The mono face lives on `/tech/` only.\n\nDensity is low and the pace is slow. Sections are separated by large vertical rests and single hairlines, not by fills or boxes. Motion is opt-in and unhurried: the light moves over about three seconds, leaves sway on 13 and 17 second cycles, and content settles in with a short blur-to-sharp fade. With JavaScript off or reduced motion requested, the light rests at the top of the page and everything reads. The wellness-app default (pastel blob hero, phone mockup, feature-card trio), the developer-tool default (dark terminal page, install commands up front) and developer-portal chrome are all rejected.",
     "keyCharacteristics": [
-      "White ground, graphite ink, black pill controls; light is the only color.",
+      "White ground, graphite ink, black pill controls; light is the only color, echoed faintly on paper.",
       "Light serif display (weight 300) carrying hierarchy by size and two tones, never by labels.",
-      "Real files as artifacts: white cards, hairline edge, path as caption, mono body.",
+      "Two registers of artifact: notebook cards on the home (sans labels, serif words), real file cards in mono on `/tech/`.",
       "Hairline-ruled structure on a 12-column grid with generous section rests.",
-      "A time-of-day light that moves with the reader, and that disappears into a static wash when motion is unwelcome."
+      "A time-of-day light that moves with the reader on the home, stays in the header on the reading page, and disappears into a static wash when motion is unwelcome."
     ],
     "rules": [
       {
         "name": "The Light Is the Only Color Rule",
-        "body": "Chroma lives in the window light and nowhere else. Gradients never fill text, buttons or cards; the light is a projection on the wall, multiplied onto whatever it falls across.",
+        "body": "Chroma lives in the window light. On paper it appears only as the light's own faint echoes: the peach highlighter, the notebook's sky rules and peach margin, and the draft dot. Gradients never fill text, buttons or cards; the light is a projection on the wall, multiplied onto whatever it falls across.",
         "section": "colors"
       },
       {
         "name": "The Morning Wash Exception",
-        "body": "Exactly one surface carries a faint light gradient as a fill: the install prompt card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). One per page, and only on the single call to act.",
+        "body": "Exactly one surface per page carries a faint light gradient as a fill: the setup-message card that asks the visitor to act (162deg, #e9f2f8 to #f3f2ee to #f9ebe1). One per page, and only on the single call to act.",
         "section": "colors"
       },
       {
@@ -598,7 +764,12 @@
       },
       {
         "name": "The Mono Means File Rule",
-        "body": "Fragment Mono appears only for real file contents, paths, and shell commands. It never decorates a heading or signals \"technical\".",
+        "body": "Fragment Mono appears only on `/tech/`, for real file contents, paths, and shell commands. It never decorates a heading or signals \"technical\". The home shows no mono and no paths; its one piece of technical text, the setup message for the assistant, is set in the grotesk inside a disclosure that starts closed.",
+        "section": "typography"
+      },
+      {
+        "name": "The Labels Sans, Words Serif Rule",
+        "body": "In a notebook card, what the system asks is in the small grotesk (Ink Three); what the person said or did is in the serif (ink). The pairing is how the card reads as a person's notebook rather than a form.",
         "section": "typography"
       },
       {
@@ -607,26 +778,33 @@
         "section": "layout"
       },
       {
+        "name": "The Light Stays in the Header Rule",
+        "body": "On a reading page the light never sits behind long text: it is absolute in the first 92vh, masked to fade out from 55% down, and does not follow the reader.",
+        "section": "layout"
+      },
+      {
         "name": "The Hairline First Rule",
-        "body": "A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the file listing in the privacy section deliberately drops its shadow.",
+        "body": "A new surface gets a 1px hairline before it gets a shadow. Shadows are reserved for real artifacts resting in the light; the \"Your sintr folder\" card in the privacy section deliberately drops its shadow, and the reading page's tables and lists are hairline only.",
         "section": "elevation"
       }
     ],
     "dos": [
       "**Do** keep every filled control Graphite Ink on white, as a full pill; selected states are ink too.",
-      "**Do** show real file formats as selectable text in a white, hairline-edged card captioned with the file's path.",
+      "**Do** show the product on the home as notebook cards: human labels in the sans, the person's words in the serif, sky rules and a peach margin.",
+      "**Do** show real file formats on `/tech/` as selectable mono text in a white, hairline-edged card captioned with the file's path.",
       "**Do** carry hierarchy with light serif size steps and line breaks, putting context (like the time of day) inside the heading sentence.",
       "**Do** keep small text at Ink Three (#6b6e75) or darker; reserve Soft Ink for large type and marks.",
       "**Do** separate sections with large rests and a single hairline rather than fills.",
-      "**Do** make motion opt-in and keep every interaction (toggles, tabs) working with JavaScript off.",
+      "**Do** keep the light out from behind long reading: in the header, masked away, on any reading page.",
+      "**Do** make motion opt-in and keep every interaction (toggles, tabs, disclosures) working with JavaScript off.",
       "**Do** self-host every font and asset; the site loads nothing from third parties."
     ],
     "donts": [
-      "**Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), plus the single morning-wash install card.",
+      "**Don't** fill text, buttons or cards with gradient; chroma belongs to the window light (including the small window in the brand glyph), its faint echoes on paper, and the single morning-wash setup card per page.",
       "**Don't** add eyebrows, kickers, uppercase labels, or icon tiles above headings.",
-      "**Don't** use the mono face outside real file contents, paths and commands.",
+      "**Don't** use the mono face on the home, or anywhere outside real file contents, paths and commands on `/tech/`.",
       "**Don't** use the peach highlighter on anything but a person's own quoted words.",
-      "**Don't** build the page from pastel blobs, a phone mockup, or a row of three feature cards, and don't turn it into a dark terminal page.",
+      "**Don't** build the page from pastel blobs, a phone mockup, or a row of three feature cards, and don't turn it into a dark terminal page or a developer portal.",
       "**Don't** use glassmorphism or backdrop blur on surfaces; blur belongs only to the light's soft edges, the leaf shadows, and the reveal transition. No purple-to-blue pairs; lavender appears only as evening light mixed with peach."
     ]
   }

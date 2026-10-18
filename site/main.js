@@ -48,7 +48,10 @@
       event.preventDefault();
       // innerText drops the decorative "$ " and "/" prompt spans' styling but keeps their text,
       // so strip shell prompts to leave only what should be pasted.
-      var text = source.innerText.replace(/^\$ /gm, '').trim();
+      // Text inside a closed <details> isn't rendered, so innerText comes back empty there.
+      var raw = source.innerText;
+      if (!raw || !raw.trim()) raw = source.textContent.replace(/\s+/g, ' ');
+      var text = raw.replace(/^\$ /gm, '').trim();
 
       copyText(text).then(function () {
         var done = trigger.getAttribute('data-copied') || 'Copied';
@@ -67,6 +70,39 @@
       });
     });
   });
+
+  /* ── Deep link to an install tab (#install-generic, #install-hermes…) ── */
+
+  function openInstallTab() {
+    var match = /^#install-(claude|hermes|generic)$/.exec(window.location.hash);
+    var radio = match && document.getElementById('ag-' + match[1]);
+    if (!radio) return;
+    radio.checked = true;
+    var section = document.getElementById('install');
+    if (section) section.scrollIntoView();
+  }
+  openInstallTab();
+  window.addEventListener('hashchange', openInstallTab);
+
+  /* ── Contents: mark the section being read (works with or without motion) ── */
+
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  if (tocLinks.length && 'IntersectionObserver' in window) {
+    var byId = {};
+    tocLinks.forEach(function (link) { byId[link.getAttribute('href').slice(1)] = link; });
+    var tocObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        tocLinks.forEach(function (link) { link.removeAttribute('aria-current'); });
+        var current = byId[entry.target.id];
+        if (current) current.setAttribute('aria-current', 'true');
+      });
+    }, { rootMargin: '-30% 0px -65% 0px' });
+    Object.keys(byId).forEach(function (id) {
+      var section = document.getElementById(id);
+      if (section) tocObserver.observe(section);
+    });
+  }
 
   if (!motion) return;
 
