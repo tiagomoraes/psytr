@@ -63,13 +63,20 @@ This copies the skill into `~/.sintr/skill/` and creates the ledger. Then:
 python3 scripts/week_collect.py --ledger ~/sintr --week this
 ```
 
-4. Review the report draft in `reports/YYYY-Www.md`. When you're happy with the flow, wire the schedule.
+4. Review the report draft in `reports/YYYY-Www.md`, then render it (the installer places the generator at `~/.sintr/bin/report_pdf.py`):
+
+```bash
+python3 scripts/report_pdf.py --ledger ~/sintr --week this --draft   # preview, marked as a draft
+python3 scripts/report_pdf.py --ledger ~/sintr --week this           # final, once status: reviewed
+```
+
+   The PDF lands next to the Markdown (`reports/YYYY-Www.pdf`, plus the `.html` it was printed from). Rendering needs Google Chrome, Chromium or Edge (found automatically, or set `SINTR_CHROME=/path/to/chrome`), or Playwright (`pip install playwright && playwright install chromium`). Without any of them the script still writes the HTML, which you can print to PDF from a browser. When you're happy with the flow, wire the schedule.
 
 ## Scheduling the weekly report
 
 Run the weekly flow with whatever scheduler your environment has:
 
-- **Hermes**: a cron job (agent-driven, so it can write the report), scheduled before your session — e.g. Sundays 20:00 local, prompt: "sintr: generate this week's report from the ledger, save it to reports/, and send me a summary for review. Do not send anything to the therapist without my approval."
+- **Hermes**: a cron job (agent-driven, so it can write the report), scheduled before your session — e.g. Sundays 20:00 local, prompt: "sintr: generate this week's report from the ledger, save it to reports/, render the draft PDF and send it to me for review. Do not send anything to the therapist without my approval."
 - **system cron / launchd**: schedule `scripts/week_collect.py` for the digest, and have your agent pick it up on your next interaction.
 
 Keep approval-before-send on (`require_approval: true`) unless you have deliberately decided otherwise.

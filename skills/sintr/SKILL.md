@@ -72,8 +72,8 @@ Append-only notes after each therapy session: topics covered, agreements, homewo
 ### `insights/current.md`
 Distilled, careful observations from the evidence: recurring triggers, situations that reliably help, open questions. Update only when there is enough signal (roughly 3+ dated data points). Label as observations, never diagnoses.
 
-### `reports/YYYY-Www.md`
-Weekly report drafts and their lifecycle: `status: draft` → `reviewed` → `sent`, with recipient and time recorded when sent.
+### `reports/YYYY-Www.md` (+ `YYYY-Www.pdf`)
+Weekly reports and their lifecycle: `status: draft` → `reviewed` → `sent`, with recipient and time recorded when sent. The Markdown is the auditable source the person reviews; the PDF rendered from it is what the therapist receives.
 
 ## The structured entry
 
@@ -152,21 +152,26 @@ From a message like "mood 4/5, slept 6h" (the owner writes in their own language
 
 ## Weekly report workflow
 
+The report is a short, warm document about how the person's week felt, written for their therapist and sent as a **PDF**. Six sections, in this order: how the week went; the person's topics for the session; mood, energy and sleep; the moments that stood out; what repeated; what helped. The reasons for each (DBT diary card, CBT mood check and thought records, pre-session summaries, Cogni) are in `references/report-framework.md`; how to write each one is in `references/weekly-report-guide.md`.
+
 1. Read `config.md` for language, therapist, schedule, and `require_approval`.
 2. Run the collector (it reads the ledger and produces a digest with the week's entries, check-ins, and mechanical aggregates):
-   `python3 scripts/week_collect.py --ledger ~/sintr --week this` (or `last`, or `2026-W42`).
-3. Write the report into `reports/YYYY-Www.md` following `references/weekly-report-guide.md`: plain language, the person's own vocabulary, facts with dates, observations labeled as observations. Never a diagnosis; never clinical advice.
-4. Send the person a short summary of the draft and ask them to review and edit.
-5. **Only after explicit approval**, send it to the therapist through the configured channel — e.g. `hermes send --to whatsapp:<number> --file <report>` — then set `status: sent`, `sent_to`, and `sent_at` in the report front matter. If `require_approval: false`, the person pre-authorized automatic sending on the configured schedule; still record what was sent and to whom.
-6. If the week was quiet, say so — a short "quiet week" report is valid. Never fabricate content.
+   `python3 scripts/week_collect.py --ledger ~/sintr --week this` (or `last`, or `2026-W42`; installed copy: `~/.sintr/bin/week_collect.py`).
+3. Write `reports/YYYY-Www.md` (`status: draft`) following `references/weekly-report-guide.md`: plain, warm language; the person's own topics first; the person's own words in quotes, exactly as recorded; the hard moments and the best one; dated observations, labeled as observations. Never a diagnosis; never clinical advice. Do not type the check-in numbers into tables — the PDF computes them.
+4. Render a preview and give it to the person for review:
+   `python3 scripts/report_pdf.py --ledger ~/sintr --week 2026-W42 --draft` → `reports/2026-W42.draft.pdf`, marked as a draft on its first page. Fix every `warning:` the script prints (a quote that is not in the ledger word for word, an intensity that differs from the entry) — or confirm with the person that the change was theirs. Apply their edits to the Markdown and re-render until they are happy.
+5. When the person approves the content, set `status: reviewed` and render the final PDF (same command without `--draft`; `make report-pdf WEEK=2026-W42` from the repo; installed copy: `~/.sintr/bin/report_pdf.py`). It writes `reports/2026-W42.pdf` (+ `.html`), private to the owner (`600`).
+6. **Only after explicit approval to send**, send **the PDF** to the therapist through the configured channel — e.g. `hermes send --to whatsapp:<number> --file ~/sintr/reports/2026-W42.pdf`. The Markdown is never what gets sent; it stays in the ledger as the auditable source. Then set `status: sent`, `sent_to`, and `sent_at` in the report front matter. If `require_approval: false`, the person pre-authorized automatic sending on the configured schedule; still record what was sent and to whom.
+7. If no PDF can be rendered (exit code 4: no Chrome/Chromium or Playwright), say so and point the person to the `.html` written next to it (open it in a browser, print to PDF). Do not fall back to sending the Markdown unless the person explicitly asks for that.
+8. If the week was quiet, say so — a short "quiet week" report is valid. Never fabricate content.
 
 ## Privacy rules (non-negotiable)
 
 - Ledger content goes nowhere: not into group chats, team channels, public notes, shared memory, or any third-party service.
 - Sharing with any third party — including the therapist — requires the owner's explicit approval for that specific share. When in doubt, ask.
-- Prefer file-based sends so the exact artifact is traceable; record recipient and time in the report itself.
+- Prefer file-based sends so the exact artifact is traceable; record recipient and time in the report itself. For the weekly report that artifact is the PDF the person previewed.
 - If the person asks to delete content, confirm what exactly, delete it from the live files, and never keep secret copies.
-- Screenshots, exports, and PDFs only when the person explicitly asks, and only of what they ask for.
+- Beyond the weekly report PDF, screenshots, exports, and PDFs only when the person explicitly asks, and only of what they ask for.
 
 ## File editing rules
 
@@ -198,7 +203,7 @@ Before replying after any sintr edit:
 - nothing was invented (unknown stays unknown);
 - the person confirmed the entry content;
 - sharing rules were respected (nothing shared without explicit approval);
-- if a report was sent: the file records status, recipient, and time;
+- if a report was sent: it was the PDF the person previewed, and the Markdown records status, recipient, and time;
 - if a pattern was recorded in insights: it cites dated entries and is labeled an observation, not a diagnosis.
 
 ## Good prompts

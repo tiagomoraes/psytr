@@ -10,7 +10,7 @@ An agent pack for AI-first management of a person's psychological history: a por
 2. **CBT-grounded structure.** Entries follow the thought record (Beck): situation → automatic thoughts → emotions → body → behavior, with the optional working stage (evidence, alternative, re-rate). See `skills/sintr/references/entry-framework.md`.
 3. **Fidelity over completeness.** The person's exact words for thoughts and emotions; partial entries are valid and can grow; `unknown` beats invented.
 4. **Local-first privacy.** Sensitive data stays in the ledger with strict permissions. Nothing is shared with anyone — including the therapist — without explicit approval.
-5. **Deterministic where possible.** The collector is a stdlib Python script; the LLM writes prose on top of facts, not facts from thin air.
+5. **Deterministic where possible.** The collector and the PDF generator are stdlib Python scripts; the LLM writes prose on top of facts, not facts from thin air. The report's numbers and chart are computed from check-ins, and every quote in it is checked against the ledger.
 6. **The report is the product surface.** The loop "week → digest → report → session" is what users actually experience. Everything else supports it.
 7. **English base, owner's language in operation.** The pack (instructions, field keys, docs) is written in English so it travels; the conversation, ledger values, and reports adapt to the owner's language and words.
 
@@ -24,7 +24,7 @@ sintr/
   therapy/current.md           # goals, themes, tasks (updated in place)
   therapy/sessions/YYYY-MM.md  # append-only post-session notes
   insights/current.md          # distilled observations (3+ data points rule)
-  reports/YYYY-Www.md          # weekly reports with lifecycle status
+  reports/YYYY-Www.md          # weekly reports with lifecycle status (+ .pdf, the sent artifact)
 ```
 
 Decisions and rationale:
@@ -39,7 +39,7 @@ Decisions and rationale:
 
 1. **Capture** — person tells a situation → short supportive conversation → structured entry → confirmation → append.
 2. **Check-in** — one message → parse what's given → append; never invent missing numbers.
-3. **Weekly report** — collector digest → agent writes report → owner review → explicit approval → send via gateway → record `sent_to`/`sent_at`.
+3. **Weekly report** — collector digest → agent writes the report Markdown → PDF preview → owner review → `reviewed` → final PDF → explicit approval → the PDF is sent via gateway → record `sent_to`/`sent_at`. Structure and sources: `skills/sintr/references/report-framework.md`.
 4. **Therapy** — post-session notes + tasks feed `therapy/current.md`; the report references open tasks.
 
 ## Privacy model
@@ -59,7 +59,6 @@ Decisions and rationale:
 ## Roadmap ideas
 
 - Encrypted-at-rest option (age/gpg wrapper) for the ledger.
-- PDF/print layout for report handoff.
 - Wearable/sleep import into check-ins.
 - Multi-week trend view in `insights/`.
 - Local web view (read-only) for browsing entries.

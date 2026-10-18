@@ -123,7 +123,20 @@ class TestParsing(unittest.TestCase):
     def test_parse_rating(self):
         self.assertEqual(wc.parse_rating("4/5"), 4.0)
         self.assertEqual(wc.parse_rating("4.5/5"), 4.5)
+        self.assertEqual(wc.parse_rating("4,5/5"), 4.5)
+        self.assertEqual(wc.parse_rating("4"), 4.0)
+        self.assertEqual(wc.parse_rating("7/10"), 3.5)  # another scale is brought to 5
+        self.assertIsNone(wc.parse_rating("8"))         # out of range without a scale
         self.assertIsNone(wc.parse_rating(""))
+
+    def test_parse_sleep_h(self):
+        self.assertEqual(wc.parse_sleep_h("7"), 7.0)
+        self.assertEqual(wc.parse_sleep_h("6,5"), 6.5)
+        self.assertEqual(wc.parse_sleep_h("7h30"), 7.5)
+        self.assertEqual(wc.parse_sleep_h("7:30"), 7.5)
+        self.assertEqual(wc.parse_sleep_h("5.5h"), 5.5)
+        self.assertIsNone(wc.parse_sleep_h("30"))
+        self.assertIsNone(wc.parse_sleep_h("muito"))
 
     def test_comments_ignored(self):
         with tempfile.TemporaryDirectory() as tmp:

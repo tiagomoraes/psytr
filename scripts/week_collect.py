@@ -113,20 +113,41 @@ def parse_emotions(raw: str):
     return out, warnings
 
 
+def _number(text: str) -> float:
+    return float(text.replace(",", "."))
+
+
 def parse_rating(raw: str):
-    """`4/5` -> 4.0, `4` -> 4.0, `4.5/5` -> 4.5. None if missing/invalid."""
+    """A 1–5 check-in score. `4/5` -> 4.0, `4` -> 4.0, `4.5/5` and `4,5/5` ->
+    4.5; another scale is brought to 5 (`7/10` -> 3.5). None if missing,
+    invalid, or outside 0–5."""
     raw = (raw or "").strip()
     if not raw or raw.lower() == "unknown":
         return None
-    m = re.match(r"^([0-9]+(?:\.[0-9]+)?)", raw)
+    m = re.match(r"^([0-9]+(?:[.,][0-9]+)?)\s*(?:/\s*([0-9]+))?", raw)
     if not m:
         return None
-    return float(m.group(1))
+    value = _number(m.group(1))
+    scale = int(m.group(2)) if m.group(2) else 5
+    if scale <= 0:
+        return None
+    value = round(value * 5 / scale, 2) if scale != 5 else value
+    return value if 0 <= value <= 5 else None
 
 
 def parse_sleep_h(raw: str):
-    m = re.match(r"^([0-9]+(?:\.[0-9]+)?)", (raw or "").strip())
-    return float(m.group(1)) if m else None
+    """Hours slept: `7`, `7.5`, `7,5`, `7h30`, `7:30` -> 7.0/7.5. None if
+    missing or outside 0–16."""
+    raw = (raw or "").strip().lower()
+    m = re.match(r"^([0-9]{1,2})\s*(?:h|:)\s*([0-9]{2})\b", raw)
+    if m:
+        value = int(m.group(1)) + int(m.group(2)) / 60
+    else:
+        m = re.match(r"^([0-9]+(?:[.,][0-9]+)?)", raw)
+        if not m:
+            return None
+        value = _number(m.group(1))
+    return value if 0 <= value <= 16 else None
 
 
 # --------------------------------------------------------------------------

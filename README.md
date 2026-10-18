@@ -38,7 +38,7 @@ sintr/
   therapy/current.md             # goals, themes, tasks from therapy
   therapy/sessions/YYYY-MM.md    # post-session notes
   insights/current.md            # distilled observations (not diagnoses)
-  reports/YYYY-Www.md            # weekly reports + status
+  reports/YYYY-Www.md            # weekly reports + status (+ the .pdf that is sent)
 ```
 
 ## Repository layout
@@ -50,7 +50,7 @@ sintr/
   installers/               # Agent-specific install helper
   docs/                     # Documentation (install, design)
   references/               # Deep dives: entry framework, report guide, privacy & safety
-  scripts/                  # week_collect.py (report digest) + tests
+  scripts/                  # week_collect.py (report digest), report_pdf.py (report → PDF) + tests
   .claude-plugin/           # Claude Code plugin/marketplace manifest
 ```
 
@@ -75,13 +75,13 @@ Then talk to your agent:
 The report closes the loop between your week and your session:
 
 1. `scripts/week_collect.py` reads the week's entries and check-ins and produces a digest;
-2. the agent writes a human-readable report into `reports/YYYY-Www.md`;
-3. you review and edit;
-4. with your approval it goes out through your gateway (WhatsApp, Telegram, email…) to your therapist.
+2. the agent writes the report into `reports/YYYY-Www.md`: how the week went, mood/energy/sleep, the moments that stood out (in your own words), what repeated, what helped, and what to bring to the session;
+3. `scripts/report_pdf.py` turns it into a PDF set in the sintr design system, with a chart of your mood, anxiety and sleep over the last weeks — you review the preview and edit;
+4. with your approval **the PDF** goes out through your gateway (WhatsApp, Telegram, email…) to your therapist (`make report-pdf WEEK=2026-W42` to render one by hand).
 
 Approval-before-send is the default. Nothing leaves your ledger without you saying so.
 
-See [`docs/example-report.md`](docs/example-report.md) for a full (fictional) example of the output.
+See [`docs/example-report.pdf`](docs/example-report.pdf) for a full (fictional) example of the output, and [`docs/example-report.md`](docs/example-report.md) for the Markdown it was printed from. Why the report is shaped this way (DBT diary card, CBT mood monitoring, pre-session summaries): [`skills/sintr/references/report-framework.md`](skills/sintr/references/report-framework.md).
 
 ## Privacy
 
