@@ -420,7 +420,7 @@ def render_digest(ledger, week_label, start, end, tz, entries, checkins, warning
         lines.append("")
         lines.append(f"- session: {WEEKDAY_EN[session.weekday()]} {session:%Y-%m-%d %H:%M} ({tzname})")
         lines.append(f"- range: {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M} ({tzname}) — the 7 days before the report")
-        lines.append(f"- report: reports/{week_label}.md, front matter `week: {week_label}`, "
+        lines.append(f"- report: reports/{week_label}.md, front matter "
                      f"`session: {session:%Y-%m-%dT%H:%M}`, `range: {start:%Y-%m-%d %H:%M} → {end:%Y-%m-%d %H:%M}`")
     else:
         lines.append(f"# sintr weekly digest — {week_label}")
