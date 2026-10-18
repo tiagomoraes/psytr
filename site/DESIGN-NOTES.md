@@ -249,6 +249,15 @@ The weekly report became a short PDF (`scripts/report_pdf.py`, structure and sou
 - **Languages.** The new strings were translated for every locale and stamped; the removed
   `report.doc_summary*`, `doc_situation*` and `doc_topic*` keys are gone from all files.
 
+## The report an hour before the session
+
+The weekly report is now prepared an hour before each session (`report_lead`) instead of on
+Sunday evening, so it is fresh when the session starts. The Sunday scene became **Monday, 5 pm**
+("The week comes together"), an hour before the Monday 6 pm payoff, and its light moved from
+`evening` to the `golden` palette that was kept for this. The copy opens with "An hour before your
+session". `/tech/` explains the period (the 7 days up to the report, consecutive reports meeting
+exactly), `--schedule`, and the new file names (`reports/YYYY-MM-DD.md`, by session date).
+
 ## Privacy of the site itself
 
 The page loads nothing from third parties: no analytics, no cookies, no font CDN. The fonts,
