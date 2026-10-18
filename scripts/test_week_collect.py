@@ -340,6 +340,9 @@ class TestSessionPeriod(unittest.TestCase):
             (ledger / "config.md").write_text(CONFIG_MD + "- session_day: Monday\n- session_time: 18:00\n", encoding="utf-8")
             digest = wc.build_digest(ledger, None, None, session="2026-10-19")
             self.assertIn("session of 2026-10-19", digest)
+            # the front matter it asks for is the session report's: session and range, no week
+            self.assertIn("front matter `session: 2026-10-19T18:00`, `range: 2026-10-12 17:00 → 2026-10-19 17:00`", digest)
+            self.assertNotIn("`week:", digest)
             # the period runs Mon 12 17:00 -> Mon 19 17:00: Tuesday 13th is in
             self.assertIn("| 2026-10-13 |", digest)
             self.assertIn("| 2026-10-19 | 1/5 |", digest)  # the morning of the session day counts
