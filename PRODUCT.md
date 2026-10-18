@@ -10,7 +10,7 @@ People in regular therapy who already use file-capable AI agents (Hermes, Claude
 
 ## Product Purpose
 
-sintr is an agent-native psychological ledger: a portable skill plus Markdown templates that teach a file-capable AI agent to conduct a supportive capture conversation, structure entries the way CBT thought records do, log check-ins, keep therapy context, and produce a weekly report the person reviews and sends to their therapist. There is no app, dashboard, database, or account. The agent is the interface; the files are the product. Success is measured in weeks captured and reports that reach sessions — not time-on-app.
+sintr is a private mood diary you keep with your AI assistant: an agent-native psychological ledger made of a portable skill plus Markdown templates that teach a file-capable agent to conduct a supportive capture conversation, structure entries the way CBT thought records do, log check-ins, keep therapy context, and produce a weekly report the person reviews and sends to their therapist. There is no app, dashboard, database, or account. The agent is the interface; the files are the product. Success is measured in weeks captured and reports that reach sessions — not time-on-app.
 
 ## Brand Personality
 
