@@ -737,6 +737,62 @@ mark {
 .then__msgs { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; margin-top: 20px; }
 .then__msgs .chat__msg { max-width: 100%; }
 
+/* ───────────── Lean home (revision 3) ───────────── */
+/* A shorter page needs less air between sections to keep its pace; /tech/ keeps its own rhythm. */
+body:not(.page-tech) { --section: clamp(88px, 10vw, 148px); }
+.report__doc .paper { padding: clamp(24px, 3.4vw, 46px) clamp(22px, 3.8vw, 52px) clamp(26px, 3.2vw, 40px); }
+.report__doc .paper h5 { margin-top: 24px; }
+.report__doc .paper__foot { margin-top: 26px; }
+.week > .day:last-child { padding-bottom: var(--section); }
+.idea--lean .idea__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 32px;
+  align-items: end;
+}
+.idea--lean .statement { grid-column: 1 / span 7; }
+.idea__why { grid-column: 8 / span 5; padding-bottom: 8px; }
+.chat__when {
+  align-self: stretch;
+  margin-top: 14px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--ink-3);
+}
+.payoff {
+  margin-top: clamp(64px, 7vw, 112px);
+  max-width: 16em;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(1.875rem, 1.2rem + 2vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+}
+.promises--three {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0 24px;
+  margin-top: clamp(40px, 4vw, 64px);
+}
+.promises--three .promises__row { grid-template-columns: 1fr; gap: 8px; padding: 22px 0 0; border-bottom: 0; }
+.privacy--lean .privacy__note { margin-top: clamp(40px, 4vw, 56px); max-width: 46em; }
+.setup { margin-top: clamp(48px, 5vw, 72px); max-width: 880px; }
+.setup__body { padding-top: 6px; }
+.setup .ask__text {
+  margin-top: 12px;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: var(--wash);
+  border: 1px solid var(--rule);
+}
+.setup .ask__foot { margin-top: 12px; }
+.help__note { margin-top: 18px; font-size: .875rem; color: var(--ink-3); max-width: 36em; }
+
 /* ───────────── Idea ───────────── */
 .idea { position: relative; z-index: 2; padding-block: var(--section); }
 .idea__body {
@@ -1515,6 +1571,9 @@ mark {
   .file--hero { margin-left: 0; }
 
   .idea__body .prose { grid-column: 1 / -1; }
+  .idea--lean .statement, .idea__why { grid-column: 1 / -1; }
+  .promises--three { grid-template-columns: 1fr; }
+  .promises--three .promises__row { padding: 18px 0 18px; border-bottom: 1px solid var(--rule); }
   .week__intro .h-section, .week__intro .prose { grid-column: 1 / -1; }
   .week__intro .prose { margin-top: 20px; }
 
