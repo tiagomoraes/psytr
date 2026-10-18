@@ -66,10 +66,30 @@
       }, function () {
         // Clipboard refused: fall back to showing the text so it can be copied by hand.
         if (trigger.tagName === 'A') window.location.hash = trigger.getAttribute('href');
-        announce('Copy failed. Select the text to copy it.');
+        announce(document.body.getAttribute('data-copy-failed') || 'Copy failed. Select the text to copy it.');
       });
     });
   });
+
+  /* ── Languages: remember an explicit choice; close the menu like a menu ── */
+
+  document.querySelectorAll('a[data-lang]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      try { localStorage.setItem('sintr-lang', link.getAttribute('data-lang')); } catch (e) {}
+    });
+  });
+  var langs = document.querySelector('details.langs');
+  if (langs) {
+    document.addEventListener('click', function (event) {
+      if (langs.open && !langs.contains(event.target)) langs.open = false;
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && langs.open) {
+        langs.open = false;
+        langs.querySelector('summary').focus();
+      }
+    });
+  }
 
   /* ── Deep link to an install tab (#install-generic, #install-hermes…) ── */
 

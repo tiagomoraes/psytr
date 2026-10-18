@@ -1,4 +1,4 @@
-.PHONY: test validate report-pdf example-pdf report-light install-hermes install-claude install-generic package site-deploy preview-site
+.PHONY: test validate report-pdf example-pdf report-light install-hermes install-claude install-generic package site-i18n site-deploy preview-site
 
 LEDGER ?= $(HOME)/sintr
 WEEK ?= this
@@ -46,6 +46,10 @@ install-generic:
 package:
 	mkdir -p dist
 	git archive --format=tar.gz --prefix=sintr/ -o dist/sintr-agent-pack.tar.gz HEAD
+
+# Rebuild the translated home pages (site/<lang>/index.html) from site/index.html + i18n/*.json.
+site-i18n:
+	python3 i18n/build.py
 
 SITE_DEST ?= /home/hermes/artifacts/sintr
 SITE_PORT ?= 8089
