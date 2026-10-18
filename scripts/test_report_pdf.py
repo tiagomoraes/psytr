@@ -70,8 +70,9 @@ class TestReportParsing(unittest.TestCase):
         template = FIXTURE.parents[2] / "templates" / "sintr" / "reports" / "YYYY-Www.md"
         report = rp.parse_report(template.read_text(encoding="utf-8"))
         self.assertEqual([s["key"] for s in report["sections"]], list(rp.SECTION_KEYS))
+        # the template's own moment is a placeholder, never printed as a card
         _, moments = rp.parse_moments(next(s for s in report["sections"] if s["key"] == "moments")["lines"])
-        self.assertEqual(moments[0]["entry_id"], "entry-YYYY-MM-DD-NNN")
+        self.assertEqual(moments, [])
 
     def test_docs_example_mirrors_fixture(self):
         docs = (FIXTURE.parents[2] / "docs" / "example-report.md").read_text(encoding="utf-8")
@@ -160,14 +161,28 @@ class TestChart(unittest.TestCase):
         a2, b2 = rp.sentiment_chart(self.days(), date(2026, 10, 12), "pt")
         self.assertEqual((a1, b1), (a2, b2))
 
-    def test_lines_break_at_gaps(self):
+    def test_gaps_are_dotted_not_invented(self):
         days = [{"date": date(2026, 10, 12 + i), "mood": m, "energy": None, "anxiety": None, "sleep_h": None}
                 for i, m in enumerate([3, 2, None, 2, 4, 4, 3])]
         svg, _ = rp.sentiment_chart(days, date(2026, 10, 12), "pt")
-        mood_paths = re.findall(r'<path class="chart__line chart__line--mood" d="([^"]+)"', svg)
-        self.assertEqual(len(mood_paths), 2)  # Mon–Tue, then Thu–Sun: nothing drawn across Wednesday
-        self.assertEqual(mood_paths[0].count("L"), 1)
-        self.assertEqual(mood_paths[1].count("L"), 3)
+        solid = re.findall(r'<path class="chart__line chart__line--now" d="([^"]+)"', svg)
+        gap = re.findall(r'<path class="chart__line chart__line--now chart__line--gap" d="([^"]+)"', svg)
+        # Mon–Tue and Thu–Sun are solid; Tue–Thu crosses Wednesday dotted, as one curve
+        self.assertEqual([d.count("C") for d in solid], [1, 3])
+        self.assertEqual([d.count("C") for d in gap], [1])
+        # dots only on recorded days: six check-ins, no dot for Wednesday
+        self.assertEqual(svg.count('class="chart__dot"'), 6)
+
+    def test_curve_never_overshoots(self):
+        # monotone smoothing: no control point leaves the range of its two data points
+        pts = [(0, 10.0), (10, 50.0), (20, 50.0), (30, 0.0), (40, 40.0)]
+        t = rp._tangents(pts)
+        for k in range(len(pts) - 1):
+            (x0, y0), (x1, y1) = pts[k], pts[k + 1]
+            dx = (x1 - x0) / 3
+            for y in (y0 + dx * t[k], y1 - dx * t[k + 1]):
+                self.assertGreaterEqual(y, min(y0, y1) - 1e-9)
+                self.assertLessEqual(y, max(y0, y1) + 1e-9)
 
     def test_band_marks_the_week(self):
         svg, _ = rp.sentiment_chart(self.days(), date(2026, 10, 12), "pt")
@@ -234,8 +249,7 @@ class TestBuild(unittest.TestCase):
             self.assertIn(f"<h2>{heading}</h2>", page)
         # mood 3+2+2+4+4+3 over six check-ins, with its n and its extremes; Wednesday has none
         self.assertIn("3,0<span class=\"stat__unit\">de 5</span>", page)
-        self.assertIn("média de 6 dias", page)
-        self.assertIn("mín. 2 (ter, qui) · máx. 4 (sex, sáb)", page)
+        self.assertIn("6 dias · semana anterior: 3,0", page)
         self.assertIn('<td class="days__none">—</td>', page)
         self.assertIn("Nas palavras do dia", page)
         self.assertEqual(page.count('<article class="note">'), 4)
@@ -333,6 +347,69 @@ class TestBuild(unittest.TestCase):
             self.assertNotIn('class="chart"', page)
             self.assertNotIn('class="stats"', page)
             self.assertEqual(warnings, [])
+
+
+class TestWeakModelOutput(unittest.TestCase):
+    """scripts/fixtures/messy-report.md is a report as a weaker model writes
+    it: fenced, H1 sections out of order, a table, emoji, wrong field names,
+    a leftover template moment, too much text. It must still print cleanly,
+    and every slip must be reported."""
+
+    def build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            ledger = copy_fixture(tmp)
+            shutil.copy(FIXTURE.parent / "messy-report.md", ledger / "reports" / "2026-W42.md")
+            return rp.build(ledger, "2026-W42")
+
+    def test_prints_cleanly(self):
+        page, meta, _ = self.build()
+        self.assertEqual(meta["status"], "reviewed")  # "Status: Revisado"
+        body = page.split("<body>", 1)[1]
+        self.assertIn("Esta semana foi bem difícil", body)  # the H1 summary is kept
+        self.assertNotIn("```", body)
+        self.assertNotIn("| dia | humor |", body)
+        self.assertIsNone(re.search("[\U0001F300-\U0001FAFF]", body))
+        self.assertNotIn("{short title", body)
+        self.assertEqual(body.count('<article class="note">'), 1)
+        self.assertIn("85 de 100", body)  # "ansiedade 85, frustração 60"
+        self.assertIn("60 de 100", body)
+        self.assertIn("O que aconteceu", body)  # "Situação:" read as happened
+        self.assertIn('class="cover cover--flow"', body)  # too long for the letter layout
+        order = [body.index(h) for h in ("Resumo da semana", "Para conversar na sessão", "Humor",
+                                         "Momentos marcantes", "Padrões", "O que ajudou", "Outras coisas")]
+        self.assertEqual(order, sorted(order))
+
+    def test_every_slip_is_reported(self):
+        _, _, warnings = self.build()
+        text = "\n".join(warnings)
+        for expected in ("emoji were left out", "a table was left out", "put back in the template's order",
+                         "'porque' states a cause", "'burnout' is a clinical label", "9 topics",
+                         "thoughts are not in quotes", "observation without a date", "page 1 is too long"):
+            self.assertIn(expected, text)
+
+
+class TestSparseData(unittest.TestCase):
+    def day(self, d, **values):
+        return {"date": d, "mood": None, "energy": None, "anxiety": None, "sleep_h": None, **values}
+
+    def test_single_checkin(self):
+        days = [self.day(date(2026, 10, 12 + i)) for i in range(7)]
+        days[3] = self.day(date(2026, 10, 15), mood=4, anxiety=2, sleep_h=7)
+        a, b = rp.sentiment_chart(days, date(2026, 10, 12), "pt")
+        self.assertNotIn("<path", a)  # one point: no line, just its dot and ring
+        self.assertEqual(a.count('class="chart__dot"'), 1)
+        self.assertEqual(a.count('class="chart__ring"'), 1)
+
+    def test_zero_and_out_of_range(self):
+        days = [self.day(date(2026, 10, 12 + i), mood=v, sleep_h=s)
+                for i, (v, s) in enumerate([(0, 3), (5, 12), (3, 7), (None, None), (1, 0), (2, 9), (4, 8)])]
+        a, b = rp.sentiment_chart(days, date(2026, 10, 12), "pt")
+        ys = [float(y) for y in re.findall(r'cy="([\d.]+)"', a)]
+        self.assertTrue(all(0 <= y <= 160 for y in ys))  # 0 extends the scale instead of falling off it
+        self.assertIn(">0</text>", a)
+        # a 12-hour night stretches the sleep scale; every point stays above the axis labels
+        sleep_ys = [float(y) for y in re.findall(r'cy="([\d.]+)"', b)]
+        self.assertTrue(sleep_ys and all(0 <= y <= 58 for y in sleep_ys))
 
 
 class TestCli(unittest.TestCase):

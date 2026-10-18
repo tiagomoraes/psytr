@@ -32,12 +32,14 @@ from __future__ import annotations
 import argparse
 import base64
 import html
+import math
 import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from string import Template
@@ -59,11 +61,23 @@ SECTION_HINTS = {
     "helped": ("ajudou", "helped"),
 }
 COVER_KEYS = ("week", "session")  # leading sections set on page 1, the letter
+COVER_BUDGET_MM = 156  # what page 1 holds for them, in cover_mm() units
 MOMENT_KEYS = ("when", "tags", "happened", "context", "thoughts", "felt", "body", "did",
                "evidence_for", "evidence_against", "alternative", "felt_after")
 
 H2_RE = re.compile(r"^##\s+(.*?)\s*(?:<!--\s*([a-z_]+)\s*-->)?\s*$")
-H3_RE = re.compile(r"^###\s+(.*?)\s*(?:<!--\s*(entry-[\w-]+)\s*-->)?\s*$")
+H1_RE = re.compile(r"^#\s+(.*?)\s*(?:<!--\s*([a-z_]+)\s*-->)?\s*$")
+H3_RE = re.compile(r"^#{3,4}\s+(.*?)\s*(?:<!--\s*(entry-[\w-]+)\s*-->)?\s*$")
+ANY_HEADING_RE = re.compile(r"^#{1,6}\s+(.*?)\s*$")
+MOMENT_FIELD_RE = re.compile(r"^\s*[-*]\s*\**\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ _-]{0,30}?)\s*\**\s*:\s*(.*)$")
+FENCE_RE = re.compile(r"^\s*(```|~~~)")
+TABLE_RE = re.compile(r"^\s*\|")
+RULE_RE = re.compile(r"^\s*(\*\s*){3,}$|^\s*(_\s*){3,}$")
+PLACEHOLDER_RE = re.compile(r"^\s*[-*]?\s*\{[^}]*\}\s*$")
+QUOTE_PREFIX_RE = re.compile(r"^\s*>\s?")
+IMAGE_RE = re.compile(r"!\[[^\]]*\]\([^)]*\)")
+LINK_RE = re.compile(r"\[([^\]]+)\]\([^)]*\)")
+EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF☀-➿️‍⭐⭕]")
 LIST_RE = re.compile(r"^\s*(?:[-*]|\d+[.)])\s+(.*)$")
 QUOTE_RE = re.compile(r"“([^”]+)”|\"([^\"]+)\"")
 BELIEF_RE = re.compile(r"\((?:believability|acredito|credibilidade)\s*:?\s*(\d{1,3})\s*%?\)", re.I)
@@ -71,6 +85,24 @@ DATE_LEAD_RE = re.compile(r"^(.{1,40}?\d.{0,30}?)\s+[—–-]\s+(.+)$")
 SUGGESTED_RE = re.compile(r"\s*\((?:sugest[aã]o do sintr|suggested by sintr)\)\s*\.?\s*$", re.I)
 BOOKKEEPING_RE = re.compile(r"^(?:completed|corrected|correction|completad[oa]|corrigid[oa]|correção)\b", re.I)
 TRUE_WORDS = ("true", "yes", "sim", "1")
+STATUS_ALIASES = {"rascunho": "draft", "revisado": "reviewed", "revisada": "reviewed", "approved": "reviewed",
+                  "aprovado": "reviewed", "aprovada": "reviewed", "enviado": "sent", "enviada": "sent"}
+# Moment field names a model may use instead of the template's.
+FIELD_ALIASES = {
+    "situation": "happened", "what_happened": "happened", "event": "happened", "situacao": "happened",
+    "o_que_aconteceu": "happened", "aconteceu": "happened",
+    "thought": "thoughts", "automatic_thoughts": "thoughts", "pensamento": "thoughts", "pensamentos": "thoughts",
+    "o_que_passou_pela_cabeca": "thoughts",
+    "emotions": "felt", "emotion": "felt", "feelings": "felt", "feeling": "felt", "emocoes": "felt",
+    "emocao": "felt", "sentiu": "felt", "o_que_sentiu": "felt", "sentimentos": "felt",
+    "body_sensations": "body", "sensations": "body", "corpo": "body", "no_corpo": "body",
+    "behavior": "did", "behaviour": "did", "action": "did", "response": "did", "fez": "did",
+    "o_que_fez": "did", "comportamento": "did",
+    "date": "when", "time": "when", "datetime": "when", "quando": "when", "data": "when",
+    "tag": "tags", "area": "tags", "contexto": "context",
+    "alternative_thought": "alternative", "balanced_thought": "alternative", "pensamento_alternativo": "alternative",
+    "emotions_after": "felt_after", "rerate": "felt_after", "re_rate": "felt_after", "depois": "felt_after",
+}
 
 STRINGS = {
     "pt": {
@@ -86,36 +118,35 @@ STRINGS = {
         "coverage": "{n} de 7 dias",
         "coverage_missing": "sem check-in: {days}",
         "draft": "Rascunho — ainda não revisado. Não enviar.",
+        "sec_week": "Como foi a semana",
+        "sec_session": "Para conversar na sessão",
         "sec_mood": "Humor, energia e sono",
+        "sec_moments": "Momentos que marcaram",
+        "sec_patterns": "O que se repetiu",
+        "sec_helped": "O que ajudou",
         "avg_mood": "Humor médio",
         "avg_energy": "Energia média",
         "avg_anxiety": "Ansiedade média",
         "avg_sleep": "Sono médio",
         "of5": "de 5",
         "per_night": "por noite",
-        "n_days": "média de {n} dias",
+        "n_days": "{n} dias",
         "n_day": "1 dia",
-        "low_high": "mín. {lo} ({lo_days}) · máx. {hi} ({hi_days})",
-        "prev": "semana anterior: {v} ({n} dias)",
-        "prev_none": "sem dados na semana anterior",
+        "prev": "semana anterior: {v}",
+        "prev_none": "sem semana anterior",
         "legend_mood": "Humor",
         "legend_anxiety": "Ansiedade",
-        "legend_sleep": "Horas de sono",
         "this_week": "esta semana",
         "chart_a": "Humor e ansiedade, de 1 (baixo) a 5 (alto)",
         "chart_b": "Sono, em horas por noite",
-        "chart_note": "Últimas {n} semanas, esta em destaque. Dias sem check-in ficam em branco: nada é estimado ou ligado por cima.",
+        "chart_note": "Últimas {n} semanas, esta em destaque; os pontos são os check-ins desta semana. O trecho pontilhado atravessa dias sem check-in: nenhum valor é estimado.",
         "chart_alt": "Humor e ansiedade de {start} a {end}, de 1 a 5, e horas de sono por noite.",
         "grid_caption": "A semana dia a dia",
         "row_mood": "Humor",
         "row_energy": "Energia",
         "row_anxiety": "Ansiedade",
         "row_sleep": "Sono",
-        "row_quality": "Qualidade do sono",
-        "row_peak": "Emoção mais forte",
         "row_entries": "Momentos",
-        "quality": {"poor": "ruim", "bad": "ruim", "ruim": "ruim", "ok": "ok", "fair": "ok", "regular": "ok",
-                    "good": "boa", "boa": "boa", "great": "ótima", "ótima": "ótima"},
         "day_notes": "Nas palavras do dia",
         "no_checkins": "Nenhum check-in nesta semana.",
         "m_happened": "O que aconteceu",
@@ -162,35 +193,35 @@ STRINGS = {
         "coverage": "{n} of 7 days",
         "coverage_missing": "none on {days}",
         "draft": "Draft — not reviewed yet. Do not send.",
+        "sec_week": "How the week went",
+        "sec_session": "For the session",
         "sec_mood": "Mood, energy and sleep",
+        "sec_moments": "Moments that stood out",
+        "sec_patterns": "What repeated",
+        "sec_helped": "What helped",
         "avg_mood": "Average mood",
         "avg_energy": "Average energy",
         "avg_anxiety": "Average anxiety",
         "avg_sleep": "Average sleep",
         "of5": "of 5",
         "per_night": "a night",
-        "n_days": "average of {n} days",
+        "n_days": "{n} days",
         "n_day": "1 day",
-        "low_high": "low {lo} ({lo_days}) · high {hi} ({hi_days})",
-        "prev": "week before: {v} ({n} days)",
-        "prev_none": "no data the week before",
+        "prev": "week before: {v}",
+        "prev_none": "no week before",
         "legend_mood": "Mood",
         "legend_anxiety": "Anxiety",
-        "legend_sleep": "Hours of sleep",
         "this_week": "this week",
         "chart_a": "Mood and anxiety, from 1 (low) to 5 (high)",
         "chart_b": "Sleep, in hours a night",
-        "chart_note": "Last {n} weeks, this one highlighted. Days without a check-in stay blank: nothing is estimated or drawn across.",
+        "chart_note": "Last {n} weeks, this one highlighted; dots are this week's check-ins. A dotted stretch crosses days without a check-in: no value is estimated.",
         "chart_alt": "Mood and anxiety from {start} to {end}, 1 to 5, and hours of sleep per night.",
         "grid_caption": "The week day by day",
         "row_mood": "Mood",
         "row_energy": "Energy",
         "row_anxiety": "Anxiety",
         "row_sleep": "Sleep",
-        "row_quality": "Sleep quality",
-        "row_peak": "Strongest emotion",
         "row_entries": "Moments",
-        "quality": {"poor": "poor", "bad": "poor", "ok": "ok", "fair": "ok", "good": "good", "great": "great"},
         "day_notes": "In the day's own words",
         "no_checkins": "No check-ins this week.",
         "m_happened": "What happened",
@@ -237,8 +268,7 @@ WEEKDAY_NAMES = {
 # pair (lightness band, chroma floor, CVD separation, contrast >= 3:1).
 MOOD_COLOR = "#3a6ea5"
 ANXIETY_COLOR = "#c4744a"
-SLEEP_COLOR = "#7d917a"       # leaf-shadow sage, deepened
-SLEEP_COLOR_PAST = "#d3dccf"
+SLEEP_COLOR = "#5c616b"       # graphite: sleep has its own panel and title, no categorical hue needed
 LIGHT_STOPS = ("#d4e6f4", "#f1e8df", "#f8dcc8")  # morning window light
 LEAF = "#a9b9a3"
 
@@ -335,17 +365,29 @@ def next_session(week_end: date, cfg: dict, lang: str):
 # the report Markdown
 # --------------------------------------------------------------------------
 
+def unwrap_fence(text: str) -> str:
+    """A report pasted inside a ```markdown fence: drop the fence."""
+    stripped = text.lstrip("﻿ \n")
+    m = re.match(r"^(```|~~~)[\w-]*\n(.*?)(?:\n\1\s*)?$", stripped, flags=re.S)
+    return m.group(2) if m else text
+
+
 def parse_front_matter(text: str):
     meta, body = {}, text
-    m = re.match(r"^---\s*\n(.*?)\n---\s*\n?(.*)$", text, flags=re.S)
+    m = re.match(r"^﻿?\s*---\s*\n(.*?)\n---\s*\n?(.*)$", text, flags=re.S)
     if m:
         for line in m.group(1).splitlines():
             line = re.sub(r"\s+#.*$", "", line)
-            km = re.match(r"^([a-z_]+)\s*:\s*(.*)$", line.strip())
+            km = re.match(r"^([A-Za-z_]+)\s*:\s*(.*)$", line.strip())
             if km:
-                meta[km.group(1)] = km.group(2).strip()
+                meta[km.group(1).lower()] = km.group(2).strip().strip("\"'")
         body = m.group(2)
     return meta, body
+
+
+def report_status(meta: dict) -> str:
+    raw = (meta.get("status") or "draft").strip().lower()
+    return STATUS_ALIASES.get(raw, raw)
 
 
 def section_key(heading: str, marker: str | None):
@@ -367,34 +409,101 @@ def drop_comments(body: str) -> str:
     return wc.COMMENT_RE.sub(keep_markers, body)
 
 
-def parse_report(text: str) -> dict:
-    """Split a report into front matter, title and ordered H2 sections. The
-    disclaimer line under the last `---` is dropped: the PDF prints its own."""
-    meta, body = parse_front_matter(text)
-    body = drop_comments(body)
-    title, sections, current = "", [], None
+def clean_body(body: str, notes: list) -> str:
+    """Bring a report written by any model back to the Markdown subset the
+    PDF sets: tables, code fences, images, links, block quotes, inline code,
+    emoji and template placeholders are taken out (and said so), never
+    printed half-rendered."""
+    out, seen = [], set()
+    def note(kind, text):
+        if kind not in seen:
+            seen.add(kind)
+            notes.append(text)
     for line in body.splitlines():
-        if line.startswith("# ") and not title and current is None:
-            title = line[2:].strip()
+        if FENCE_RE.match(line):
+            note("fence", "code fences were ignored")
             continue
+        if TABLE_RE.match(line):
+            note("table", "a table was left out: the PDF computes the check-in numbers and the grid itself")
+            continue
+        if PLACEHOLDER_RE.match(line):
+            note("placeholder", "a template placeholder ({…}) was left out")
+            continue
+        if RULE_RE.match(line):
+            continue
+        line = QUOTE_PREFIX_RE.sub("", line)
+        if IMAGE_RE.search(line):
+            note("image", "images were left out")
+            line = IMAGE_RE.sub("", line)
+        line = LINK_RE.sub(r"\1", line)
+        line = line.replace("`", "")
+        if EMOJI_RE.search(line):
+            note("emoji", "emoji were left out (the report's fonts have none)")
+            line = EMOJI_RE.sub("", line).rstrip()
+        out.append(line)
+    return "\n".join(out)
+
+
+def parse_report(text: str) -> dict:
+    """Split a report into front matter, title and its sections, in the
+    template's order. The disclaimer line under the last `---` is dropped:
+    the PDF prints its own. `notes` lists what was normalized."""
+    notes = []
+    meta, body = parse_front_matter(unwrap_fence(text))
+    body = clean_body(drop_comments(body), notes)
+    lines = body.splitlines()
+    # Sections are H2; an H1 after the title is read as a section too.
+    title, sections, current, preamble = "", [], None, []
+    for line in lines:
         m = H2_RE.match(line)
+        if not m:
+            h1 = H1_RE.match(line)
+            if h1 and (title or section_key(h1.group(1), h1.group(2))):
+                m = h1
+            elif h1 and current is None:
+                title = h1.group(1).strip()
+                continue
         if m:
             current = {"heading": m.group(1).strip(), "key": section_key(m.group(1), m.group(2)), "lines": []}
             sections.append(current)
             continue
-        if current is not None:
-            current["lines"].append(line)
+        (current["lines"] if current is not None else preamble).append(line)
+    if any(l.strip() for l in preamble):
+        # text before the first heading is never dropped: it opens the summary
+        week = next((s for s in sections if s["key"] == "week"), None)
+        if week is None:
+            sections.insert(0, {"heading": "", "key": "week", "lines": preamble})
+        else:
+            week["lines"] = preamble + [""] + week["lines"]
+        notes.append("text before the first section heading was kept as part of the summary")
     if sections:
         last = sections[-1]["lines"]
         for i, line in enumerate(last):
             if line.strip() == "---":
                 del last[i:]
                 break
-    return {"meta": meta, "title": title, "sections": sections}
+    # One section per key, in the template's order; anything else after them.
+    known, others, order = {}, [], [s["key"] for s in sections if s["key"]]
+    for sec in sections:
+        if sec["key"] in known:
+            known[sec["key"]]["lines"] += [""] + sec["lines"]
+            notes.append(f"two sections were read as {sec['key']!r} and merged")
+        elif sec["key"]:
+            known[sec["key"]] = sec
+        else:
+            others.append(sec)
+    if order != sorted(order, key=SECTION_KEYS.index):
+        notes.append("sections were put back in the template's order")
+    sections = [known[k] for k in SECTION_KEYS if k in known] + others
+    for sec in sections:
+        if not sec["heading"] and sec["key"]:
+            sec["heading"] = None  # filled with the default heading in the owner's language
+    return {"meta": meta, "title": title, "sections": sections, "notes": notes}
 
 
 def blocks(lines):
-    """Group Markdown lines into ('p', text) and ('ul', [items]) blocks."""
+    """Group Markdown lines into ('p', text) and ('ul', [items]) blocks. A
+    stray heading becomes a bold line."""
     out, para, items = [], [], None
     def flush_para():
         if para:
@@ -404,6 +513,12 @@ def blocks(lines):
         if not line.strip():
             flush_para()
             items = None
+            continue
+        hm = ANY_HEADING_RE.match(line)
+        if hm:
+            flush_para()
+            items = None
+            out.append(("p", f"**{hm.group(1).strip()}**"))
             continue
         m = LIST_RE.match(line)
         if m:
@@ -421,22 +536,31 @@ def blocks(lines):
     return out
 
 
+def field_key(raw: str) -> str:
+    key = unicodedata.normalize("NFKD", raw.strip().lower())
+    key = "".join(c for c in key if not unicodedata.combining(c))
+    key = re.sub(r"[\s-]+", "_", key)
+    return FIELD_ALIASES.get(key, key)
+
+
 def parse_moments(lines):
-    """`### Title <!-- entry-id -->` blocks with `- key: value` fields."""
+    """`### Title <!-- entry-id -->` blocks with `- key: value` fields. Keys
+    are read leniently (case, accents, bold, common synonyms)."""
     intro, moments, current = [], [], None
     for line in lines:
         m = H3_RE.match(line)
         if m:
-            current = {"title": m.group(1).strip(), "entry_id": m.group(2), "fields": {}, "rest": []}
+            current = {"title": m.group(1).strip().strip("*"), "entry_id": m.group(2), "fields": {}, "rest": []}
             moments.append(current)
             continue
         if current is None:
             intro.append(line)
             continue
-        fm = wc.FIELD_RE.match(line)
-        if fm and fm.group(1) in MOMENT_KEYS:
-            current["fields"][fm.group(1)] = fm.group(2).strip()
-            current["_last"] = fm.group(1)
+        fm = MOMENT_FIELD_RE.match(line)
+        key = field_key(fm.group(1)) if fm else None
+        if key in MOMENT_KEYS:
+            current["fields"][key] = fm.group(2).strip().strip("*").strip()
+            current["_last"] = key
         elif line.strip() and current.get("_last") and line.startswith((" ", "\t")):
             key = current["_last"]
             current["fields"][key] = current["fields"][key] + " " + line.strip()
@@ -444,6 +568,10 @@ def parse_moments(lines):
             current["rest"].append(line)
     for mo in moments:
         mo.pop("_last", None)
+        mo["fields"] = {k: v for k, v in mo["fields"].items() if v}
+    # a heading with nothing under it, or the template's own, is not a moment
+    moments = [mo for mo in moments
+               if (mo["fields"] or mo["rest"]) and "{" not in mo["title"] and "YYYY" not in (mo["entry_id"] or "")]
     return intro, moments
 
 
@@ -509,9 +637,9 @@ def verbatim_warnings(report: dict, entries_by_id: dict, corpus: str, private: s
                 if not needle or needle in corpus:
                     continue
                 if needle in private:
-                    warnings.append(f"“{q}” ({sec['heading']}): comes from an entry marked share: no — remove it")
+                    warnings.append(f"“{q}” ({sec['heading'] or sec['key']}): comes from an entry marked share: no — remove it")
                 else:
-                    warnings.append(f"“{q}” ({sec['heading']}): not found in the ledger — quotes must be the person's exact words")
+                    warnings.append(f"“{q}” ({sec['heading'] or sec['key']}): not found in the ledger — quotes must be the person's exact words")
         if sec["key"] != "moments":
             continue
         _, moments = parse_moments(sec["lines"])
@@ -527,13 +655,51 @@ def verbatim_warnings(report: dict, entries_by_id: dict, corpus: str, private: s
                 warnings.append(f"moment {mo['title']!r}: {eid} is marked share: no — remove it")
             for field, source in (("felt", entry["emotions"]),
                                   ("felt_after", wc.parse_emotions(entry["extra"].get("emotions_after", ""))[0])):
-                said, _ = wc.parse_emotions(mo["fields"].get(field, ""))
+                said, _ = wc.parse_emotions(norm_emotions(mo["fields"].get(field, "")))
                 recorded = {name.casefold(): value for name, value in source}
                 for name, value in said:
                     if name.casefold() not in recorded:
                         warnings.append(f"moment {mo['title']!r}: emotion {name!r} is not in {eid}")
                     elif recorded[name.casefold()] != value:
                         warnings.append(f"moment {mo['title']!r}: {name} {value} but {eid} records {recorded[name.casefold()]}")
+    return warnings
+
+
+CAUSAL_RE = re.compile(r"\b(porque|por causa|causou|causad[oa]|devido a|levou a|fez com que|because|caused|due to|led to)\b", re.I)
+LABEL_RE = re.compile(r"\b(catastrofiz\w*|ruminação|evitação|transtorno\w*|depressão|depressiv\w*|burnout|tdah|bipolar|"
+                      r"borderline|trauma\w*|catastrophiz\w*|rumination|avoidance|disorder|depressive|adhd)\b", re.I)
+
+
+def content_warnings(report: dict):
+    """What a weaker model tends to get wrong and the verbatim check cannot
+    see: length, unquoted thoughts, undated observations, causes, labels."""
+    warnings = []
+    for sec in report["sections"]:
+        key, lines = sec["key"], sec["lines"]
+        text = " ".join(l.strip() for l in lines)
+        unquoted = QUOTE_RE.sub("", text)
+        if key in ("week", "mood", "patterns", "helped", "session"):
+            for m in sorted({m.group(0).lower() for m in CAUSAL_RE.finditer(unquoted)}):
+                warnings.append(f"{sec['heading'] or sec['key']}: {m!r} states a cause — describe what happened together instead")
+            for m in sorted({m.group(0).lower() for m in LABEL_RE.finditer(unquoted)}):
+                warnings.append(f"{sec['heading'] or sec['key']}: {m!r} is a clinical label — use the person's words")
+        if key == "week" and len(text.split()) > 140:
+            warnings.append(f"{sec['heading'] or sec['key']}: {len(text.split())} words; the guide asks for 3–6 lines")
+        items = [i for kind, v in blocks(lines) if kind == "ul" for i in v]
+        if key == "session" and len(items) > 6:
+            warnings.append(f"{sec['heading'] or sec['key']}: {len(items)} topics; keep 2–4")
+        if key == "patterns":
+            for item in items:
+                if not re.search(r"\d", QUOTE_RE.sub("", item)):
+                    warnings.append(f"{sec['heading'] or sec['key']}: observation without a date: {item[:60]!r}")
+        if key == "moments":
+            _, moments = parse_moments(lines)
+            if len(moments) > 6:
+                warnings.append(f"{sec['heading'] or sec['key']}: {len(moments)} moments; keep 3–5")
+            for mo in moments:
+                thoughts = mo["fields"].get("thoughts", "")
+                if thoughts and not quotes_in(thoughts):
+                    warnings.append(f"moment {mo['title']!r}: thoughts are not in quotes — copy them verbatim from the entry")
     return warnings
 
 
@@ -549,8 +715,7 @@ def daily_series(checkins, tz, first: date, last: date):
     days, d = [], first
     while d <= last:
         c = by_day.get(d, {})
-        days.append({"date": d, **{k: c.get(k) for k in ("mood", "energy", "anxiety", "sleep_h")},
-                     "sleep_quality": (c.get("sleep_quality") or "").strip() or None})
+        days.append({"date": d, **{k: c.get(k) for k in ("mood", "energy", "anxiety", "sleep_h")}})
         d += timedelta(days=1)
     return days
 
@@ -574,46 +739,83 @@ def _f(v: float) -> str:
     return "0" if text == "-0" else text
 
 
-def _polylines(points, in_week):
-    """Split (x, y|None) points into runs of consecutive days, each run cut
-    into the part before the highlighted week and the part inside it."""
-    past, now = [], []
-    for i in range(len(points) - 1):
-        (x0, y0), (x1, y1) = points[i], points[i + 1]
-        if y0 is None or y1 is None:
-            continue
-        (now if in_week[i] else past).append(((x0, y0), (x1, y1)))
-    def join(segments):
-        paths, run = [], []
-        for a, b in segments:
-            if run and run[-1] == a:
-                run.append(b)
-            else:
-                if run:
-                    paths.append(run)
-                run = [a, b]
-        if run:
-            paths.append(run)
-        return ["M" + " L".join(f"{_f(x)} {_f(y)}" for x, y in run) for run in paths]
-    return join(past), join(now)
+def _tangents(points):
+    """Tangents for monotone cubic interpolation (Fritsch–Carlson, the same
+    rule as d3's curveMonotoneX): the curve is smooth but never overshoots a
+    recorded value, so it shows no peak or dip that is not in the data."""
+    n = len(points)
+    if n < 2:
+        return [0.0] * n
+    def sign(v):
+        return (v > 0) - (v < 0)
+    slopes = [(points[i + 1][1] - points[i][1]) / (points[i + 1][0] - points[i][0]) for i in range(n - 1)]
+    t = [0.0] * n
+    for i in range(1, n - 1):
+        h0, h1 = points[i][0] - points[i - 1][0], points[i + 1][0] - points[i][0]
+        s0, s1 = slopes[i - 1], slopes[i]
+        p = (s0 * h1 + s1 * h0) / (h0 + h1)
+        t[i] = (sign(s0) + sign(s1)) * min(abs(s0), abs(s1), 0.5 * abs(p))
+    if n == 2:
+        t[0] = t[1] = slopes[0]
+    else:
+        t[0] = (3 * slopes[0] - t[1]) / 2
+        t[-1] = (3 * slopes[-1] - t[-2]) / 2
+    return t
+
+
+def _series(values, xs, y_of, in_week):
+    """One continuous, smoothed series. Returns ({style: [path d]}, points)
+    where style is past/now, plus `-gap` for a stretch that crosses days
+    without a check-in (drawn dashed: the curve continues, the gap shows)."""
+    pts = [(i, xs[i], y_of(v)) for i, v in enumerate(values) if v is not None]
+    tangents = _tangents([(x, y) for _, x, y in pts])
+    paths, style, d = {}, None, ""
+    for k in range(len(pts) - 1):
+        (i0, x0, y0), (i1, x1, y1) = pts[k], pts[k + 1]
+        seg_style = ("now" if in_week[i0] else "past") + ("-gap" if i1 - i0 > 1 else "")
+        dx = (x1 - x0) / 3
+        curve = (f"C{_f(x0 + dx)} {_f(y0 + dx * tangents[k])} {_f(x1 - dx)} {_f(y1 - dx * tangents[k + 1])} "
+                 f"{_f(x1)} {_f(y1)}")
+        if seg_style != style:
+            if d:
+                paths.setdefault(style, []).append(d)
+            style, d = seg_style, f"M{_f(x0)} {_f(y0)} "
+        d += curve + " "
+    if d:
+        paths.setdefault(style, []).append(d.strip())
+    return paths, pts
+
+
+def _draw_series(out, values, xs, y_of, in_week, color):
+    paths, pts = _series(values, xs, y_of, in_week)
+    for style in ("past", "past-gap", "now-gap", "now"):
+        for d in paths.get(style, []):
+            cls = " ".join(["chart__line"] + [f"chart__line--{part}" for part in style.split("-")])
+            out.append(f'<path class="{cls}" d="{d}" stroke="{color}"/>')
+    if len(pts) == 1 and not in_week[pts[0][0]]:
+        _, x, y = pts[0]
+        out.append(f'<circle class="chart__dot chart__dot--past" cx="{_f(x)}" cy="{_f(y)}" r="2.4" fill="{color}"/>')
+    return [(i, x, y) for i, x, y in pts if in_week[i]]
 
 
 def sentiment_chart(days, week_start: date, lang: str):
     """Two small multiples on one day axis (never a dual axis): mood and
-    anxiety on their shared 1–5 scale, then sleep hours as bars."""
+    anxiety on their shared 1–5 scale, then hours of sleep. Continuous
+    smoothed lines; this week lit by the window light and dotted per day."""
     s = STRINGS[lang]
     n = len(days)
-    W, left, right = 660.0, 30.0, 6.0
+    W, left, right = 660.0, 30.0, 8.0
     slot = (W - left - right) / n
     xs = [left + slot * (i + 0.5) for i in range(n)]
     in_week = [d["date"] >= week_start for d in days]
     w0 = in_week.index(True) if True in in_week else n
     band_x, band_w = left + slot * w0, slot * (n - w0)
 
-    # Panel A: mood and anxiety, 1-5.
-    top, h = 22.0, 120.0
+    # Panel A: mood and anxiety, 1-5 (0-5 if anyone recorded a 0).
+    low = 0 if any((d[k] is not None and d[k] < 1) for d in days for k in ("mood", "anxiety")) else 1
+    top, h = 22.0, 118.0
     def ya(v):
-        return top + (5 - v) / 4 * h
+        return top + (5 - v) / (5 - low) * h
     alt = s["chart_alt"].format(start=fmt_day_month(days[0]["date"], lang), end=fmt_day_month(days[-1]["date"], lang))
     a = [f'<svg class="chart__svg" viewBox="0 0 {_f(W)} {_f(top + h + 12)}" role="img" aria-label="{html.escape(alt)}">']
     a.append('<defs><linearGradient id="wk-light" x1="0" y1="0" x2="1" y2="1">'
@@ -622,68 +824,47 @@ def sentiment_chart(days, week_start: date, lang: str):
     if w0 < n:
         a.append(f'<rect class="chart__band" x="{_f(band_x)}" y="0" width="{_f(band_w)}" height="{_f(top + h + 12)}" rx="8" fill="url(#wk-light)"/>')
         a.append(f'<text class="chart__band-label" x="{_f(band_x + 8)}" y="13">{html.escape(s["this_week"])}</text>')
-    for v in (1, 2, 3, 4, 5):
+    for v in (low, 3, 5) if low == 0 else (1, 3, 5):
         y = ya(v)
         a.append(f'<line class="chart__grid" x1="{_f(left)}" x2="{_f(W - right)}" y1="{_f(y)}" y2="{_f(y)}"/>')
-        if v in (1, 3, 5):
-            a.append(f'<text class="chart__tick" x="{_f(left - 10)}" y="{_f(y + 3.5)}" text-anchor="end">{v}</text>')
-    for key, color in (("mood", MOOD_COLOR), ("anxiety", ANXIETY_COLOR)):
-        pts = [(xs[i], ya(d[key]) if d[key] is not None else None) for i, d in enumerate(days)]
-        past, now = _polylines(pts, in_week)
-        for path in past:
-            a.append(f'<path class="chart__line chart__line--past chart__line--{key}" d="{path}" stroke="{color}"/>')
-        for path in now:
-            a.append(f'<path class="chart__line chart__line--{key}" d="{path}" stroke="{color}"/>')
-        for i, (x, y) in enumerate(pts):
-            if y is None:
-                continue
-            lonely = (i == 0 or pts[i - 1][1] is None) and (i == n - 1 or pts[i + 1][1] is None)
-            if not in_week[i]:
-                if lonely:
-                    a.append(f'<circle class="chart__dot--past" cx="{_f(x)}" cy="{_f(y)}" r="2.5" fill="{color}"/>')
-                continue
-            if key == "mood":
-                a.append(f'<circle class="chart__dot" cx="{_f(x)}" cy="{_f(y)}" r="4" fill="{color}"/>')
-            elif days[i]["mood"] is not None and days[i]["mood"] == days[i]["anxiety"]:
-                # same value as mood: a ring around the mood dot, both stay visible
-                a.append(f'<circle class="chart__ring" cx="{_f(x)}" cy="{_f(y)}" r="7" stroke="{color}"/>')
-            else:
-                a.append(f'<circle class="chart__hollow" cx="{_f(x)}" cy="{_f(y)}" r="3.6" stroke="{color}"/>')
+        a.append(f'<text class="chart__tick" x="{_f(left - 10)}" y="{_f(y + 3.5)}" text-anchor="end">{v}</text>')
+    marks = {}
+    for key, color in (("anxiety", ANXIETY_COLOR), ("mood", MOOD_COLOR)):
+        marks[key] = _draw_series(a, [d[key] for d in days], xs, ya, in_week, color)
+    # This week's days: anxiety as rings, mood as dots drawn on top, so a day
+    # where both are equal reads as a dot inside a ring.
+    for _, x, y in marks["anxiety"]:
+        a.append(f'<circle class="chart__ring" cx="{_f(x)}" cy="{_f(y)}" r="4.4" stroke="{ANXIETY_COLOR}"/>')
+    for _, x, y in marks["mood"]:
+        a.append(f'<circle class="chart__dot" cx="{_f(x)}" cy="{_f(y)}" r="2.9" fill="{MOOD_COLOR}"/>')
     a.append("</svg>")
 
-    # Panel B: sleep hours, bars from one baseline.
-    peak = max([d["sleep_h"] for d in days if d["sleep_h"] is not None] + [9.0])
-    hi = float(int(peak) + (0 if float(peak).is_integer() else 1))
-    btop, bh, axis = 6.0, 54.0, 30.0
+    # Panel B: hours of sleep, its own scale.
+    sleep = [d["sleep_h"] for d in days]
+    recorded = [v for v in sleep if v is not None]
+    lo = min([4.0] + [float(int(v)) for v in recorded])
+    hi = max([9.0] + [float(int(v) + (0 if float(v).is_integer() else 1)) for v in recorded])
+    btop, bh, axis = 8.0, 50.0, 30.0
     base = btop + bh
     def yb(v):
-        return base - v / hi * bh
+        return base - (v - lo) / (hi - lo) * bh
     b = [f'<svg class="chart__svg" viewBox="0 0 {_f(W)} {_f(base + axis)}" aria-hidden="true">']
     if w0 < n:
         b.append(f'<rect class="chart__band" x="{_f(band_x)}" y="0" width="{_f(band_w)}" height="{_f(base + 4)}" rx="8" fill="url(#wk-light)"/>')
-    for v in (4, 8):
-        if v <= hi:
+    for v in (4, 6, 8):
+        if lo <= v <= hi:
             b.append(f'<line class="chart__grid" x1="{_f(left)}" x2="{_f(W - right)}" y1="{_f(yb(v))}" y2="{_f(yb(v))}"/>')
             b.append(f'<text class="chart__tick" x="{_f(left - 10)}" y="{_f(yb(v) + 3.5)}" text-anchor="end">{v}h</text>')
-    b.append(f'<line class="chart__base" x1="{_f(left)}" x2="{_f(W - right)}" y1="{_f(base)}" y2="{_f(base)}"/>')
-    bw = min(14.0, slot * 0.5)
-    for i, d in enumerate(days):
-        v = d["sleep_h"]
-        if v is None or v <= 0:
-            continue
-        x0, y0 = xs[i] - bw / 2, yb(v)
-        r = min(3.0, bw / 2, base - y0)
-        fill = SLEEP_COLOR if in_week[i] else SLEEP_COLOR_PAST
-        b.append(f'<path d="M{_f(x0)} {_f(base)} V{_f(y0 + r)} Q{_f(x0)} {_f(y0)} {_f(x0 + r)} {_f(y0)} '
-                 f'H{_f(x0 + bw - r)} Q{_f(x0 + bw)} {_f(y0)} {_f(x0 + bw)} {_f(y0 + r)} V{_f(base)} Z" fill="{fill}"/>')
+    for _, x, y in _draw_series(b, sleep, xs, yb, in_week, SLEEP_COLOR):
+        b.append(f'<circle class="chart__dot" cx="{_f(x)}" cy="{_f(y)}" r="2.6" fill="{SLEEP_COLOR}"/>')
     # x axis: every day of the highlighted week, the first day of earlier weeks
     for i, d in enumerate(days):
         x = xs[i]
         if in_week[i]:
-            b.append(f'<text class="chart__day" x="{_f(x)}" y="{_f(base + 13)}" text-anchor="middle">{html.escape(s["wd_short"][d["date"].weekday()])}</text>')
-            b.append(f'<text class="chart__date" x="{_f(x)}" y="{_f(base + 25)}" text-anchor="middle">{d["date"].day}</text>')
+            b.append(f'<text class="chart__day" x="{_f(x)}" y="{_f(base + 15)}" text-anchor="middle">{html.escape(s["wd_short"][d["date"].weekday()])}</text>')
+            b.append(f'<text class="chart__date" x="{_f(x)}" y="{_f(base + 26)}" text-anchor="middle">{d["date"].day}</text>')
         elif d["date"].weekday() == 0 or i == 0:
-            b.append(f'<text class="chart__date" x="{_f(x)}" y="{_f(base + 13)}" text-anchor="middle">{fmt_day_month(d["date"], lang)}</text>')
+            b.append(f'<text class="chart__date" x="{_f(x)}" y="{_f(base + 15)}" text-anchor="middle">{fmt_day_month(d["date"], lang)}</text>')
     b.append("</svg>")
     return "\n".join(a), "\n".join(b)
 
@@ -781,10 +962,18 @@ def render_topics(lines, lang: str):
     return "\n".join(out), suggested
 
 
+def norm_emotions(raw: str) -> str:
+    """`ansiedade 85, vergonha (55)` or `ansiedade 85/100 · vergonha 55%` ->
+    `ansiedade 85 ; vergonha 55`, the ledger's form."""
+    raw = re.sub(r"\s*/\s*100\b", "", raw or "").replace("%", "")
+    raw = re.sub(r"\(\s*(\d{1,3})\s*\)", r"\1", raw)
+    return re.sub(r"(\d)\s*[,·|]\s*", r"\1 ; ", raw)
+
+
 def render_feelings(raw: str, lang: str, before=None) -> str:
     """Emotion chips with their 0–100 intensity; with `before`, a re-rate
     shows as `70 → 45`."""
-    emotions, _ = wc.parse_emotions(raw)
+    emotions, _ = wc.parse_emotions(norm_emotions(raw))
     if not emotions:
         return inline(raw)
     s, before = STRINGS[lang], {k.casefold(): v for k, v in (before or [])}
@@ -792,7 +981,10 @@ def render_feelings(raw: str, lang: str, before=None) -> str:
     for name, value in emotions:
         was = before.get(name.casefold())
         # the arrow is drawn: U+2192 is not in the embedded Latin subsets
-        scale = (f"{was} {ARROW} {value}" if was is not None else f"{value} {s['of100']}")
+        if was is not None:
+            scale = f"{was} {ARROW} {value}"
+        else:
+            scale = f"{value} {s['of100']}" if value <= 100 else str(value)  # off the scale: shown as written
         chips.append(f'<span class="feel__item">{html.escape(name)}<span class="scale">{scale}</span></span>')
     return '<span class="feel">' + "".join(chips) + "</span>"
 
@@ -850,7 +1042,7 @@ def render_moment(mo: dict, entry, tz, lang: str, compact: bool = False) -> str:
     if f.get("alternative"):
         row(s["m_alternative"], render_alternative(f["alternative"], lang))
     if f.get("felt_after"):
-        row(s["m_felt_after"], render_feelings(f["felt_after"], lang, wc.parse_emotions(f.get("felt", ""))[0]))
+        row(s["m_felt_after"], render_feelings(f["felt_after"], lang, wc.parse_emotions(norm_emotions(f.get("felt", "")))[0]))
     rest = render_blocks(mo["rest"], "note__para") if mo["rest"] else ""
     cls = "note note--compact" if compact else "note"
     return (f'<article class="{cls}">{head}<h3 class="note__title">{inline(mo["title"])}</h3>{feel}'
@@ -881,31 +1073,24 @@ def entry_as_moment(entry) -> dict:
 
 
 def render_stats(week_days, prev_days, lang: str) -> str:
+    """Four figures, each with the days it averages and the week before."""
     s = STRINGS[lang]
     cells = []
     for key, label in (("mood", "avg_mood"), ("energy", "avg_energy"), ("anxiety", "avg_anxiety"), ("sleep_h", "avg_sleep")):
-        days = [d for d in week_days if d[key] is not None]
-        if not days:
+        vals = [d[key] for d in week_days if d[key] is not None]
+        if not vals:
             continue
-        vals = [d[key] for d in days]
-        value = sum(vals) / len(vals)
-        prev_vals = [d[key] for d in prev_days if d[key] is not None]
-        fmt = fmt_hours if key == "sleep_h" else (lambda v: fmt_score(v, lang))
+        value, prev = sum(vals) / len(vals), avg([d[key] for d in prev_days])
         if key == "sleep_h":
             main = f'{fmt_hours(value)}<span class="stat__unit">{s["per_night"]}</span>'
-            prev_txt = fmt_hours(avg(prev_vals)) if prev_vals else None
+            prev_txt = fmt_hours(prev) if prev is not None else None
         else:
             main = f'{fmt_num(value, lang)}<span class="stat__unit">{s["of5"]}</span>'
-            prev_txt = fmt_num(avg(prev_vals), lang) if prev_vals else None
-        sub = [s["n_days"].format(n=len(vals)) if len(vals) > 1 else s["n_day"]]
-        lo, hi = min(vals), max(vals)
-        if lo != hi:
-            sub.append(s["low_high"].format(
-                lo=fmt(lo), lo_days=fmt_weekdays([d["date"] for d in days if d[key] == lo], lang),
-                hi=fmt(hi), hi_days=fmt_weekdays([d["date"] for d in days if d[key] == hi], lang)))
-        sub.append(s["prev"].format(v=prev_txt, n=len(prev_vals)) if prev_txt else s["prev_none"])
+            prev_txt = fmt_num(prev, lang) if prev is not None else None
+        sub = (s["n_days"].format(n=len(vals)) if len(vals) > 1 else s["n_day"]) + " · " + \
+            (s["prev"].format(v=prev_txt) if prev_txt else s["prev_none"])
         cells.append(f'<div class="stat"><dt>{s[label]}</dt><dd class="stat__value">{main}</dd>'
-                     + "".join(f'<dd class="stat__sub">{x}</dd>' for x in sub) + "</div>")
+                     f'<dd class="stat__sub">{sub}</dd></div>')
     return '<dl class="stats">' + "".join(cells) + "</dl>"
 
 
@@ -925,20 +1110,28 @@ def render_grid(week_days, week_entries, tz, lang: str) -> str:
         cells = [none if d[key] is None else f"<td>{fmt_hours(d[key]) if key == 'sleep_h' else fmt_score(d[key], lang)}</td>"
                  for d in week_days]
         rows.append(f'<tr><th scope="row">{s[label]}</th>{"".join(cells)}</tr>')
-    if any(d["sleep_quality"] for d in week_days):
-        cells = [f'<td class="days__word">{html.escape(s["quality"].get(d["sleep_quality"].lower(), d["sleep_quality"]))}</td>'
-                 if d["sleep_quality"] else none for d in week_days]
-        rows.append(f'<tr><th scope="row">{s["row_quality"]}</th>{"".join(cells)}</tr>')
-    peaks, marks = [], []
+    marks = []
     for d in week_days:
         day_entries = per_day.get(d["date"], [])
-        values = [v for e in day_entries for _, v in e["emotions"]]
-        peaks.append(f"<td>{max(values)}</td>" if values else none)
         marks.append(f'<td class="days__marks">{"".join("<i></i>" for _ in day_entries)}</td>' if day_entries else none)
-    rows.append(f'<tr><th scope="row">{s["row_peak"]} <span class="days__unit">0–100</span></th>{"".join(peaks)}</tr>')
     rows.append(f'<tr><th scope="row">{s["row_entries"]}</th>{"".join(marks)}</tr>')
     return (f'<table class="days"><caption>{s["grid_caption"]}</caption><thead><tr><td></td>{head}</tr></thead>'
             f'<tbody>{"".join(rows)}</tbody></table>')
+
+
+def cover_mm(sections) -> float:
+    """Rough height, in mm, of the page-1 sections as set by report.css (the
+    summary in 12.5pt serif, the agenda in 11pt). Calibrated on the example."""
+    mm = 0.0
+    for sec in sections:
+        mm += 21.0  # hairline, heading and their rests
+        for kind, value in blocks(sec["lines"]):
+            if kind == "p":
+                per_line = 72 if sec["key"] == "week" else 92
+                mm += 7.4 * math.ceil(len(value) / per_line) + 3.0
+            else:
+                mm += sum(6.3 * math.ceil(len(i) / 90) + 3.4 for i in value) + 3.0
+    return mm
 
 
 def css_string(text: str) -> str:
@@ -978,7 +1171,10 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
     if not report_path.exists():
         raise ReportError(f"no report for {label}: write {report_path} first (see references/weekly-report-guide.md)")
     report = parse_report(report_path.read_text(encoding="utf-8"))
-    status = (report["meta"].get("status") or "draft").strip().lower()
+    status = report_status(report["meta"])
+    if status not in ("draft", "reviewed", "sent"):
+        report["notes"].append(f"status {status!r} is not draft/reviewed/sent: treated as a draft")
+        status = "draft"
     if status == "draft" and not draft:
         raise ReportError(f"{label} is still a draft: the owner reviews it first (status: reviewed), "
                           "or pass --draft for a marked preview", code=3)
@@ -998,7 +1194,9 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
     prev_days = daily_series(checkins, tz, week_start - timedelta(days=7), week_start - timedelta(days=1))
     days_logged = [d for d in week_days if logged(d)]
 
-    warnings = verbatim_warnings(report, entries_by_id, *ledger_corpus(ledger, entries))
+    warnings = ([f"normalized: {n}" for n in report["notes"]]
+                + verbatim_warnings(report, entries_by_id, *ledger_corpus(ledger, entries))
+                + content_warnings(report))
 
     name = (cfg.get("name") or "").strip()
     therapist = (cfg.get("therapist_name") or "").strip()
@@ -1037,9 +1235,8 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
                 '<div class="chart__head">'
                 f'<p class="chart__title">{s["chart_a"]}</p>'
                 '<ul class="legend">'
-                f'<li><svg viewBox="0 0 22 10" aria-hidden="true"><line x1="1" y1="5" x2="21" y2="5" stroke="{MOOD_COLOR}" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="5" r="3.4" fill="{MOOD_COLOR}"/></svg>{s["legend_mood"]}</li>'
-                f'<li><svg viewBox="0 0 22 10" aria-hidden="true"><line x1="1" y1="5" x2="21" y2="5" stroke="{ANXIETY_COLOR}" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="5" r="3" fill="#fff" stroke="{ANXIETY_COLOR}" stroke-width="2"/></svg>{s["legend_anxiety"]}</li>'
-                f'<li><svg viewBox="0 0 10 10" aria-hidden="true"><rect x="2" y="1" width="6" height="9" rx="1.5" fill="{SLEEP_COLOR}"/></svg>{s["legend_sleep"]}</li>'
+                f'<li><svg viewBox="0 0 22 10" aria-hidden="true"><line x1="1" y1="5" x2="21" y2="5" stroke="{MOOD_COLOR}" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="5" r="2.9" fill="{MOOD_COLOR}" stroke="#fff" stroke-width="1.5"/></svg>{s["legend_mood"]}</li>'
+                f'<li><svg viewBox="0 0 22 10" aria-hidden="true"><line x1="1" y1="5" x2="21" y2="5" stroke="{ANXIETY_COLOR}" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="5" r="3.6" fill="#fff" stroke="{ANXIETY_COLOR}" stroke-width="1.8"/></svg>{s["legend_anxiety"]}</li>'
                 '</ul></div>'
                 f"{chart_a}"
                 f'<p class="chart__title chart__title--b">{s["chart_b"]}</p>'
@@ -1056,12 +1253,16 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
     if days_logged and not any(sec["key"] == "mood" for sec in sections):
         at = next((i for i, sec in enumerate(sections) if sec["key"] not in COVER_KEYS), len(sections))
         sections = sections[:at] + [{"heading": s["sec_mood"], "key": "mood", "lines": []}] + sections[at:]
-    cover, rest, suggested = parts, [], False
+    cover, rest, suggested, cover_secs = parts, [], False, []
     for sec in sections:
-        key, heading = sec["key"], inline(sec["heading"])
-        lines = sec["lines"]
+        key, lines = sec["key"], sec["lines"]
+        heading = inline(sec["heading"]) if sec["heading"] else s.get(f"sec_{key}", "")
+        if key != "mood" and not any(l.strip() for l in lines):
+            continue  # an empty heading (a leftover from the template) is not printed
         if key not in COVER_KEYS:
             cover = rest
+        if cover is parts:
+            cover_secs.append(sec)
         if key == "week":
             body = render_blocks(lines, "lede")
         elif key == "session":
@@ -1093,8 +1294,15 @@ def build(ledger: Path, week_spec: str, tz_override=None, history_weeks: int = 4
     if (cfg.get("report_disclaimer") or "true").strip().lower() != "false":
         first_line += " " + s["foot_clinical"]
     foot = [first_line, s["foot_quotes"]] + ([s["foot_suggested"]] if suggested else []) + [s["foot_realtime"]]
-    parts.append('<footer class="foot">' + "".join(f"<p>{x}</p>" for x in foot) + "</footer>")
-    parts = ['<div class="cover">' + "\n".join(parts) + "</div>"] + rest
+    foot_html = '<footer class="foot">' + "".join(f"<p>{x}</p>" for x in foot) + "</footer>"
+    # A letter too long for one page (a wordy summary, many topics) is not
+    # squeezed: page 1 then flows like the rest, and the note closes the report.
+    budget = COVER_BUDGET_MM - (10 if status == "draft" else 0) - (12 if len(name) > 28 else 0)
+    if cover_mm(cover_secs) <= budget:
+        parts = ['<div class="cover">' + "\n".join(parts + [foot_html]) + "</div>"] + rest
+    else:
+        warnings.append("page 1 is too long to fit (summary or topics); it flows onto page 2 — shorten them for the letter layout")
+        parts = ['<div class="cover cover--flow">' + "\n".join(parts) + "</div>"] + rest + [foot_html]
 
     running = s["running"].format(name=name, week=label, conf=s["confidential"].lower()) if name \
         else f"sintr · {label} · {s['confidential'].lower()}"

@@ -23,7 +23,7 @@ If `require_approval: false` in `config.md`, the owner has pre-authorized the se
 | Header | — | the week's dates as title; check-in coverage ("6 of 7 days · none on Wed"); moments recorded; next session (`config.md`); confidential, for the therapist |
 | 1. How the week went | 3–6 warm lines | — |
 | 2. For the session | 2–4 topics | the open checkboxes; the *suggested by sintr* label |
-| 3. Mood, energy and sleep | 2–4 lines reading the numbers; the day's check-in notes, verbatim | averages with their number of days, low/high days, the week before; the sentiment chart (last 4 weeks); the day-by-day grid |
+| 3. Mood, energy and sleep | 2–4 lines reading the numbers; the day's check-in notes, verbatim | averages with their number of days and the week before; the sentiment chart (last 4 weeks, smoothed, dotted across days without a check-in); the day-by-day grid |
 | 4. Moments that stood out | one line on how they were chosen; 3–5 moments | the date and time from the linked entry when `when` is empty; the person's strongest-thought mark |
 | 5. What repeated · 6. What helped | dated lists | — |
 | Foot of page 1 | — | how it was prepared and reviewed; not a diagnosis, not a clinical assessment; what the highlights mean; not a crisis channel |
@@ -131,6 +131,18 @@ What made things lighter, **as the person recorded it**: a walk, a conversation,
 ## The appendix (opt-in)
 
 `appendix: true` in the front matter adds "Todos os registros da semana / Every entry this week" after the report: every shareable entry of the week, in full, in the card format. Off by default — the report is a summary; offer the appendix when the therapist asked for more detail. The owner sees it in the preview before anything is sent.
+
+## What the script forgives, and what it reports
+
+The PDF must look right whoever wrote the Markdown, so `report_pdf.py` reads it leniently and says what it changed (`warning: normalized: …`):
+
+- sections are recognized by their marker or their heading (H1 or H2), merged if repeated, and put back in the template's order; text before the first heading opens the summary; an empty heading is not printed;
+- moment fields are read under common other names (`situation`, `emotions`, `behavior`, `Situação`, `Pensamentos`…), in any case, bold or not; emotions written `ansiedade 85, vergonha 55`, `85/100` or `85%` are read as `ansiedade 85 ; vergonha 55`;
+- a fenced report, tables, images, links, block quotes, inline code, emoji and template placeholders (`{…}`, the template's own moment) are taken out, never printed half-rendered; long words break inside the page;
+- `status: revisado / aprovado / enviado` is read as `reviewed` / `sent`; any other unknown status is treated as a draft;
+- a summary and agenda too long for page 1 no longer squeeze the letter layout: page 1 flows like the rest.
+
+What it cannot fix it reports, and the agent fixes before showing the preview: quotes not found in the ledger, intensities that differ from the entry, thoughts without quotes, observations without dates, words that state a cause ("porque", "causou", "because"…) or a clinical label ("burnout", "depressão", "catastrofização"…), more than 6 topics or moments, a summary over ~140 words. `--strict` turns any warning into exit code 5.
 
 ## Style rules
 
